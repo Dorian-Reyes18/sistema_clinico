@@ -9,10 +9,271 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite" // O "postgresql", si estás usando PostgreSQL
   url      = env("DATABASE_URL")
 }
 
+model Roles {
+  id        Int       @id @default(autoincrement())
+  nombreRol String
+  usuarios  Usuarios[]
+}
 
+model Usuarios {
+  id             Int       @id @default(autoincrement())
+  rolId          Int
+  nombreUsuario  String
+  nombreApellido String
+  telefono       String    @unique
+  contrasena     String
+  rol            Roles     @relation(fields: [rolId], references: [id])
+}
 
+model Categoria {
+  id                  Int                     @id @default(autoincrement())
+  opcion              String
+  diagnosticoPrenatal DiagnosticoPrenatal[]
+}
 
+model TipoDefecto {
+  id                  Int                     @id @default(autoincrement())
+  nombreDefecto       String
+  diagnosticoPrenatal DiagnosticoPrenatal[]
+}
+
+model Silais {
+  id         Int       @id @default(autoincrement())
+  nombre     String
+  pacientes  Paciente[]
+}
+
+model Departamento {
+  id         Int       @id @default(autoincrement())
+  nombre     String
+  municipios Municipio[]
+}
+
+model Municipio {
+  id            Int           @id @default(autoincrement())
+  departamentoId Int
+  nombre        String
+  departamento  Departamento  @relation(fields: [departamentoId], references: [id])
+  pacientes     Paciente[]
+}
+
+model SangreRH {
+  id                     Int                    @id @default(autoincrement())
+  tipo                   String
+  antecedentesPersonales AntecedentesPersonales[]
+  conyuge                Conyuge[]
+}
+
+model TipoDiabetes {
+  id                     Int                    @id @default(autoincrement())
+  mellitusTipo1          Boolean
+  mellitusTipo2          Boolean
+  mellitusGestacional    Boolean
+  ninguna                Boolean
+  antecedentesPersonales AntecedentesPersonales[]
+  evaluacionActual       EvaluacionActual[]
+}
+
+model Paciente {
+  id                        Int                        @id @default(autoincrement())
+  silaisId                  Int
+  municipioId               Int
+  numeroExpediente          Int                        @unique
+  primerNombre              String
+  segundoNombre             String?
+  primerApellido            String
+  segundoApellido           String?
+  edad                      Int?
+  fechaNac                  DateTime?
+  telefono1                 String
+  telefono2                 String?
+  fechaIngreso              DateTime
+  domicilio                 String?
+  silais                    Silais                      @relation(fields: [silaisId], references: [id])
+  municipio                 Municipio                   @relation(fields: [municipioId], references: [id])
+  antecedentesPersonales    AntecedentesPersonales[]
+  embarazoActual            EmbarazoActual[]
+  antecedentesFamiliaresDefectos AntecedentesFamiliaresDefectos[]
+  antecedentesObstetricos   AntecedentesObstetricos[]
+  conyuge                   Conyuge[]
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
+}
+
+model AntecedentesPersonales {
+  id                Int            @id @default(autoincrement())
+  pacienteId        Int
+  diabetesId        Int?
+  sangreRhId        Int?
+  fechaCreacion     DateTime?
+  licor             Boolean?
+  drogas            Boolean?
+  fuma              Boolean?
+  teratogenicos     Boolean?
+  hipertension      Boolean?
+  epilepsia         Boolean?
+  tiroidea          Boolean?
+  neoplasicas       Boolean?
+  cardiopatia       Boolean?
+  inmunologia       Boolean?
+  paciente          Paciente       @relation(fields: [pacienteId], references: [id])
+  diabetes          TipoDiabetes?  @relation(fields: [diabetesId], references: [id])
+  sangreRH          SangreRH?      @relation(fields: [sangreRhId], references: [id])
+}
+
+model EmbarazoActual {
+  id                Int            @id @default(autoincrement())
+  pacienteId        Int
+  fechaEmbarazo     DateTime?
+  pesoKg            Float?
+  talla             Int?
+  ultimaRegla       DateTime?
+  edadGestacional   Int?
+  imc               Float?
+  consumoAF         Boolean?
+  fechaInicioConsumo DateTime?
+  paciente          Paciente       @relation(fields: [pacienteId], references: [id])
+}
+
+model AntecedentesFamiliaresDefectos {
+  id                Int            @id @default(autoincrement())
+  pacienteId        Int
+  fechaCreacion     DateTime?
+  opcion            Boolean?
+  descripcion       String?        
+  paciente          Paciente       @relation(fields: [pacienteId], references: [id])
+}
+
+model AntecedentesObstetricos {
+  id                Int            @id @default(autoincrement())
+  pacienteId        Int
+  fechaCreacion     DateTime?
+  gesta             String?
+  parto             String?
+  aborto            String?
+  cesarea           String?
+  legrado           String?
+  paciente          Paciente       @relation(fields: [pacienteId], references: [id])
+}
+
+model Conyuge {
+  id                Int         @id @default(autoincrement())
+  sangreRhId        Int
+  pacienteId        Int
+  telefono          String?    
+  edad              Int?
+  sangreRH          SangreRH   @relation(fields: [sangreRhId], references: [id])
+  paciente          Paciente   @relation(fields: [pacienteId], references: [id])
+}
+
+model EtapaCirugia {
+  id                     Int                        @id @default(autoincrement())
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
+}
+
+model DiagnosticoPrenatal {
+  id                     Int                    @id @default(autoincrement())
+  categoriaId            Int
+  tipoDefectoId          Int
+  tipoCirugiaRealizada   String?                
+  estudioGen             Boolean?
+  resultadoEstGen        String?
+  embarazoUnico          Boolean?
+  categoria              Categoria               @relation(fields: [categoriaId], references: [id])
+  tipoDefecto            TipoDefecto             @relation(fields: [tipoDefectoId], references: [id])
+  intrauterinaPercutanea IntrauterinaPercutanea[]
+  intrauterinaEndoscopica IntrauterinaEndoscopica[]
+  intrauterinaAbierta    IntrauterinaAbierta[]
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
+}
+
+model EvaluacionActual {
+  id                        Int               @id @default(autoincrement())
+  tipoDiabetesId            Int?
+  lupusEritematosoSist     Boolean?
+  obesidad                  Boolean?
+  hipertension               Boolean?
+  sindromeAntifosfo         Boolean?
+  cardiopatias              Boolean?
+  artritis                  Boolean?
+  hipotiroidismo            Boolean?
+  hipertiroidismo           Boolean?
+  trombofilia               Boolean?
+  epilepsia                 Boolean?
+  observaciones             String?
+  tipoDiabetes              TipoDiabetes?     @relation(fields: [tipoDiabetesId], references: [id])
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
+}
+
+model OrdenQuirurgicaIntrauterina {
+  id                     Int                     @id @default(autoincrement())
+  pacienteId             Int
+  fechaDeCreacion       DateTime?
+  teniaDiagnostico      Boolean?
+  evaluacionActualId    Int?
+  diagnosticoPrenatalId Int?
+  etapaId               Int?
+  complicacionesQuirurgicas String?
+  estado                Boolean?
+  paciente              Paciente               @relation(fields: [pacienteId], references: [id])
+  evaluacionActual      EvaluacionActual?      @relation(fields: [evaluacionActualId], references: [id])
+  diagnosticoPrenatal   DiagnosticoPrenatal?   @relation(fields: [diagnosticoPrenatalId], references: [id])
+  etapa                EtapaCirugia?           @relation(fields: [etapaId], references: [id])
+  resultadosPerinatales ResultadosPerinatales[]
+}
+
+model IntrauterinaPercutanea {
+  id                     Int                    @id @default(autoincrement())
+  diagnosticoPrenatalId  Int
+  cordocentesis         Boolean?
+  drenajeMasaQuisticaRenal Boolean?
+  drenajeMasaQuisticaPulmonar Boolean?
+  toracocentesis        Boolean?
+  cateterismoCardiaco   Boolean?
+  noSeCompletoLaCirugiaFetal Boolean?
+  fechaCirugia          DateTime?
+  horaInicioAnestesia   DateTime?
+  tipoAnestesiaId       String?                
+  horaInicioCirugiaFetal DateTime?
+  frecuenciaCardiacaFetalInicio Float?
+  diferenciaPorcentualPeso Float?
+  anastomosisCoaguladas String?                
+  sangradoEstimado      Int?
+  frecuenciaCardiacaFetalFinal Float?
+  resultados            String?
+  diagnosticoPrenatal   DiagnosticoPrenatal    @relation(fields: [diagnosticoPrenatalId], references: [id])
+}
+
+model IntrauterinaEndoscopica {
+  id                     Int                    @id @default(autoincrement())
+  diagnosticoPrenatalId  Int
+  coagulacionUltrasonido Boolean?
+  usoLaparoscopico      Boolean?
+  drenajeLateral      Boolean?
+  extirpacionQuirurgica Boolean?
+  resultResultados      String?
+  diagnosticoPrenatal   DiagnosticoPrenatal    @relation(fields: [diagnosticoPrenatalId], references: [id])
+}
+
+model IntrauterinaAbierta {
+  id                     Int                    @id @default(autoincrement())
+  diagnosticoPrenatalId  Int
+  tcnicaUsada          String?
+  resultado            String?
+  diagnosticoPrenatal   DiagnosticoPrenatal    @relation(fields: [diagnosticoPrenatalId], references: [id])
+}
+
+model ResultadosPerinatales {
+  id                     Int                    @id @default(autoincrement())
+  ordenQuirurgicaIntrauterinaId Int
+  fechaNacimiento        DateTime?
+  sexo                   String?
+  peso                   Float?
+  talla                  Int?
+  apgar                  Int?
+  resultados             String?
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina @relation(fields: [ordenQuirurgicaIntrauterinaId], references: [id])
+}
