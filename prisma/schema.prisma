@@ -15,20 +15,21 @@ datasource db {
 // schema.prisma
 model Roles {
   id          Int       @id @default(autoincrement())
-  nombreRol   String    @unique
-  usuarios    Usuarios?
+  nombreRol   String    
+  usuarios    Usuarios[] 
 }
 
 model Usuarios {
   id                     Int       @id @default(autoincrement())
-  rolId                  Int @unique
-  usuario          String
-  nombreYApellido         String
-  telefono               Int       @unique
+  rolId                  Int
+  usuario                String
+  nombreYApellido        String
+  telefono               String       @unique
   contrasena             String
   rol                    Roles     @relation(fields: [rolId], references: [id])
   ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion[]
 }
+
 
 model Categoria {
   id                       Int       @id @default(autoincrement())
