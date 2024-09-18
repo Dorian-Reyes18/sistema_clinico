@@ -1,77 +1,44 @@
+// src/app/api/protected/roles/route.js
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/libs/jwt"; // Asegúrate de tener una función para verificar el token
 import { prisma } from "@/libs/prisma";
+import { authenticateRequest } from "@/middlewares/authMiddleware";
 
-export async function GET(request) {
+// Función auxiliar para manejar errores
+const handleError = (error, message, status = 500) => {
+  console.error(message, error);
+  return NextResponse.json({ error: message }, { status });
+};
+
+// Función auxiliar para manejar autenticación y operaciones CRUD
+const handleRequest = async (req, operation) => {
+  const authResult = await authenticateRequest(req);
+  if (authResult.error) return authResult;
+
   try {
-    // Obtener el token del encabezado Authorization
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Se requiere autenticación" },
-        { status: 401 }
-      );
-    }
+    return await operation();
+  } catch (error) {
+    return handleError(error, "Error al procesar la solicitud");
+  }
+};
 
-    const token = authHeader.replace("Bearer ", "");
-
-    // Verificar el token
-    const user = await verifyToken(token);
-    if (!user) {
-      return NextResponse.json(
-        { error: "Autenticación fallida" },
-        { status: 401 }
-      );
-    }
-
-    // Obtener todos los roles
+// Obtener todos los roles
+export async function GET(request) {
+  return handleRequest(request, async () => {
     const roles = await prisma.roles.findMany();
     return NextResponse.json(roles);
-  } catch (error) {
-    console.error("Error al obtener roles:", error);
-    return NextResponse.json(
-      { error: "Error al solicitar los roles" },
-      { status: 500 }
-    );
-  }
+  });
 }
 
+// Crear un nuevo rol
 export async function POST(request) {
-  try {
-    // Obtener el token del encabezado Authorization
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Se requiere autenticación" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    // Verificar el token
-    const user = await verifyToken(token);
-    if (!user) {
-      return NextResponse.json(
-        { error: "Autenticación fallida" },
-        { status: 401 }
-      );
-    }
-
+  return handleRequest(request, async () => {
     const body = await request.json();
     const nuevoRol = await prisma.roles.create({
       data: body,
     });
-
     return NextResponse.json({
       message: "Rol creado exitosamente",
       rol: nuevoRol,
     });
-  } catch (error) {
-    console.error("Error al crear rol:", error);
-    return NextResponse.json(
-      { error: "Error al crear el rol" },
-      { status: 500 }
-    );
-  }
+  });
 }
