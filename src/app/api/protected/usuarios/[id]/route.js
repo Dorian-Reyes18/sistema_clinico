@@ -3,6 +3,22 @@ import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 import bcrypt from "bcryptjs";
 
+const handleError = (error, message, status = 500) => {
+  console.error(message, error);
+  return NextResponse.json({ error: message }, { status });
+};
+
+const handleRequest = async (req, operation) => {
+  const authResult = await authenticateRequest(req);
+  if (authResult) return authResult;
+
+  try {
+    return await operation();
+  } catch (error) {
+    return handleError(error, "Error al procesar la solicitud");
+  }
+};
+
 // Obtener usuario por ID
 export async function GET(req, { params }) {
   const authResult = await authenticateRequest(req);
@@ -10,7 +26,6 @@ export async function GET(req, { params }) {
 
   const { id } = params;
 
-  // Validar si el ID es válido
   if (!id || isNaN(parseInt(id, 10))) {
     return NextResponse.json(
       { error: "El ID proporcionado es inválido o está ausente" },
@@ -21,6 +36,9 @@ export async function GET(req, { params }) {
   try {
     const usuario = await prisma.usuarios.findUnique({
       where: { id: parseInt(id, 10) },
+      include: {
+        rol: true, // Ajusta según el nombre de la relación
+      },
     });
 
     if (!usuario) {
@@ -32,14 +50,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(usuario);
   } catch (error) {
-    console.error("Error al obtener el usuario: ", error);
-    return NextResponse.json(
-      {
-        error:
-          "Error al obtener el usuario. Por favor, intente de nuevo más tarde.",
-      },
-      { status: 500 }
-    );
+    return handleError(error, "Error al obtener el usuario", 500);
   }
 }
 
@@ -50,7 +61,6 @@ export async function PUT(req, { params }) {
 
   const { id } = params;
 
-  // Validar si el ID es válido
   if (!id || isNaN(parseInt(id, 10))) {
     return NextResponse.json(
       { error: "El ID proporcionado es inválido o está ausente" },
@@ -71,7 +81,6 @@ export async function PUT(req, { params }) {
     );
   }
 
-  // Validar si el cuerpo contiene datos
   if (!Object.keys(body).length) {
     return NextResponse.json(
       { error: "No se proporcionaron datos para actualizar." },
@@ -80,7 +89,6 @@ export async function PUT(req, { params }) {
   }
 
   try {
-    // Hash de la contraseña si está presente
     if (body.contrasena) {
       body.contrasena = await bcrypt.hash(body.contrasena, 10);
     }
@@ -97,7 +105,6 @@ export async function PUT(req, { params }) {
   } catch (error) {
     console.error("Error al actualizar el usuario: ", error);
 
-    // Detectar error específico si el ID no existe
     if (error.code === "P2025") {
       return NextResponse.json(
         {
@@ -108,13 +115,7 @@ export async function PUT(req, { params }) {
       );
     }
 
-    return NextResponse.json(
-      {
-        error:
-          "Error al actualizar el usuario. Por favor, intente de nuevo más tarde.",
-      },
-      { status: 500 }
-    );
+    return handleError(error, "Error al actualizar el usuario", 500);
   }
 }
 
@@ -125,7 +126,6 @@ export async function DELETE(req, { params }) {
 
   const { id } = params;
 
-  // Validar si el ID es válido
   if (!id || isNaN(parseInt(id, 10))) {
     return NextResponse.json(
       { error: "El ID proporcionado es inválido o está ausente" },
@@ -145,7 +145,6 @@ export async function DELETE(req, { params }) {
   } catch (error) {
     console.error("Error al eliminar el usuario: ", error);
 
-    // Detectar error específico si el ID no existe
     if (error.code === "P2025") {
       return NextResponse.json(
         {
@@ -156,12 +155,6 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    return NextResponse.json(
-      {
-        error:
-          "Error al eliminar el usuario. Por favor, intente de nuevo más tarde.",
-      },
-      { status: 500 }
-    );
+    return handleError(error, "Error al eliminar el usuario", 500);
   }
 }
