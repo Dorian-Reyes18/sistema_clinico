@@ -30,7 +30,15 @@ const handleRequest = async (req, operation) => {
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
-      const pacientes = await prisma.paciente.findMany();
+      const pacientes = await prisma.paciente.findMany({
+        include: {
+          conyuge: {
+            include: {
+              sangreRh: true, // Incluye los datos de SangreRH
+            },
+          },
+        },
+      });
       return NextResponse.json(pacientes);
     } catch (error) {
       return handleError(error, "Error al obtener los pacientes");

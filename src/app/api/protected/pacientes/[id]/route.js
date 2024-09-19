@@ -41,6 +41,13 @@ export async function GET(req, { params }) {
     try {
       const paciente = await prisma.paciente.findUnique({
         where: { id: parseInt(id) },
+        include: {
+          conyuge: {
+            include: {
+              sangreRh: true, // Incluye los datos de SangreRH
+            },
+          },
+        },
       });
       if (!paciente) {
         return NextResponse.json(
