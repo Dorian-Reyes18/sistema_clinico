@@ -26,13 +26,11 @@ export async function GET(req) {
     try {
       // Aquí obtenemos los datos de todos los modelos que mencionaste:
       const categorias = await prisma.categoria.findMany();
+      const departamentos = await prisma.departamento.findMany();
       const tipoDefectos = await prisma.tipoDefecto.findMany();
       const silais = await prisma.silais.findMany();
-      const departamentos = await prisma.departamento.findMany();
       const municipios = await prisma.municipio.findMany();
       const sangreRH = await prisma.sangreRH.findMany();
-      const tipoDiabetes = await prisma.tipoDiabetes.findMany();
-      const etapaCirugia = await prisma.etapaCirugia.findMany();
 
       // Devolveremos todos los modelos en un solo objeto
       return NextResponse.json({
@@ -42,8 +40,6 @@ export async function GET(req) {
         departamentos,
         municipios,
         sangreRH,
-        tipoDiabetes,
-        etapaCirugia,
       });
     } catch (error) {
       return handleError(error, "Error al obtener los datos", 500);

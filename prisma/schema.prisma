@@ -76,8 +76,8 @@ model TipoDiabetes {
   mellitusTipo2            Boolean
   mellitusGestacional      Boolean
   ninguna                  Boolean
-  antecedentesPersonales   AntecedentesPersonales[]
-  evaluacionActual         EvaluacionActual[]
+  antecedentesPersonales   AntecedentesPersonales?
+  evaluacionActual         EvaluacionActual?
 }
 
 model Paciente {
@@ -109,7 +109,7 @@ model Paciente {
 model AntecedentesPersonales {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
-  diabetesId               Int
+  diabetesId               Int @unique
   sangreRhId               Int
   fechaCreacion           DateTime @default(now())
   licor                    Boolean
@@ -172,11 +172,6 @@ model Conyuge {
   paciente                 Paciente @relation(fields: [pacienteId], references: [id])
 }
 
-model EtapaCirugia {
-  id                       Int       @id @default(autoincrement())
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
-}
-
 model DiagnosticoPrenatal {
   id                       Int       @id @default(autoincrement())
   categoriaId              Int
@@ -196,7 +191,7 @@ model DiagnosticoPrenatal {
 
 model EvaluacionActual {
   id                       Int       @id @default(autoincrement())
-  tipoDiabetesId           Int
+  tipoDiabetesId           Int @unique
   lupusEritematosoSist    Boolean?
   obesidad                Boolean?
   hipertension             Boolean?
@@ -219,13 +214,12 @@ model OrdenQuirurgicaIntrauterina {
   teniaDiagnostico        Boolean?
   evaluacionActualId      Int?
   diagnosticoPrenatalId   Int
-  etapaId                 Int
+  etapa                   String?
   complicacionesQuirurgicas String?
   estado                  Boolean?
   paciente                Paciente @relation(fields: [pacienteId], references: [id])
   evaluacionActual        EvaluacionActual? @relation(fields: [evaluacionActualId], references: [id])
   diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
-  etapa                   EtapaCirugia @relation(fields: [etapaId], references: [id])
   ordenQuirurgicaIntrauterinaId Int?  
   intrauterinaPercutanea  IntrauterinaPercutanea ?
   intrauterinaEndoscopica IntrauterinaEndoscopica?
@@ -334,6 +328,7 @@ model OrdenQuirurgicaPostoperacion {
   pacienteId              Int
   diagnosticoId           Int @unique 
   doctorId                Int
+  etapa                   String?
   complicaciones          String?
   cirugiaNeonatal         CirugiaNeonatal? 
   cirugiaNerviosoCentral CirugiaNerviosoCentral?
