@@ -84,7 +84,7 @@ model Paciente {
   id                       Int       @id @default(autoincrement())
   silaisId                 Int
   municipioId              Int
-  numeroExpediente         Int       @unique
+  numeroExpediente         String       @unique
   conyugeid                Int?
   primerNombre             String
   segundoNombre            String?
