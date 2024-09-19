@@ -85,6 +85,7 @@ model Paciente {
   silaisId                 Int
   municipioId              Int
   numeroExpediente         Int       @unique
+  conyugeid                Int?
   primerNombre             String
   segundoNombre            String?
   primerApellido           String
@@ -101,7 +102,7 @@ model Paciente {
   embarazoActual           EmbarazoActual[]
   antecedentesFamiliaresDefectos AntecedentesFamiliaresDefectos[]
   antecedentesObstetricos  AntecedentesObstetricos[]
-  conyuge                  Conyuge[]
+  conyuge                  Conyuge? @relation(fields: [conyugeid], references: [id])
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
   ordenQuirurgicaPostOperacion OrdenQuirurgicaPostoperacion[]
 }
@@ -169,7 +170,7 @@ model Conyuge {
   telefono                 String?
   edad                     Int?
   sangreRh                 SangreRH @relation(fields: [sangreRhId], references: [id])
-  paciente                 Paciente @relation(fields: [pacienteId], references: [id])
+  pacientes                Paciente[] @relation()
 }
 
 model DiagnosticoPrenatal {
