@@ -2,10 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import bcrypt from "bcryptjs";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
+import { singToken } from "@/libs/jwt";
+
 
 // Función auxiliar para manejar errores
 const handleError = (error, message, status = 500) => {
   console.error(message, error);
+  // Asegúrate de enviar una respuesta JSON válida
   return NextResponse.json({ error: message }, { status });
 };
 
@@ -22,47 +25,57 @@ const handleRequest = async (req, operation) => {
 };
 
 // Crear usuario
+// Crear usuario
 export async function POST(req) {
   return handleRequest(req, async () => {
-    const { rolId, usuario, nombreYApellido, telefono, contrasena } =
-      await req.json();
+    try {
+      const { rolId, usuario, nombreYApellido, telefono, contrasena } =
+        await req.json();
 
-    const existingUser = await prisma.usuarios.findUnique({
-      where: { telefono },
-    });
+      const existingUser = await prisma.usuarios.findUnique({
+        where: { telefono },
+      });
 
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "El número de teléfono ya está en uso." },
-        { status: 400 }
+      if (existingUser) {
+        return NextResponse.json(
+          { error: "El número de teléfono ya está en uso." },
+          { status: 400 }
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+      const nuevoUsuario = await prisma.usuarios.create({
+        data: {
+          rolId,
+          usuario,
+          nombreYApellido,
+          telefono,
+          contrasena: hashedPassword,
+        },
+      });
+
+      if (!nuevoUsuario) {
+        return NextResponse.json(
+          {
+            error: "Error al crear el usuario. Por favor, inténtelo de nuevo.",
+          },
+          { status: 500 }
+        );
+      }
+
+      const token = singToken(nuevoUsuario); // Crear token JWT después de crear el usuario
+      return NextResponse.json({
+        message: "Usuario creado exitosamente",
+        usuario: nuevoUsuario,
+        token,
+      });
+    } catch (error) {
+      return handleError(
+        error,
+        "Error al procesar la solicitud. Asegúrese de que todos los datos sean correctos."
       );
     }
-
-    const hashedPassword = await bcrypt.hash(contrasena, 10);
-
-    const nuevoUsuario = await prisma.usuarios.create({
-      data: {
-        rolId,
-        usuario,
-        nombreYApellido,
-        telefono,
-        contrasena: hashedPassword,
-      },
-    });
-
-    if (!nuevoUsuario) {
-      return NextResponse.json(
-        { error: "Error al crear el usuario" },
-        { status: 500 }
-      );
-    }
-
-    const token = singToken(nuevoUsuario); // Crear token JWT después de crear el usuario
-    return NextResponse.json({
-      message: "Usuario creado exitosamente",
-      usuario: nuevoUsuario,
-      token,
-    });
   });
 }
 
