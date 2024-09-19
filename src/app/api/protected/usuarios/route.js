@@ -19,16 +19,20 @@ const handleRequest = async (req, operation) => {
   }
 };
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios sin rolId
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
       const usuarios = await prisma.usuarios.findMany({
         include: {
-          rol: true, // Ajusta según el nombre de la relación
+          rol: true,
         },
       });
-      return NextResponse.json({ usuarios });
+
+      // Eliminamos rolId de la respuesta
+      const usuariosSinRolId = usuarios.map(({ rolId, ...usuario }) => usuario);
+
+      return NextResponse.json({ usuarios: usuariosSinRolId });
     } catch (error) {
       return handleError(error, "Error al obtener los usuarios", 500);
     }
@@ -45,13 +49,19 @@ export async function POST(req) {
     body = await req.json();
   } catch (error) {
     return NextResponse.json(
-      { error: "Cuerpo de la solicitud inválido. Asegúrese de que el formato sea JSON." },
+      {
+        error:
+          "Cuerpo de la solicitud inválido. Asegúrese de que el formato sea JSON.",
+      },
       { status: 400 }
     );
   }
 
   if (!Object.keys(body).length) {
-    return NextResponse.json({ error: "No se proporcionaron datos para crear el usuario." }, { status: 400 });
+    return NextResponse.json(
+      { error: "No se proporcionaron datos para crear el usuario." },
+      { status: 400 }
+    );
   }
 
   try {

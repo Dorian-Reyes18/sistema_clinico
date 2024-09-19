@@ -19,7 +19,7 @@ const handleRequest = async (req, operation) => {
   }
 };
 
-// Obtener usuario por ID
+// Obtener usuario por ID sin rolId
 export async function GET(req, { params }) {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -37,7 +37,7 @@ export async function GET(req, { params }) {
     const usuario = await prisma.usuarios.findUnique({
       where: { id: parseInt(id, 10) },
       include: {
-        rol: true, // Ajusta según el nombre de la relación
+        rol: true,
       },
     });
 
@@ -48,7 +48,10 @@ export async function GET(req, { params }) {
       );
     }
 
-    return NextResponse.json(usuario);
+    // Eliminamos rolId de la respuesta
+    const { rolId, ...usuarioSinRolId } = usuario;
+
+    return NextResponse.json(usuarioSinRolId);
   } catch (error) {
     return handleError(error, "Error al obtener el usuario", 500);
   }
