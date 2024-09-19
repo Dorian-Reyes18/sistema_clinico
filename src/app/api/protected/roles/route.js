@@ -1,4 +1,3 @@
-// src/app/api/protected/roles/route.js
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
@@ -11,9 +10,13 @@ const handleError = (error, message, status = 500) => {
 
 // Función auxiliar para manejar autenticación y operaciones CRUD
 const handleRequest = async (req, operation) => {
+  // Llamamos al middleware para autenticar la solicitud
   const authResult = await authenticateRequest(req);
-  if (authResult.error) return authResult;
 
+  // Si la autenticación falla, devolvemos la respuesta con el error
+  if (authResult) return authResult;
+
+  // Si la autenticación es exitosa, continuamos con la operación CRUD
   try {
     return await operation();
   } catch (error) {
@@ -21,7 +24,7 @@ const handleRequest = async (req, operation) => {
   }
 };
 
-// Obtener todos los roles
+// Obtener todos los roles (GET)
 export async function GET(request) {
   return handleRequest(request, async () => {
     const roles = await prisma.roles.findMany();
@@ -29,7 +32,7 @@ export async function GET(request) {
   });
 }
 
-// Crear un nuevo rol
+// Crear un nuevo rol (POST)
 export async function POST(request) {
   return handleRequest(request, async () => {
     const body = await request.json();

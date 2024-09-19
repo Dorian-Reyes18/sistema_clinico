@@ -1,25 +1,8 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { singToken } from "@/libs/jwt";
-import { prisma } from "@/libs/prisma";
-
-export async function GET() {
-  try {
-    const usuarios = await prisma.usuarios.findMany();
-    return NextResponse.json(usuarios);
-  } catch (error) {
-    console.error("error al obtener todos los usuarios: ", error);
-    return NextResponse.json(
-      { error: "Error al obtener todos los usuarios" },
-      { status: 500 }
-    );
-  }
-}
-
+// api/usuarios/route.js
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { rolId, usuario, nombreYApellido, telefono, contrasena } = body;
+    const { rolId, usuario, nombreYApellido, telefono, contrasena } =
+      await request.json();
 
     const existingUser = await prisma.usuarios.findUnique({
       where: { telefono },
@@ -32,7 +15,7 @@ export async function POST(request) {
       );
     }
 
-    const hashearContraseña = await bcrypt.hash(contrasena, 10);
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
 
     const nuevoUsuario = await prisma.usuarios.create({
       data: {
@@ -40,25 +23,25 @@ export async function POST(request) {
         usuario,
         nombreYApellido,
         telefono,
-        contrasena: hashearContraseña,
+        contrasena: hashedPassword,
       },
     });
 
-    const token = singToken(nuevoUsuario);
+    if (!nuevoUsuario) {
+      return NextResponse.json(
+        { error: "Error al crear el usuario" },
+        { status: 500 }
+      );
+    }
 
+    const token = singToken(nuevoUsuario); // Crear token JWT después de crear el usuario
     return NextResponse.json({
       message: "Usuario creado exitosamente",
       usuario: nuevoUsuario,
       token,
     });
   } catch (error) {
-    console.error("error al crear el usuario: ", error);
-    if (error.code === "P2002") {
-      return NextResponse.json(
-        { error: "Error de unicidad en la base de datos" },
-        { status: 400 }
-      );
-    }
+    console.error("Error al crear el usuario:", error);
     return NextResponse.json(
       { error: "Error al crear el usuario" },
       { status: 500 }

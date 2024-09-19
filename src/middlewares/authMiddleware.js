@@ -1,37 +1,37 @@
-// src/middlewares/authMiddleware.js
-
-import { verifyToken } from "@/libs/jwt";
 import { NextResponse } from "next/server";
+import { verifyToken } from "@/libs/jwt";
 
-export async function authenticateRequest(request) {
-  try {
-    // Obtener el token del encabezado Authorization
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Se requiere autenticación" },
-        { status: 401 }
-      );
-    }
+export async function authenticateRequest(req) {
+  console.log("Middleware ejecutado");
 
-    const token = authHeader.replace("Bearer ", "");
-
-    // Verificar el token
-    const user = await verifyToken(token);
-    if (!user) {
-      return NextResponse.json(
-        { error: "Autenticación fallida" },
-        { status: 401 }
-      );
-    }
-
-    // Si la autenticación es exitosa, devolver el usuario
-    return { user };
-  } catch (error) {
-    console.error("Error al verificar el token:", error);
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader) {
+    console.log("No se proporcionó un token de autorización");
     return NextResponse.json(
-      { error: "Error al verificar el token" },
-      { status: 500 }
+      { error: "No se proporcionó un token de autorización" },
+      { status: 401 }
     );
   }
+
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    console.log("Token no válido o no proporcionado");
+    return NextResponse.json(
+      { error: "Token no válido o no proporcionado" },
+      { status: 401 }
+    );
+  }
+
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    console.log("Token inválido o expirado");
+    return NextResponse.json(
+      { error: "Token inválido o expirado" },
+      { status: 401 }
+    );
+  }
+
+  req.user = decoded;
+  console.log("Token válido, usuario decodificado:", decoded);
+  return null;
 }
