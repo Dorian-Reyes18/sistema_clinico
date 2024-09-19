@@ -33,5 +33,5 @@ export async function authenticateRequest(req) {
 
   req.user = decoded;
   console.log("Token válido, usuario decodificado:", decoded);
-  return null;
+  return null; 
 }

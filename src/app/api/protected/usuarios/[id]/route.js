@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
-import bcrypt from "bcryptjs";
+import { authenticateRequest } from "@/middlewares/authMiddleware";
 
 export async function GET(req, { params }) {
+  const authResult = await authenticateRequest(req);
+  if (authResult) return authResult;
+
   const { id } = params;
   try {
     const usuario = await prisma.usuarios.findUnique({
@@ -25,7 +28,11 @@ export async function GET(req, { params }) {
   }
 }
 
+// Actualizar usuario por ID
 export async function PUT(req, { params }) {
+  const authResult = await authenticateRequest(req);
+  if (authResult) return authResult;
+
   const { id } = params;
   const body = await req.json();
 
@@ -52,7 +59,11 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+// Eliminar usuario por ID
+export async function DELETE(req, { params }) {
+  const authResult = await authenticateRequest(req);
+  if (authResult) return authResult;
+
   const { id } = params;
 
   try {
