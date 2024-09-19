@@ -85,7 +85,6 @@ model Paciente {
   silaisId                 Int
   municipioId              Int
   numeroExpediente         String       @unique
-  conyugeid                Int?
   primerNombre             String
   segundoNombre            String?
   primerApellido           String
@@ -102,11 +101,11 @@ model Paciente {
   embarazoActual           EmbarazoActual[]
   antecedentesFamiliaresDefectos AntecedentesFamiliaresDefectos[]
   antecedentesObstetricos  AntecedentesObstetricos[]
-  conyuge                  Conyuge? @relation(fields: [conyugeid], references: [id])
+  conyugeId                Int?      // Agregar este campo
+  conyuge                  Conyuge? @relation("PacienteConyuge", fields: [conyugeId], references: [id]) // Establecer la relación con el conyuge
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
   ordenQuirurgicaPostOperacion OrdenQuirurgicaPostoperacion[]
 }
-
 model AntecedentesPersonales {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
@@ -166,11 +165,10 @@ model AntecedentesObstetricos {
 model Conyuge {
   id                       Int       @id @default(autoincrement())
   sangreRhId               Int
-  pacienteId               Int
   telefono                 String?
   edad                     Int?
   sangreRh                 SangreRH @relation(fields: [sangreRhId], references: [id])
-  pacientes                Paciente[] @relation()
+  pacientes                Paciente[] @relation("PacienteConyuge")
 }
 
 model DiagnosticoPrenatal {
