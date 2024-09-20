@@ -74,6 +74,42 @@ export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
 
+    if (!id || isNaN(parseInt(id))) {
+      return NextResponse.json(
+        { error: "El ID proporcionado es inválido o está ausente." },
+        { status: 400 }
+      );
+    }
+
+    // Verifica si el cónyuge existe
+    const conyugeExistente = await prisma.conyuge.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!conyugeExistente) {
+      return NextResponse.json(
+        { error: "Cónyuge no encontrado." },
+        { status: 404 }
+      );
+    }
+
+    // Verifica si hay pacientes asociados
+    const countPacientes = await prisma.paciente.count({
+      where: {
+        conyugeId: parseInt(id),
+      },
+    });
+
+    if (countPacientes > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "No se puede eliminar este cónyuge porque está asociado con otros pacientes.",
+        },
+        { status: 400 }
+      );
+    }
+
     try {
       await prisma.conyuge.delete({
         where: { id: parseInt(id) },

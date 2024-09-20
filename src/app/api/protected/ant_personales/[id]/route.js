@@ -128,6 +128,35 @@ export async function DELETE(req, { params }) {
     );
   }
 
+  // Verifica si el antecedente personal existe
+  const antecedenteExistente = await prisma.antecedentesPersonales.findUnique({
+    where: { id: parseInt(id, 10) },
+  });
+
+  if (!antecedenteExistente) {
+    return NextResponse.json(
+      { error: "Antecedente personal no encontrado." },
+      { status: 404 }
+    );
+  }
+
+  // Verifica si hay pacientes asociados
+  const countPacientes = await prisma.paciente.count({
+    where: {
+      antecedentesPersonalesId: parseInt(id, 10), // Ajusta esto según cómo esté definida la relación en tu modelo Paciente
+    },
+  });
+
+  if (countPacientes > 0) {
+    return NextResponse.json(
+      {
+        error:
+          "No se puede eliminar este antecedente personal porque está asociado con otros pacientes.",
+      },
+      { status: 400 }
+    );
+  }
+
   try {
     const antecedentePersonalEliminado =
       await prisma.antecedentesPersonales.delete({

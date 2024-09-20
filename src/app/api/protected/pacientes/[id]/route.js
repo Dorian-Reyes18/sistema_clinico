@@ -125,7 +125,10 @@ export async function DELETE(req, { params }) {
           { status: 404 }
         );
       }
-      return handleError(error, "Error al eliminar el paciente");
+      return handleError(
+        error,
+        "Error al eliminar el paciente, tiene registros asociados"
+      );
     }
   });
 }
