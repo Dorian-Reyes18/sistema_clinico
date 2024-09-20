@@ -116,7 +116,7 @@ model AntecedentesPersonales {
   pacienteId               Int
   diabetesId               Int
   sangreRhId               Int
-  fechaCreacion           DateTime @default(now())
+  fechaCreacion           DateTime  @default(now())
   licor                    Boolean
   drogas                   Boolean
   fuma                     Boolean
@@ -149,7 +149,7 @@ model EmbarazoActual {
 model AntecedentesFamiliaresDefectos {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
-  fechaCreacion           DateTime?
+  fechaCreacion           DateTime? @default(now())
   opcion                   Boolean
   descripcion              String?
   paciente                 Paciente @relation(fields: [pacienteId], references: [id])
@@ -158,7 +158,7 @@ model AntecedentesFamiliaresDefectos {
 model AntecedentesObstetricos {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
-  fechaCreacion           DateTime?
+  fechaCreacion           DateTime? @default(now())
   gesta                    String?
   parto                    String?
   aborto                   String?
