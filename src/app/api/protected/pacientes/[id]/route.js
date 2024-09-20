@@ -71,21 +71,16 @@ export async function PUT(req, { params }) {
     console.log("Datos recibidos para actualización:", data);
 
     // Validar campos
-    if (data.numeroExpediente && typeof data.numeroExpediente !== "string") {
-      return NextResponse.json(
-        { error: "El campo 'numeroExpediente' debe ser una cadena." },
-        { status: 400 }
-      );
-    }
-
-    if (data.fechaNac && isNaN(Date.parse(data.fechaNac))) {
-      return NextResponse.json(
-        {
-          error:
-            "El campo 'fechaNac' debe ser una fecha válida en formato ISO-8601.",
-        },
-        { status: 400 }
-      );
+    if (data.conyugeId) {
+      const conyuge = await prisma.conyuge.findUnique({
+        where: { id: data.conyugeId },
+      });
+      if (!conyuge) {
+        return NextResponse.json(
+          { error: "El conyuge especificado no existe." },
+          { status: 400 }
+        );
+      }
     }
 
     try {

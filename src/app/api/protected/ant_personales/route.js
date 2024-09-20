@@ -19,32 +19,40 @@ const handleRequest = async (req, operation) => {
 };
 
 // Obtener todos los antecedentes personales
-export async function GET(req) {
+export async function GET(req, { params }) {
   return handleRequest(req, async () => {
+    const { id } = params;
     try {
-      const antecedentesPersonales =
-        await prisma.antecedentesPersonales.findMany({
-          include: {
-            paciente: true,
-            tipoDiabetes: true,
-            sangreRh: true,
+      const paciente = await prisma.paciente.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          conyuge: {
+            include: {
+              sangreRh: true, // Incluye los datos de SangreRH
+            },
           },
-        });
+          silais: true, // Incluir los datos del modelo Silais
+          municipio: true, // Incluir los datos del modelo Municipio
+        },
+      });
+      if (!paciente) {
+        return NextResponse.json(
+          { error: "Paciente no encontrado" },
+          { status: 404 }
+        );
+      }
 
-      // Eliminar pacienteId, diabetesId y sangreRhId de cada antecedente
-      const antecedentesSinIds = antecedentesPersonales.map(
-        ({ pacienteId, diabetesId, sangreRhId, ...resto }) => ({
-          ...resto,
-        })
-      );
+      // Transformar los datos
+      const { silaisId, municipioId, ...resto } = paciente;
+      const pacienteTransformado = {
+        ...resto,
+        silais: paciente.silais,
+        municipio: paciente.municipio,
+      };
 
-      return NextResponse.json({ antecedentesPersonales: antecedentesSinIds });
+      return NextResponse.json(pacienteTransformado);
     } catch (error) {
-      return handleError(
-        error,
-        "Error al obtener los antecedentes personales",
-        500
-      );
+      return handleError(error, "Error al obtener el paciente");
     }
   });
 }

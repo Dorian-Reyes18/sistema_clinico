@@ -37,9 +37,22 @@ export async function GET(req) {
               sangreRh: true, // Incluye los datos de SangreRH
             },
           },
+          silais: true, // Incluir los datos del modelo Silais
+          municipio: true, // Incluir los datos del modelo Municipio
         },
       });
-      return NextResponse.json(pacientes);
+
+      // Transformar los datos para reemplazar silaisId y municipioId
+      const pacientesTransformados = pacientes.map((paciente) => {
+        const { silaisId, municipioId, ...resto } = paciente;
+        return {
+          ...resto,
+          silais: paciente.silais, // Reemplazar silaisId por el objeto silais
+          municipio: paciente.municipio, // Reemplazar municipioId por el objeto municipio
+        };
+      });
+
+      return NextResponse.json(pacientesTransformados);
     } catch (error) {
       return handleError(error, "Error al obtener los pacientes");
     }
