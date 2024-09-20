@@ -106,8 +106,9 @@ model Paciente {
   tipoDiabetes             TipoDiabetes[] 
   antecedentesFamiliaresDefectos AntecedentesFamiliaresDefectos[]
   antecedentesObstetricos  AntecedentesObstetricos[]
+  evaluacionesActuales     EvaluacionActual[] 
   conyugeId                Int?      
-  conyuge                  Conyuge? @relation("PacienteConyuge", fields: [conyugeId], references: [id]) // Establecer la relación con el conyuge
+  conyuge                  Conyuge? @relation("PacienteConyuge", fields: [conyugeId], references: [id]) 
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
   ordenQuirurgicaPostOperacion OrdenQuirurgicaPostoperacion[]
 }
@@ -195,6 +196,7 @@ model DiagnosticoPrenatal {
 
 model EvaluacionActual {
   id                       Int       @id @default(autoincrement())
+  pacienteId               Int
   tipoDiabetesId           Int @unique
   lupusEritematosoSist    Boolean?
   obesidad                Boolean?
@@ -207,6 +209,7 @@ model EvaluacionActual {
   trombofilia             Boolean?
   epilepsia               Boolean?
   observaciones           String?
+  paciente                Paciente @relation(fields: [pacienteId], references: [id])
   tipoDiabetes            TipoDiabetes @relation(fields: [tipoDiabetesId], references: [id])
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
 }

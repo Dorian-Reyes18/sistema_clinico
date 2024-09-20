@@ -34,11 +34,11 @@ export async function GET(req) {
         include: {
           conyuge: {
             include: {
-              sangreRh: true, // Incluye los datos de SangreRH
+              sangreRh: true,
             },
           },
-          silais: true, // Incluir los datos del modelo Silais
-          municipio: true, // Incluir los datos del modelo Municipio
+          silais: true,
+          municipio: true,
         },
       });
 
@@ -47,8 +47,8 @@ export async function GET(req) {
         const { silaisId, municipioId, ...resto } = paciente;
         return {
           ...resto,
-          silais: paciente.silais, // Reemplazar silaisId por el objeto silais
-          municipio: paciente.municipio, // Reemplazar municipioId por el objeto municipio
+          silais: paciente.silais,
+          municipio: paciente.municipio,
         };
       });
 
@@ -77,12 +77,15 @@ export async function POST(req) {
       domicilio,
     } = await req.json();
 
+    // Asegurarse de que numeroExpediente sea un string
+    const numeroExpedienteStr = numeroExpediente.toString();
+
     try {
       const nuevoPaciente = await prisma.paciente.create({
         data: {
           silaisId,
           municipioId,
-          numeroExpediente,
+          numeroExpediente: numeroExpedienteStr, // Convertido a string
           primerNombre,
           segundoNombre,
           primerApellido,

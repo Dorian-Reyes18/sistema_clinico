@@ -44,7 +44,7 @@ export async function GET(req, { params }) {
         include: {
           conyuge: {
             include: {
-              sangreRh: true, // Incluye los datos de SangreRH
+              sangreRh: true, 
             },
           },
         },
