@@ -71,13 +71,17 @@ model SangreRH {
 }
 
 model TipoDiabetes {
-  id                       Int       @id @default(autoincrement())
+
+  id                       Int                   @id @default(autoincrement())
+  pacienteid               Int
+  pacientes                Paciente @relation(fields: [pacienteid], references: [id])
   mellitusTipo1            Boolean
   mellitusTipo2            Boolean
   mellitusGestacional      Boolean
   ninguna                  Boolean
-  antecedentesPersonales   AntecedentesPersonales?
-  evaluacionActual         EvaluacionActual?
+  fechaDiagnostico         DateTime               @default(now())
+  antecedentesPersonales   AntecedentesPersonales[]
+  evaluacionActual   EvaluacionActual[]
 }
 
 model Paciente {
@@ -99,9 +103,10 @@ model Paciente {
   municipio                Municipio @relation(fields: [municipioId], references: [id])
   antecedentesPersonales   AntecedentesPersonales[]
   embarazoActual           EmbarazoActual[]
+  tipoDiabetes             TipoDiabetes[] 
   antecedentesFamiliaresDefectos AntecedentesFamiliaresDefectos[]
   antecedentesObstetricos  AntecedentesObstetricos[]
-  conyugeId                Int?      // Agregar este campo
+  conyugeId                Int?      
   conyuge                  Conyuge? @relation("PacienteConyuge", fields: [conyugeId], references: [id]) // Establecer la relación con el conyuge
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
   ordenQuirurgicaPostOperacion OrdenQuirurgicaPostoperacion[]
@@ -109,7 +114,7 @@ model Paciente {
 model AntecedentesPersonales {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
-  diabetesId               Int @unique
+  diabetesId               Int
   sangreRhId               Int
   fechaCreacion           DateTime @default(now())
   licor                    Boolean
@@ -123,7 +128,7 @@ model AntecedentesPersonales {
   cardiopatia              Boolean
   inmunologia              Boolean
   paciente                 Paciente @relation(fields: [pacienteId], references: [id])
-  tipoDiabetes             TipoDiabetes @relation(fields: [diabetesId], references: [id])
+  tipoDiabetes TipoDiabetes? @relation(fields: [diabetesId], references: [id])
   sangreRh                 SangreRH @relation(fields: [sangreRhId], references: [id])
 }
 
