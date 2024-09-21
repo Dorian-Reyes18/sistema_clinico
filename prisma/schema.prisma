@@ -179,18 +179,19 @@ model Conyuge {
 
 model DiagnosticoPrenatal {
   id                       Int       @id @default(autoincrement())
-  categoriaId              Int
-  tipoDefectoId            Int
-  tipoCirugiaRealizada     String
+  cirugiaIntraId           Int     
+  categoriaId              Int       
+  tipoDefectoId            Int     
+  tipoCirugiaRealizada     String  
   estudioGen               Boolean?
   resultadoEstGen          String?
   embarazoUnico            Boolean?
   categoria                Categoria @relation(fields: [categoriaId], references: [id])
   tipoDefecto              TipoDefecto @relation(fields: [tipoDefectoId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
-  intrauterinaPercutanea   IntrauterinaPercutanea[] @relation("DiagnosticoPrenatal_IntrauterinaPercutanea")
-  intrauterinaEndoscopica  IntrauterinaEndoscopica[] @relation("DiagnosticoPrenatal_IntrauterinaEndoscopica")
-  intrauterinaAbierta      IntrauterinaAbierta[] @relation("DiagnosticoPrenatal_IntrauterinaAbierta")
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina @relation(fields: [cirugiaIntraId], references: [id])
+  intrauterinaPercutanea   IntrauterinaPercutanea?
+  intrauterinaEndoscopica  IntrauterinaEndoscopica?
+  intrauterinaAbierta      IntrauterinaAbierta?
   ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion?
 }
 
@@ -211,7 +212,7 @@ model EvaluacionActual {
   observaciones           String?
   paciente                Paciente @relation(fields: [pacienteId], references: [id])
   tipoDiabetes            TipoDiabetes @relation(fields: [tipoDiabetesId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina[]
+  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina?
 }
 
 model OrdenQuirurgicaIntrauterina {
@@ -219,24 +220,19 @@ model OrdenQuirurgicaIntrauterina {
   pacienteId               Int
   fechaDeCreacion         DateTime?  @default(now())
   teniaDiagnostico        Boolean?
-  evaluacionActualId      Int?
-  diagnosticoPrenatalId   Int
+  evaluacionActualId      Int?      @unique
   etapa                   String?
   complicacionesQuirurgicas String?
   estado                  Boolean?
   paciente                Paciente @relation(fields: [pacienteId], references: [id])
   evaluacionActual        EvaluacionActual? @relation(fields: [evaluacionActualId], references: [id])
-  diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
-  ordenQuirurgicaIntrauterinaId Int?  
-  intrauterinaPercutanea  IntrauterinaPercutanea ?
-  intrauterinaEndoscopica IntrauterinaEndoscopica?
-  intrauterinaAbierta     IntrauterinaAbierta?
+  diagnosticoPrenatal     DiagnosticoPrenatal[]
   resultadosPerinatales   ResultadosPerinatales[]
 }
 
 model IntrauterinaPercutanea {
   id                       Int       @id @default(autoincrement())
-  diagnosticoPrenatalId    Int
+  diagnosticoPrenatalId    Int       @unique
   ubicacionPlacentariaId   String
   ablacionDeVasoTumoral   Boolean?
   ablacionDeVasoNutricioSistemico Boolean?
@@ -252,14 +248,13 @@ model IntrauterinaPercutanea {
   frecuenciaCardiacaFetalFinalizacion Float?
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
-  diagnosticoPrenatal     DiagnosticoPrenatal @relation("DiagnosticoPrenatal_IntrauterinaPercutanea", fields: [diagnosticoPrenatalId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina? @relation(fields: [percutaneaId], references: [id])
+  diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
   percutaneaId Int @unique
 }
 
 model IntrauterinaEndoscopica {
   id                       Int       @id @default(autoincrement())
-  diagnosticoPrenatalId    Int
+  diagnosticoPrenatalId    Int       @unique
   ubicacionPlacentariaId   String
   laserDeAnastomosisPlacentaria Boolean?
   coagulacionBipolarDeCordoneUmbilical Boolean?
@@ -281,15 +276,15 @@ model IntrauterinaEndoscopica {
   frecuenciaCardiacaFetalFinalizacion Float?
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
-  diagnosticoPrenatal     DiagnosticoPrenatal @relation("DiagnosticoPrenatal_IntrauterinaEndoscopica", fields: [diagnosticoPrenatalId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina? @relation(fields: [intrauterinaId], references: [id])
+  diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
   intrauterinaId Int @unique
 }
 
 model IntrauterinaAbierta {
   id                       Int       @id @default(autoincrement())
-  diagnosticoPrenatalId    Int
+  diagnosticoPrenatalId    Int       @unique
   ubicacionPlacentariaId   String
+  sangreEstimado         Int?
   cierreDeMielomeningocele Boolean?
   derivacionVentriculoamniotica Boolean?
   cierreDeEncefalocele     Boolean?
@@ -308,18 +303,16 @@ model IntrauterinaAbierta {
   nivelFuncional          String?
   ilaInicialDeLiquidoAmniotico String?
   ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico Boolean?
-  sangreEstimado         Int?
+  intrauterinaId Int @unique
   frecuenciaCardiacaFetalFinalizacion Float?
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
-  diagnosticoPrenatal     DiagnosticoPrenatal @relation("DiagnosticoPrenatal_IntrauterinaAbierta", fields: [diagnosticoPrenatalId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina? @relation(fields: [intrauterinaId], references: [id])
-  intrauterinaId Int @unique
+  diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
 }
 
 model ResultadosPerinatales {
   id                       Int       @id @default(autoincrement())
-  ordenQuirurgicaId        Int
+  ordenQuirurgicaId        Int        
   tipoDeParto              String? 
   fechaNac                 DateTime?
   edadFinalizacion         String?
