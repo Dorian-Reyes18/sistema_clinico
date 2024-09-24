@@ -283,7 +283,7 @@ model IntrauterinaEndoscopica {
 model IntrauterinaAbierta {
   id                       Int       @id @default(autoincrement())
   diagnosticoPrenatalId    Int       @unique
-  ubicacionPlacentariaId   String
+  ubicacionPlacentaria   String?
   sangreEstimado         Int?
   cierreDeMielomeningocele Boolean?
   derivacionVentriculoamniotica Boolean?
@@ -303,7 +303,6 @@ model IntrauterinaAbierta {
   nivelFuncional          String?
   ilaInicialDeLiquidoAmniotico String?
   ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico Boolean?
-  intrauterinaId Int @unique
   frecuenciaCardiacaFetalFinalizacion Float?
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
