@@ -233,11 +233,11 @@ model OrdenQuirurgicaIntrauterina {
 model IntrauterinaPercutanea {
   id                       Int       @id @default(autoincrement())
   diagnosticoPrenatalId    Int       @unique
-  ubicacionPlacentariaId   String
+  ubicacionPlacentaria   String
   ablacionDeVasoTumoral   Boolean?
   ablacionDeVasoNutricioSistemico Boolean?
   ablacionDeVasoNutricioFetal Boolean?
-  fechaCirugia            DateTime?
+  fechaCirugia            DateTime? 
   horaInicioAnestesia     DateTime?
   tipoAnestesiaId         String?
   complicacionesAnestesicas String?
@@ -249,13 +249,12 @@ model IntrauterinaPercutanea {
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
   diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
-  percutaneaId Int @unique
 }
 
 model IntrauterinaEndoscopica {
   id                       Int       @id @default(autoincrement())
   diagnosticoPrenatalId    Int       @unique
-  ubicacionPlacentariaId   String
+  ubicacionPlacentaria   String
   laserDeAnastomosisPlacentaria Boolean?
   coagulacionBipolarDeCordoneUmbilical Boolean?
   liberacionDeBandasAmnioticas Boolean?
@@ -277,7 +276,6 @@ model IntrauterinaEndoscopica {
   complicacionesQuirurgicas String?
   horaFinalizacionCirugia DateTime?
   diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoPrenatalId], references: [id])
-  intrauterinaId Int @unique
 }
 
 model IntrauterinaAbierta {
