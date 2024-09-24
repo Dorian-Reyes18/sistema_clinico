@@ -192,7 +192,7 @@ model DiagnosticoPrenatal {
   intrauterinaPercutanea   IntrauterinaPercutanea?
   intrauterinaEndoscopica  IntrauterinaEndoscopica?
   intrauterinaAbierta      IntrauterinaAbierta?
-  ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion?
+  ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion[]
 }
 
 model EvaluacionActual {
@@ -237,7 +237,7 @@ model IntrauterinaPercutanea {
   ablacionDeVasoTumoral   Boolean?
   ablacionDeVasoNutricioSistemico Boolean?
   ablacionDeVasoNutricioFetal Boolean?
-  fechaCirugia            DateTime? 
+  fechaCirugia            DateTime?
   horaInicioAnestesia     DateTime?
   tipoAnestesiaId         String?
   complicacionesAnestesicas String?
@@ -323,7 +323,7 @@ model OrdenQuirurgicaPostoperacion {
   id                      Int       @id @default(autoincrement())
   fechaDeCreacion         DateTime?  @default(now())
   pacienteId              Int
-  diagnosticoId           Int @unique 
+  diagnosticoId           Int 
   doctorId                Int
   etapa                   String?
   complicaciones          String?
