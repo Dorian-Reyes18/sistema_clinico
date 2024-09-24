@@ -327,8 +327,8 @@ model OrdenQuirurgicaPostoperacion {
   doctorId                Int
   etapa                   String?
   complicaciones          String?
-  cirugiaNeonatal         CirugiaNeonatal? 
-  cirugiaNerviosoCentral CirugiaNerviosoCentral?
+  cirugiaNeonatal         CirugiaNeonatal[]
+  cirugiaNerviosoCentral CirugiaNerviosoCentral[]
   fechaPostoperatorio     DateTime?
   paciente                Paciente @relation(fields: [pacienteId], references: [id])
   diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoId], references: [id])
@@ -337,7 +337,7 @@ model OrdenQuirurgicaPostoperacion {
 
 model CirugiaNeonatal {
   id Int @id @default(autoincrement())
-  cirugiaId Int @unique
+  cirugiaId Int
   minimaInvasion Boolean
   cirugiaConvencional Boolean
   malformacionesBroncoPulmonares Boolean
@@ -360,7 +360,7 @@ model CirugiaNeonatal {
 
 model CirugiaNerviosoCentral {
   id                                   Int     @id @default(autoincrement())
-  cirugiaId                            Int      @unique
+  cirugiaId                            Int      
   mielomeningocele                     Boolean
   meningocele                          Boolean
   raquisquisis                         Boolean
