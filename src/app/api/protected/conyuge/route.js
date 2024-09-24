@@ -31,9 +31,8 @@ export async function GET(req) {
   return handleRequest(req, async () => {
     const conyuges = await prisma.conyuge.findMany({
       include: {
-        sangreRh: true, // Incluye los detalles del tipo de sangre
-        pacientes: true, // Incluye los detalles de los pacientes relacionados
-        // Aquí puedes incluir cualquier otra relación del modelo Conyuge
+        sangreRh: true,
+        pacientes: true,
       },
     });
     return NextResponse.json(conyuges);
@@ -46,14 +45,15 @@ export async function POST(req) {
     const data = await req.json();
 
     // Validar que los campos requeridos existan
-    if (!data.sangreRhId || !data.pacienteId) {
+    if (!data.sangreRhId) {
       return NextResponse.json(
-        { error: "Los campos 'sangreRhId' y 'pacienteId' son requeridos." },
+        { error: "El campo 'sangreRhId' es requerido." },
         { status: 400 }
       );
     }
 
     try {
+      // Crear el cónyuge sin depender de un paciente
       const conyuge = await prisma.conyuge.create({
         data,
       });

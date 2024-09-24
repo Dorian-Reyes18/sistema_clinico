@@ -75,9 +75,9 @@ export async function POST(req) {
       telefono2,
       fechaIngreso,
       domicilio,
+      conyugeId,
     } = await req.json();
 
-    // Asegurarse de que numeroExpediente sea un string
     const numeroExpedienteStr = numeroExpediente.toString();
 
     try {
@@ -85,7 +85,7 @@ export async function POST(req) {
         data: {
           silaisId,
           municipioId,
-          numeroExpediente: numeroExpedienteStr, // Convertido a string
+          numeroExpediente: numeroExpedienteStr,
           primerNombre,
           segundoNombre,
           primerApellido,
@@ -96,17 +96,36 @@ export async function POST(req) {
           telefono2,
           fechaIngreso,
           domicilio,
+          conyugeId: conyugeId ? conyugeId : undefined, // Cambiado aquí
+        },
+        include: {
+          silais: true,
+          municipio: true,
+          conyuge: true,
         },
       });
+
+      const { silaisId: _, municipioId: __, ...pacienteSinIds } = nuevoPaciente;
+
       return NextResponse.json(
         {
           message: "Paciente creado exitosamente",
-          paciente: nuevoPaciente,
+          paciente: pacienteSinIds,
         },
         { status: 201 }
       );
     } catch (error) {
-      return handleError(error, "Error al crear el paciente");
+      // Detalles del error en la consola
+      console.error("Error al crear el paciente:", error);
+
+      // Mensaje amigable para el JSON
+      return NextResponse.json(
+        {
+          error:
+            "No se pudo crear el paciente. Verifique los datos proporcionados.",
+        },
+        { status: 400 } // O el código de estado que consideres apropiado
+      );
     }
   });
 }

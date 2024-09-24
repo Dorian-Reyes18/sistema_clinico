@@ -44,18 +44,29 @@ export async function GET(req, { params }) {
         include: {
           conyuge: {
             include: {
-              sangreRh: true, 
+              sangreRh: true,
             },
           },
+          silais: true,
+          municipio: true,
         },
       });
+
       if (!paciente) {
         return NextResponse.json(
           { error: "Paciente no encontrado" },
           { status: 404 }
         );
       }
-      return NextResponse.json(paciente);
+
+      // Transformar los datos para reemplazar silaisId y municipioId
+      const { silaisId, municipioId, ...resto } = paciente;
+
+      return NextResponse.json({
+        ...resto,
+        silais: paciente.silais,
+        municipio: paciente.municipio,
+      });
     } catch (error) {
       return handleError(error, "Error al obtener el paciente");
     }
