@@ -325,7 +325,7 @@ model OrdenQuirurgicaPostoperacion {
   tipoCirugia             String? //Puede ser Neonatal o Nerviosocentral
   pacienteId              Int
   doctorId                Int //Es el usuario asociado
-  estado                  Boolean
+  estado                  Boolean?
   fechaDeIntervencion     DateTime?
   cirugiaNeonatal         CirugiaNeonatal[]
   cirugiaNerviosoCentral  CirugiaNerviosoCentral[]
@@ -360,34 +360,34 @@ model CirugiaNeonatal {
 model CirugiaNerviosoCentral {
   id                                   Int     @id @default(autoincrement())
   cirugiaId                            Int      
-  mielomeningocele                     Boolean
-  meningocele                          Boolean
-  raquisquisis                         Boolean
-  mieloquisis                          Boolean
-  mielocistocele                       Boolean
-  cierreReconstruccionTuboNeural       Boolean
-  senoDermico                          Boolean
-  lipomaIntramedularSacro              Boolean
-  diasteamtomelia                      Boolean
-  dilomielia                           Boolean
-  colaDeFauno                          Boolean
-  medulaAnclada                        Boolean
-  cierreReconstruccionEncefalocele     Boolean
-  quisteNeuroenterico                  Boolean
-  cierreReconsCranioraquisquisis       Boolean
-  colocacionSistemasDerivativosProte   Boolean
-  endoscopiaTranscraneal               Boolean
-  lavadoVentricularEndoscopico         Boolean
-  puncionTranscraneal                  Boolean
-  colocacionDeVentriculostomia         Boolean
-  LavadoVentricularTranscraneal        Boolean
-  derivacionSubduralExterna            Boolean
-  derivacionSubDuroperiotoneal         Boolean
-  derivacionSubDuroperiotonealBilateral Boolean
-  reseccionQuistesAracnoideos          Boolean
-  fenestracionDeQuistes                Boolean
-  derivacionQuiste               Boolean
-  reseccionTumoresCongenitos               Boolean
+  mielomeningocele                     Boolean?
+  meningocele                          Boolean?
+  raquisquisis                         Boolean?
+  mieloquisis                          Boolean?
+  mielocistocele                       Boolean?
+  cierreReconstruccionTuboNeural       Boolean?
+  senoDermico                          Boolean?
+  lipomaIntramedularSacro              Boolean?
+  diasteamtomelia                      Boolean?
+  dilomielia                           Boolean?
+  colaDeFauno                          Boolean?
+  medulaAnclada                        Boolean?
+  cierreReconstruccionEncefalocele     Boolean?
+  quisteNeuroenterico                  Boolean?
+  cierreReconsCranioraquisquisis       Boolean?
+  colocacionSistemasDerivativosProte   Boolean?
+  endoscopiaTranscraneal               Boolean?
+  lavadoVentricularEndoscopico         Boolean?
+  puncionTranscraneal                  Boolean?
+  colocacionDeVentriculostomia         Boolean?
+  LavadoVentricularTranscraneal        Boolean?
+  derivacionSubduralExterna            Boolean?
+  derivacionSubDuroperiotoneal         Boolean?
+  reseccionQuistesAracnoideos          Boolean?
+  fenestracionDeQuistes                Boolean?
+  derivacionQuiste                     Boolean?
+  reseccionTumoresCongenitos           Boolean?
+  derivacionSubDuroperiotonealBilateral Boolean?
   otros                                String?
   ordenQuirurgicaPostoperacion         OrdenQuirurgicaPostoperacion @relation(fields: [cirugiaId], references: [id])
 }
