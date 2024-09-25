@@ -9,15 +9,15 @@ const validateId = (id) => {
 };
 
 // Manejo de errores
-const handleError = (error, defaultMessage, status = 500) => {
-  console.error(defaultMessage, error);
+const handleError = (error, message, status = 500) => {
+  console.error(message, error);
   if (error.code === "P2025") {
     return NextResponse.json(
       { error: "Registro no encontrado." },
       { status: 404 }
     );
   }
-  return NextResponse.json({ error: defaultMessage }, { status });
+  return NextResponse.json({ error: message }, { status });
 };
 
 // Manejo de la solicitud
@@ -47,8 +47,7 @@ export async function GET(req, { params }) {
         where: { id: validId },
         include: {
           paciente: true,
-          diagnosticoPrenatal: true,
-          doctor: true, // Se refiere a Usuarios
+          doctor: true,
         },
       });
 
@@ -59,7 +58,10 @@ export async function GET(req, { params }) {
         );
       }
 
-      return NextResponse.json(registro);
+      // Excluir cirugiaNeonatal y cirugiaNerviosoCentral en la respuesta
+      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } = registro;
+
+      return NextResponse.json(resto);
     } catch (error) {
       return handleError(
         error,
@@ -78,7 +80,18 @@ export async function PUT(req, { params }) {
       return NextResponse.json({ error: "ID no válido." }, { status: 400 });
     }
 
-    const data = await req.json();
+    let data;
+    try {
+      data = await req.json();
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error:
+            "Cuerpo de la solicitud inválido. Asegúrese de que el formato sea JSON.",
+        },
+        { status: 400 }
+      );
+    }
 
     try {
       const registro = await prisma.ordenQuirurgicaPostoperacion.update({
@@ -86,15 +99,17 @@ export async function PUT(req, { params }) {
         data,
         include: {
           paciente: true,
-          diagnosticoPrenatal: true,
-          doctor: true, // Se refiere a Usuarios
+          doctor: true,
         },
       });
+
+      // Excluir cirugiaNeonatal y cirugiaNerviosoCentral en la respuesta
+      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } = registro;
 
       return NextResponse.json({
         message:
           "Registro de Orden Quirúrgica Postoperatoria actualizado exitosamente",
-        registro,
+        registro: resto,
       });
     } catch (error) {
       return handleError(

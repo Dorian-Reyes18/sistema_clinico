@@ -2,16 +2,22 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
+// Función para validar el ID
+const validateId = (id) => {
+  const parsedId = parseInt(id);
+  return !isNaN(parsedId) && parsedId > 0 ? parsedId : false;
+};
+
 // Manejo de errores
-const handleError = (error, message, status = 500) => {
-  console.error(message, error);
+const handleError = (error, defaultMessage, status = 500) => {
+  console.error(defaultMessage, error);
   if (error.code === "P2025") {
     return NextResponse.json(
       { error: "Registro no encontrado." },
       { status: 404 }
     );
   }
-  return NextResponse.json({ error: message }, { status });
+  return NextResponse.json({ error: defaultMessage }, { status });
 };
 
 // Manejo de la solicitud
@@ -33,8 +39,8 @@ export async function GET(req) {
       const registros = await prisma.ordenQuirurgicaPostoperacion.findMany({
         include: {
           paciente: true,
-          diagnosticoPrenatal: true,
           doctor: true, // Se refiere a Usuarios
+          // Excluir cirugiaNeonatal y cirugiaNerviosoCentral
         },
       });
 
@@ -65,7 +71,12 @@ export async function POST(req) {
     }
 
     // Validar campos necesarios
-    const requiredFields = ["pacienteId", "diagnosticoId", "doctorId"];
+    const requiredFields = [
+      "pacienteId",
+      "doctorId",
+      "tipoCirugia",
+      "fechaDeIntervencion",
+    ];
     const missingFields = requiredFields.filter((field) => !data[field]);
 
     if (missingFields.length > 0) {
@@ -76,18 +87,14 @@ export async function POST(req) {
     }
 
     // Verificar existencia de IDs antes de crear
-    const [paciente, diagnostico, doctor] = await Promise.all([
+    const [paciente, doctor] = await Promise.all([
       prisma.paciente.findUnique({ where: { id: data.pacienteId } }),
-      prisma.diagnosticoPrenatal.findUnique({
-        where: { id: data.diagnosticoId },
-      }),
       prisma.usuarios.findUnique({ where: { id: data.doctorId } }), // Cambiado a usuarios
     ]);
 
     // Manejar errores de ID no encontrados
     const idErrors = [];
     if (!paciente) idErrors.push("El paciente no existe.");
-    if (!diagnostico) idErrors.push("El diagnóstico no existe.");
     if (!doctor) idErrors.push("El doctor no existe."); // Cambiado para reflejar que es un usuario
 
     if (idErrors.length) {
@@ -99,15 +106,19 @@ export async function POST(req) {
         data,
         include: {
           paciente: true,
-          diagnosticoPrenatal: true,
           doctor: true, // Se refiere a Usuarios
+          // Excluir cirugiaNeonatal y cirugiaNerviosoCentral
         },
       });
+
+      // Excluir cirugiaNeonatal y cirugiaNerviosoCentral en la respuesta
+      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } =
+        nuevoRegistro;
 
       return NextResponse.json({
         message:
           "Registro de Orden Quirúrgica Postoperatoria creado exitosamente",
-        registro: nuevoRegistro,
+        registro: resto,
       });
     } catch (error) {
       return handleError(
