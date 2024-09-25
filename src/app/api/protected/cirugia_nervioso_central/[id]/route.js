@@ -128,9 +128,16 @@ export async function PUT(req, { params }) {
       "colocacionSistemasDerivativosProtesicos",
       "endoscopiaTranscraneal",
       "lavadoVentricularEndoscopico",
-      "derivacionSubdural",
+      "puncionTranscraneal",
+      "colocacionDeVentriculostomia",
+      "lavadoVentricularTranscraneal",
+      "derivacionSubduralExterna",
+      "derivacionSubDuroperiotoneal",
       "reseccionQuistesAracnoideos",
-      "derivacionHidrocefalia",
+      "fenestracionDeQuistes",
+      "derivacionQuiste",
+      "reseccionTumoresCongenitos",
+      "derivacionSubDuroperiotonealBilateral",
     ];
 
     for (const field of booleanFields) {
@@ -142,8 +149,16 @@ export async function PUT(req, { params }) {
       }
     }
 
+    // Validar el campo 'otros'
+    if (data.otros !== undefined && typeof data.otros !== "string") {
+      return NextResponse.json(
+        { error: `El campo 'otros' debe ser un string.` },
+        { status: 400 }
+      );
+    }
+
     try {
-      const updatedRegistro = await prisma.cirugiaNerviosoCentral.update({
+      const registroActualizado = await prisma.cirugiaNerviosoCentral.update({
         where: { id: Number(id) },
         data,
         include: {
@@ -154,7 +169,7 @@ export async function PUT(req, { params }) {
       return NextResponse.json({
         message:
           "Registro de Cirugía Nervioso Central actualizado exitosamente",
-        registro: updatedRegistro,
+        registro: registroActualizado,
       });
     } catch (error) {
       return handleError(
@@ -178,23 +193,13 @@ export async function DELETE(req, { params }) {
     }
 
     try {
-      const registroExistente = await prisma.cirugiaNerviosoCentral.findUnique({
-        where: { id: Number(id) },
-      });
-
-      if (!registroExistente) {
-        return NextResponse.json(
-          { error: "Registro no encontrado." },
-          { status: 404 }
-        );
-      }
-
-      await prisma.cirugiaNerviosoCentral.delete({
+      const registroEliminado = await prisma.cirugiaNerviosoCentral.delete({
         where: { id: Number(id) },
       });
 
       return NextResponse.json({
         message: "Registro de Cirugía Nervioso Central eliminado exitosamente",
+        registro: registroEliminado,
       });
     } catch (error) {
       return handleError(

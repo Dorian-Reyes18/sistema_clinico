@@ -107,12 +107,19 @@ export async function POST(req) {
       "medulaAnclada",
       "cierreReconstruccionEncefalocele",
       "quisteNeuroenterico",
-      "colocacionSistemasDerivativosProtesicos",
+      "colocacionSistemasDerivativosProtesicos", // Corrección aquí
       "endoscopiaTranscraneal",
       "lavadoVentricularEndoscopico",
-      "derivacionSubdural",
+      "puncionTranscraneal",
+      "colocacionDeVentriculostomia",
+      "lavadoVentricularTranscraneal",
+      "derivacionSubduralExterna",
+      "derivacionSubDuroperiotoneal",
       "reseccionQuistesAracnoideos",
-      "derivacionHidrocefalia",
+      "fenestracionDeQuistes",
+      "derivacionQuiste",
+      "reseccionTumoresCongenitos",
+      "derivacionSubDuroperiotonealBilateral",
     ];
 
     for (const field of booleanFields) {
@@ -122,6 +129,14 @@ export async function POST(req) {
           { status: 400 }
         );
       }
+    }
+
+    // Validar el campo 'otros'
+    if (data.otros !== undefined && typeof data.otros !== "string") {
+      return NextResponse.json(
+        { error: `El campo 'otros' debe ser un string.` },
+        { status: 400 }
+      );
     }
 
     try {
