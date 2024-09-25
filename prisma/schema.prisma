@@ -193,7 +193,6 @@ model DiagnosticoPrenatal {
   intrauterinaPercutanea   IntrauterinaPercutanea?
   intrauterinaEndoscopica  IntrauterinaEndoscopica?
   intrauterinaAbierta      IntrauterinaAbierta?
-  ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion[]
 }
 
 model EvaluacionActual {
@@ -323,16 +322,14 @@ model ResultadosPerinatales {
 model OrdenQuirurgicaPostoperacion {
   id                      Int       @id @default(autoincrement())
   fechaDeCreacion         DateTime?  @default(now())
+  tipoCirugia             String? //Puede ser Neonatal o Nerviosocentral
   pacienteId              Int
-  diagnosticoId           Int 
-  doctorId                Int
-  etapa                   String?
-  complicaciones          String?
+  doctorId                Int //Es el usuario asociado
+  estado                  Boolean
+  fechaDeIntervencion     DateTime?
   cirugiaNeonatal         CirugiaNeonatal[]
-  cirugiaNerviosoCentral CirugiaNerviosoCentral[]
-  fechaPostoperatorio     DateTime?
+  cirugiaNerviosoCentral  CirugiaNerviosoCentral[]
   paciente                Paciente @relation(fields: [pacienteId], references: [id])
-  diagnosticoPrenatal     DiagnosticoPrenatal @relation(fields: [diagnosticoId], references: [id])
   doctor                  Usuarios @relation(fields: [doctorId], references: [id])
 }
 
@@ -356,6 +353,7 @@ model CirugiaNeonatal {
   defectosParedAbdominalGastrosquisis Boolean
   defectosParedabdominalOnfalocele Boolean
   tumorDeOvario Boolean
+  Otros String?
   ordenQuirurgicaPostoperacion OrdenQuirurgicaPostoperacion @relation(fields: [cirugiaId], references: [id])
 }
 
@@ -376,12 +374,20 @@ model CirugiaNerviosoCentral {
   medulaAnclada                        Boolean
   cierreReconstruccionEncefalocele     Boolean
   quisteNeuroenterico                  Boolean
-  colocacionSistemasDerivativosProtesicos Boolean
+  cierreReconsCranioraquisquisis       Boolean
+  colocacionSistemasDerivativosProte   Boolean
   endoscopiaTranscraneal               Boolean
   lavadoVentricularEndoscopico         Boolean
-  derivacionSubdural                   Boolean
+  puncionTranscraneal                  Boolean
+  colocacionDeVentriculostomia         Boolean
+  LavadoVentricularTranscraneal        Boolean
+  derivacionSubduralExterna            Boolean
+  derivacionSubDuroperiotoneal         Boolean
+  derivacionSubDuroperiotonealBilateral Boolean
   reseccionQuistesAracnoideos          Boolean
-  derivacionHidrocefalia               Boolean
-  otras                                String?
+  fenestracionDeQuistes                Boolean
+  derivacionQuiste               Boolean
+  reseccionTumoresCongenitos               Boolean
+  otros                                String?
   ordenQuirurgicaPostoperacion         OrdenQuirurgicaPostoperacion @relation(fields: [cirugiaId], references: [id])
 }
