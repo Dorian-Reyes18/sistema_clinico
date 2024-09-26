@@ -75,7 +75,7 @@ const Sidebar = () => {
       >
         <Menu.Item key="1" icon={<HomeOutlined />}>
           <Link href="/" passHref>
-            {collapsed ? null : "Inicio"}
+            {collapsed ? null : "General"}
           </Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<MedicineBoxOutlined />}>

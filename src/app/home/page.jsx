@@ -1,12 +1,13 @@
 "use client";
 
-import { Spin } from "antd";
+import { useAuth } from "../hooks/authContext"; // Asegúrate de que la ruta sea correcta
 import Layout from "../components/layout";
-import useAuth from "../hooks/useAuth"; 
+import { Spin } from "antd";
 
 const HomePage = () => {
-  const { user, loading, error } = useAuth(); 
+  const { user, loading, error } = useAuth(); // Usamos el hook useAuth
 
+  // Mientras se carga, mostramos un spinner
   if (loading) {
     return (
       <div
@@ -24,25 +25,34 @@ const HomePage = () => {
     );
   }
 
+  // Manejo de errores
   if (error) {
-    return <p style={{ textAlign: "center" }}>{error}</p>;
+    return (
+      <Layout>
+        <p style={{ textAlign: "center", color: "red" }}>
+          {error} {/* Muestra el mensaje de error */}
+        </p>
+      </Layout>
+    );
   }
 
   if (!user) {
     return (
-      <p style={{ textAlign: "center" }}>
-        No has iniciado sesión. Por favor, inicia sesión.
-      </p>
+      <Layout>
+        <p style={{ textAlign: "center" }}>
+          No has iniciado sesión. Por favor, inicia sesión.
+        </p>
+      </Layout>
     );
   }
 
   return (
     <Layout>
       <div>
-        <h1>Bienvenido, {user.username}!</h1>
-        <p>ID: {user.id}</p>
-        <p>Teléfono: {user.phone}</p>
-        <p>Fecha de expiración: {new Date(user.exp * 1000).toLocaleString()}</p>
+        <h1>Bienvenido, {user.nombreYApellido}!</h1> <p>ID: {user.id}</p>
+        <p>Usuario: {user.usuario}</p>
+        <p>Teléfono: {user.telefono}</p>
+        <p>Rol: {user.rol.nombreRol}</p>
       </div>
     </Layout>
   );
