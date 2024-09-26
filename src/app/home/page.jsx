@@ -1,37 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import jwt from "jsonwebtoken";
-import Layout from "../components/layout";
 import { Spin } from "antd";
+import Layout from "../components/layout";
+import useAuth from "../hooks/useAuth"; 
 
 const HomePage = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const cookies = document.cookie.split("; ");
-    const tokenCookie = cookies.find((row) => row.startsWith("token="));
-    const token = tokenCookie ? tokenCookie.split("=")[1] : null;
-
-    if (token) {
-      try {
-        const decodedToken = jwt.decode(token);
-
-        if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          setUser(decodedToken);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Error al decodificar el token:", error);
-        setUser(null);
-      }
-    } else {
-      setUser(null);
-    }
-    setLoading(false);
-  }, []);
+  const { user, loading, error } = useAuth(); 
 
   if (loading) {
     return (
@@ -45,9 +19,13 @@ const HomePage = () => {
           alignItems: "center",
         }}
       >
-        <Spin size="large" className="custom-spinner" /> {/* Spinner rosado */}
+        <Spin size="large" className="custom-spinner" />
       </div>
     );
+  }
+
+  if (error) {
+    return <p style={{ textAlign: "center" }}>{error}</p>;
   }
 
   if (!user) {
