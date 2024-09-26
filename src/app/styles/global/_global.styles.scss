@@ -1,4 +1,5 @@
 body {
+  color: $color-letra-gris;
   h1,
   h2,
   h3,
@@ -7,17 +8,42 @@ body {
   strong {
     font-family: $montserrat-bold;
   }
+
+  p,
+  span {
+    font-family: $montserrat-regular;
+  }
+  form {
+    font-family: $montserrat-regular;
+  }
   .form-control {
-    width: 200px;
-    border-radius: 20px;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    -ms-border-radius: 20px;
-    -o-border-radius: 20px;
+    border-radius: 23px;
+    width: 255px;
 
     &:focus {
       box-shadow: $color-shadow-button;
       border-color: $color-border-button;
     }
+  }
+}
+
+.btn {
+  width: fit-content;
+  padding: 8px 25px;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.btn-rosa {
+  background-color: $color-rosa !important;
+  border-color: $color-rosa !important;
+  &:hover {
+    background-color: $color-rosa-oscuro !important;
+    border-color: $color-rosa-oscuro !important;
+  }
+  &:focus-visible {
+    box-shadow: $color-shadow-button;
   }
 }

@@ -40,30 +40,37 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin}>
-      <div className="form-group">
-        <label>Teléfono:</label>
+      <div className="form-group ">
+        <label>
+          <strong style={{ fontSize: 14 }}>Teléfono:</strong>
+        </label>
         <input
           type="text"
           value={telefono}
           onChange={(e) => setTelefono(e.target.value)}
           required
           className="form-control"
+          placeholder="Escriba su teléfono"
         />
       </div>
       <div>
-        <label>Contraseña:</label>
+        <label>
+          {" "}
+          <strong style={{ fontSize: 14 }}>Contraseña:</strong>
+        </label>
         <input
           type="password"
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
           required
           className="form-control"
+          placeholder="Escriba su contraseña"
         />
       </div>
-      <button className="btn btn-primary" type="submit">
-        Iniciar Sesión
+      <button className="btn btn-primary btn-rosa" type="submit">
+        <strong>Iniciar Sesión</strong>
       </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+      {error && <p style={{ color: "red", fontSize: 14 }}>{error}</p>}{" "}
       {/* Muestra mensaje de error */}
     </form>
   );

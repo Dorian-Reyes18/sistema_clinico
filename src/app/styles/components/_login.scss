@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("../../../../public/images/login/image 2.png");
+  background-image: url("/images/login/bg-woman.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -29,10 +29,30 @@
 
       .content {
         text-align: center;
+
+        img {
+          width: 64px;
+        }
       }
     }
     .col-rg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
       width: 50%;
+      .cont-login {
+        form {
+          flex-direction: column;
+          align-items: center;
+          display: flex;
+          gap: 20px;
+
+          label {
+            margin-bottom: 6px;
+          }
+        }
+      }
     }
   }
 }
