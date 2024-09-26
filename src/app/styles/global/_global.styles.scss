@@ -54,4 +54,15 @@ html {
   .custom-spinner .ant-spin-dot {
     color: pink;
   }
+
+  /* sidebar.css */
+  .ant-menu .ant-menu-item,
+  .ant-menu .ant-menu-submenu,
+  .ant-menu .ant-menu-submenu-title {
+    border-radius: 23px;
+    -webkit-border-radius: 23px;
+    -moz-border-radius: 23px;
+    -ms-border-radius: 23px;
+    -o-border-radius: 23px;
+  }
 }
