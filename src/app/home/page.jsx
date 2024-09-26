@@ -61,7 +61,6 @@ const HomePage = () => {
   return (
     <Layout>
       <div>
-        <h1>Bienvenido a mi Dashboard</h1>
         <h1>Bienvenido, {user.username}!</h1>
         <p>ID: {user.id}</p>
         <p>Teléfono: {user.phone}</p>

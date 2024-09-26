@@ -1,5 +1,6 @@
+import IconLogOut from "@images/logouticon.svg";
 import React, { useState } from "react";
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, message } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -7,15 +8,22 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   MedicineBoxOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LogoClinica from "@images/logo.svg";
-import LogoutButton from "../components/LogoutButton";
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    message.success("Sesión cerrada correctamente");
+    router.push("/login");
+  };
 
   const toggleMenu = () => {
     setCollapsed(!collapsed);
@@ -34,6 +42,7 @@ const Sidebar = () => {
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
       </div>
+
       <div
         style={{
           display: "flex",
@@ -45,15 +54,21 @@ const Sidebar = () => {
       >
         <LogoClinica style={{ minWidth: 20 }} />
       </div>
+
       <Menu
         theme="dark"
         mode="inline"
         defaultSelectedKeys={["1"]}
-        style={{ position: "relative" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          height: "calc(100% - 180px)",
+        }}
       >
         <Menu.Item key="1" icon={<HomeOutlined />}>
           <Link href="/" passHref>
-            {collapsed ? null : "Inicio"}{" "}
+            {collapsed ? null : "Inicio"}
           </Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<MedicineBoxOutlined />}>
@@ -71,18 +86,17 @@ const Sidebar = () => {
             {collapsed ? null : "Usuarios"}
           </Link>
         </Menu.Item>
+
+        {/* Añadimos la opción de Cerrar Sesión */}
+        <Menu.Item
+          key="5"
+          icon={<LogoutOutlined />}
+          onClick={handleLogout}
+          style={{ marginTop: "auto" }} // Empuja el botón hacia el fondo
+        >
+          {collapsed ? null : "Cerrar Sesión"}
+        </Menu.Item>
       </Menu>
-      <div
-        style={{
-          width: "100%",
-          paddingLeft: "30px",
-          position: "absolute",
-          bottom: 0,
-          marginBottom: 30,
-        }}
-      >
-        <LogoutButton />
-      </div>
     </Sider>
   );
 };

@@ -1,20 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import IconLoGout from "@images/logouticon.svg";
+import IconLogOut from "@images/logouticon.svg"; // Asegúrate de que el ícono se importe correctamente
+import styles from "./LogoutButton.module.css"; // Importa el archivo CSS
 
-const LogoutButton = () => {
+const LogoutButton = ({ showText }) => {
   const router = useRouter();
 
   const handleLogout = () => {
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
     router.push("/login");
   };
 
   return (
     <div
-      onClick={handleLogout}
+      onClick={handleLogout} // Este clic se aplica a todo el contenedor
       className="logout-btn"
       style={{
         cursor: "pointer",
@@ -24,8 +24,14 @@ const LogoutButton = () => {
         color: "#fff",
       }}
     >
-      <IconLoGout />
-      Cerrar Sesión
+      <IconLogOut />
+      <span
+        className={`${styles.logoutText} ${
+          showText ? styles.show : styles.hide
+        }`}
+      >
+        Cerrar Sesión
+      </span>
     </div>
   );
 };
