@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
+import ProtectedRoute from "../components/protectedRoute";
 
 const HomePage = () => {
   const [user, setUser] = useState(null);

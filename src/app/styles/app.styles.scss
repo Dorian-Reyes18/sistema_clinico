@@ -1,1 +1,7 @@
 @import "~bootstrap/scss/bootstrap";
+
+@import "./variables/variables";
+@import "./global/global.styles";
+
+// Componentes
+@import "./components/login";

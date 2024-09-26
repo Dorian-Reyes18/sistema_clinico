@@ -1,17 +1,17 @@
-"use client"; 
+"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [telefono, setTelefono] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); 
+    setError(null);
 
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -19,19 +19,18 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ telefono, contrasena }), 
+        body: JSON.stringify({ telefono, contrasena }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); 
-        setError(errorData.error || "Error inesperado"); 
-        return; 
+        const errorData = await response.json();
+        setError(errorData.error || "Error inesperado");
+        return;
       }
 
       const { token } = await response.json();
-      localStorage.setItem("token", token); 
+      localStorage.setItem("token", token);
 
-      
       router.push("/home");
     } catch (error) {
       console.error("Error inesperado:", error);
@@ -41,13 +40,14 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin}>
-      <div>
+      <div className="form-group">
         <label>Teléfono:</label>
         <input
           type="text"
           value={telefono}
           onChange={(e) => setTelefono(e.target.value)}
           required
+          className="form-control"
         />
       </div>
       <div>
@@ -57,9 +57,12 @@ const Login = () => {
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
           required
+          className="form-control"
         />
       </div>
-      <button type="submit">Iniciar Sesión</button>
+      <button className="btn btn-primary" type="submit">
+        Iniciar Sesión
+      </button>
       {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {/* Muestra mensaje de error */}
     </form>

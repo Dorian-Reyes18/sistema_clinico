@@ -1,9 +1,8 @@
-import Login from "./login/page";
+import LoginPage from "./login/page";
 function HomePage() {
   return (
-    <div>
-      <h1>Inicia sesión</h1>
-      <Login />
+    <div className="container-general">
+      <LoginPage />
     </div>
   );
 }
