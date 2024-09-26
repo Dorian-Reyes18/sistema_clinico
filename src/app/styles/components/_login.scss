@@ -4,4 +4,35 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url("../../../../public/images/login/image 2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  .card-login {
+    display: flex;
+    width: 700px;
+    height: 400px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    background: $color-blanco;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+
+    .col-lf {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+      width: 50%;
+      background: $color-rosa;
+
+      .content {
+        text-align: center;
+      }
+    }
+    .col-rg {
+      width: 50%;
+    }
+  }
 }
