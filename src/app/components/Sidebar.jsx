@@ -62,7 +62,6 @@ const Sidebar = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "100%",
           height: "calc(100% - 180px)",
         }}
       >
@@ -87,12 +86,20 @@ const Sidebar = () => {
           </Link>
         </Menu.Item>
 
-        {/* Añadimos la opción de Cerrar Sesión */}
+        <Menu.Item
+          key="6"
+          icon={<UserOutlined />} 
+          onClick={() => router.push("/configuracion")} 
+          style={{ marginTop: "auto" }} 
+        >
+          {collapsed ? null : "Configuración"}
+        </Menu.Item>
+
         <Menu.Item
           key="5"
           icon={<LogoutOutlined />}
           onClick={handleLogout}
-          style={{ marginTop: "auto" }} // Empuja el botón hacia el fondo
+          style={{ marginTop: "0", marginBottom: 10 }} 
         >
           {collapsed ? null : "Cerrar Sesión"}
         </Menu.Item>
