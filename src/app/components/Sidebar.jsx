@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import LogoClinica from "@images/logo.svg";
+import LogoutButton from "../components/LogoutButton";
 
 const { Sider } = Layout;
 
@@ -44,11 +45,15 @@ const Sidebar = () => {
       >
         <LogoClinica style={{ minWidth: 20 }} />
       </div>
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+      <Menu
+        theme="dark"
+        mode="inline"
+        defaultSelectedKeys={["1"]}
+        style={{ position: "relative" }}
+      >
         <Menu.Item key="1" icon={<HomeOutlined />}>
           <Link href="/" passHref>
             {collapsed ? null : "Inicio"}{" "}
-            {/* Mostrar texto solo si no está colapsado */}
           </Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<MedicineBoxOutlined />}>
@@ -67,6 +72,17 @@ const Sidebar = () => {
           </Link>
         </Menu.Item>
       </Menu>
+      <div
+        style={{
+          width: "100%",
+          paddingLeft: "30px",
+          position: "absolute",
+          bottom: 0,
+          marginBottom: 30,
+        }}
+      >
+        <LogoutButton />
+      </div>
     </Sider>
   );
 };
