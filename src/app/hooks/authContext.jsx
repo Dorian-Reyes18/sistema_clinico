@@ -1,4 +1,5 @@
 "use client";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 
@@ -24,16 +25,17 @@ export const AuthProvider = ({ children }) => {
           fetchUserData(decodedToken.id, token); // Carga los datos del usuario
         } else {
           setUser(null);
+          setLoading(false); // Establecer loading en false si el token está expirado
         }
       } catch (err) {
         console.error("Error al decodificar el token:", err);
         setError("Error al verificar sesión");
-        setUser(null);
+        setLoading(false); // También establecer loading en false aquí
       }
     } else {
       setUser(null);
+      setLoading(false); // Establecer loading en false si no hay token
     }
-    setLoading(false); // Cambia el estado de carga aquí
   }, []);
 
   const fetchUserData = async (userId, token) => {
@@ -55,16 +57,18 @@ export const AuthProvider = ({ children }) => {
       }
 
       const userData = await response.json();
-      console.log("Datos del usuario:", userData); // Log para depuración
+      console.log("Datos del usuario:", userData);
       setUser(userData);
     } catch (error) {
       console.error("Error al obtener datos del usuario:", error);
       setError("Error inesperado al obtener datos del usuario");
+    } finally {
+      setLoading(false); 
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, setUser }}>
+    <AuthContext.Provider value={{ user, loading, error, fetchUserData }}>
       {children}
     </AuthContext.Provider>
   );
