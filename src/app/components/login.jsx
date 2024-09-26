@@ -70,7 +70,7 @@ const Login = () => {
       <button className="btn btn-primary btn-rosa" type="submit">
         <strong>Iniciar Sesión</strong>
       </button>
-      {error && <p style={{ color: "red", fontSize: 14 }}>{error}</p>}{" "}
+      {error && <p style={{ color: "red", fontSize: 14 }}>*{error}</p>}{" "}
       {/* Muestra mensaje de error */}
     </form>
   );
