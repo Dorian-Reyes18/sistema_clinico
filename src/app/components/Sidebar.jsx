@@ -39,9 +39,10 @@ const Sidebar = () => {
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
+          marginBottom: 25,
         }}
       >
-        <LogoClinica />
+        <LogoClinica style={{ minWidth: 20 }} />
       </div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
         <Menu.Item key="1" icon={<HomeOutlined />}>

@@ -7,11 +7,13 @@ import { Spin } from "antd";
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const cookies = document.cookie.split("; ");
+    const tokenCookie = cookies.find((row) => row.startsWith("token="));
+    const token = tokenCookie ? tokenCookie.split("=")[1] : null;
+
     if (token) {
       try {
         const decodedToken = jwt.decode(token);
@@ -19,14 +21,14 @@ const HomePage = () => {
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
           setUser(decodedToken);
         } else {
-          setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
+          setUser(null);
         }
       } catch (error) {
         console.error("Error al decodificar el token:", error);
-        setError("Error al decodificar el token.");
+        setUser(null);
       }
     } else {
-      setError("Sesión no encontrada, por favor vuelve a iniciar sesión.");
+      setUser(null);
     }
     setLoading(false);
   }, []);
@@ -46,10 +48,6 @@ const HomePage = () => {
         <Spin size="large" className="custom-spinner" /> {/* Spinner rosado */}
       </div>
     );
-  }
-
-  if (error) {
-    return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
   }
 
   if (!user) {

@@ -29,7 +29,8 @@ const Login = () => {
       }
 
       const { token } = await response.json();
-      localStorage.setItem("token", token);
+      const expirationDate = new Date(Date.now() + 86400e3).toUTCString(); 
+      document.cookie = `token=${token}; path=/; expires=${expirationDate};`;
 
       router.push("/home");
     } catch (error) {
@@ -55,7 +56,6 @@ const Login = () => {
       </div>
       <div>
         <label>
-          {" "}
           <strong style={{ fontSize: 14 }}>Contraseña:</strong>
         </label>
         <input
@@ -70,8 +70,7 @@ const Login = () => {
       <button className="btn btn-primary btn-rosa" type="submit">
         <strong>Iniciar Sesión</strong>
       </button>
-      {error && <p style={{ color: "red", fontSize: 14 }}>*{error}</p>}{" "}
-      {/* Muestra mensaje de error */}
+      {error && <p style={{ color: "red", fontSize: 14 }}>*{error}</p>}
     </form>
   );
 };
