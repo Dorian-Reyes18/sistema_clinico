@@ -7,8 +7,9 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   MedicineBoxOutlined,
-} from "@ant-design/icons"; 
+} from "@ant-design/icons";
 import Link from "next/link";
+import LogoClinica from "@images/logo.svg";
 
 const { Sider } = Layout;
 
@@ -21,16 +22,27 @@ const Sidebar = () => {
 
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
-      <div style={{ padding: "16px", textAlign: "center", color: "white" }}>
-        {collapsed ? "Menú" : "Mi Menú"}
-      </div>
-      <Button
-        type="text"
-        onClick={toggleMenu}
-        style={{ color: "white", marginBottom: "16px" }}
+      <div
+        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
       >
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </Button>
+        <Button
+          type="text"
+          onClick={toggleMenu}
+          style={{ color: "white", marginBottom: "16px" }}
+        >
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </Button>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LogoClinica />
+      </div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
         <Menu.Item key="1" icon={<HomeOutlined />}>
           <Link href="/" passHref>

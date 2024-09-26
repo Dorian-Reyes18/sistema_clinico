@@ -47,3 +47,7 @@ body {
     box-shadow: $color-shadow-button;
   }
 }
+
+.custom-spinner .ant-spin-dot {
+  color: pink;
+}

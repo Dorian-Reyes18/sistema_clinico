@@ -1,14 +1,14 @@
-// src/app/home/page.jsx
-
 "use client";
 
 import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
-import Layout from "../components/layout"; // Asegúrate de que la ruta sea correcta
+import Layout from "../components/layout";
+import { Spin } from "antd";
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,14 +28,36 @@ const HomePage = () => {
     } else {
       setError("Sesión no encontrada, por favor vuelve a iniciar sesión.");
     }
+    setLoading(false);
   }, []);
 
+  if (loading) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "50px",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spin size="large" className="custom-spinner" /> {/* Spinner rosado */}
+      </div>
+    );
+  }
+
   if (error) {
-    return <p>{error}</p>;
+    return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
   }
 
   if (!user) {
-    return <p>No has iniciado sesión. Por favor, inicia sesión.</p>;
+    return (
+      <p style={{ textAlign: "center" }}>
+        No has iniciado sesión. Por favor, inicia sesión.
+      </p>
+    );
   }
 
   return (
