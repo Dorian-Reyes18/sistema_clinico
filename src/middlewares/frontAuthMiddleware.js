@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const protectedRoutes = ["/home", "/dashboard", "/perfil"];
+const protectedRoutes = ["/home", "/pacientes", "/cirugias", "/pacientes"];
 
 export function middleware(req) {
   const token = req.cookies.get("token");
@@ -13,5 +13,10 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/home/:path*", "/dashboard/:path*", "/perfil/:path*"],
+  matcher: [
+    "/home/:path*",
+    "/pacientes/:path*",
+    "/cirugias/:path*",
+    "/usuarios/:path*",
+  ],
 };

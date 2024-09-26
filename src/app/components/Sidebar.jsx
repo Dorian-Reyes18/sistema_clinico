@@ -30,9 +30,13 @@ const Sidebar = () => {
   };
 
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed}>
+    <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
       <div
-        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
       >
         <Button
           type="text"
@@ -63,6 +67,7 @@ const Sidebar = () => {
           display: "flex",
           flexDirection: "column",
           height: "calc(100% - 180px)",
+          padding: "0 20px",
         }}
       >
         <Menu.Item key="1" icon={<HomeOutlined />}>
@@ -88,9 +93,9 @@ const Sidebar = () => {
 
         <Menu.Item
           key="6"
-          icon={<UserOutlined />} 
-          onClick={() => router.push("/configuracion")} 
-          style={{ marginTop: "auto" }} 
+          icon={<UserOutlined />}
+          onClick={() => router.push("/configuracion")}
+          style={{ marginTop: "auto" }}
         >
           {collapsed ? null : "Configuración"}
         </Menu.Item>
@@ -99,7 +104,7 @@ const Sidebar = () => {
           key="5"
           icon={<LogoutOutlined />}
           onClick={handleLogout}
-          style={{ marginTop: "0", marginBottom: 10 }} 
+          style={{ marginTop: "0", marginBottom: 10 }}
         >
           {collapsed ? null : "Cerrar Sesión"}
         </Menu.Item>
