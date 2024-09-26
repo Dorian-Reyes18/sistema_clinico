@@ -50,13 +50,16 @@ const Sidebar = () => {
       <div
         style={{
           display: "flex",
-          width: "100%",
           justifyContent: "center",
           alignItems: "center",
           marginBottom: 25,
         }}
       >
-        <LogoClinica style={{ minWidth: 20 }} />
+        {!collapsed && <LogoClinica style={{ minWidth: 20 }} />}
+      </div>
+
+      <div style={{ textAlign: "center", color: "#fff", marginBottom: 25 }}>
+        <strong>{!collapsed && "Sistema quirúrgico"}</strong>
       </div>
 
       <Menu
@@ -66,7 +69,7 @@ const Sidebar = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "calc(100% - 180px)",
+          height: collapsed ? "calc(100% - 90px)" : "calc(100% - 240px)",
           padding: "0 20px",
         }}
       >
