@@ -1,6 +1,4 @@
-// app/page.jsx
-import Login from "./components/login";
-
+import Login from "./login/page";
 function HomePage() {
   return (
     <div>

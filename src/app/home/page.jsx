@@ -1,6 +1,7 @@
-"use client"; // Asegúrate de que este componente se ejecute en el lado del cliente
+"use client";
+
 import { useEffect, useState } from "react";
-import jwt from "jsonwebtoken"; // Importación del paquete jsonwebtoken
+import jwt from "jsonwebtoken";
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -10,23 +11,19 @@ const HomePage = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        // Decodifica el token usando jsonwebtoken
         const decodedToken = jwt.decode(token);
 
-        // Verifica si el token ha expirado
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          setUser(decodedToken); // Almacena los datos del usuario
+          setUser(decodedToken);
         } else {
-          setError(
-            "El token ha expirado. Por favor, inicia sesión nuevamente."
-          );
+          setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
         }
       } catch (error) {
         console.error("Error al decodificar el token:", error);
         setError("Error al decodificar el token.");
       }
     } else {
-      setError("No hay un token encontrado. Por favor, inicia sesión.");
+      setError("Sesión no encontrada, por favor vuelve a inicia sesión.");
     }
   }, []);
 

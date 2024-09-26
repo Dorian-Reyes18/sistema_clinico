@@ -1,38 +1,41 @@
-"use client"; // Asegúrate de que este componente se ejecute en el lado del cliente
+"use client"; 
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Cambiado a next/navigation
+import { useRouter } from "next/navigation"; 
 
 const Login = () => {
   const [telefono, setTelefono] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
-  const router = useRouter(); // Hook de Next.js para la navegación
+  const router = useRouter(); 
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(null); 
+
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
-        // Endpoint actualizado
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ telefono, contrasena }), // Cuerpo con teléfono y contraseña
+        body: JSON.stringify({ telefono, contrasena }), 
       });
 
       if (!response.ok) {
-        throw new Error("Error en el login"); // Manejo de errores
+        const errorData = await response.json(); 
+        setError(errorData.error || "Error inesperado"); 
+        return; 
       }
 
-      const { token } = await response.json(); // Suponiendo que recibes el token
-      console.log("Token", token);
-      localStorage.setItem("token", token); // Guarda el token en localStorage
+      const { token } = await response.json();
+      localStorage.setItem("token", token); 
 
-      // Redirige a la página de inicio
-      router.push("/home"); // Asegúrate de que esta ruta sea correcta
+      
+      router.push("/home");
     } catch (error) {
-      setError(error.message); // Muestra el error en el componente
+      console.error("Error inesperado:", error);
+      setError("Error inesperado al iniciar sesión");
     }
   };
 
@@ -57,7 +60,8 @@ const Login = () => {
         />
       </div>
       <button type="submit">Iniciar Sesión</button>
-      {error && <p>{error}</p>} {/* Muestra mensaje de error */}
+      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+      {/* Muestra mensaje de error */}
     </form>
   );
 };
