@@ -3,6 +3,7 @@
 import { useAuth } from "../hooks/authContext"; // Asegúrate de que la ruta sea correcta
 import Layout from "../components/layout";
 import { Spin } from "antd";
+import HeaderUser from "../components/headerUser";
 
 const HomePage = () => {
   const { user, loading, error } = useAuth(); // Usamos el hook useAuth
@@ -48,6 +49,7 @@ const HomePage = () => {
 
   return (
     <Layout>
+      <HeaderUser />
       <div>
         <h1>Bienvenido, {user.nombreYApellido}!</h1> <p>ID: {user.id}</p>
         <p>Usuario: {user.usuario}</p>
