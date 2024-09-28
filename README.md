@@ -35,7 +35,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-
 # FrontEnd
 
 # Documentación del Proyecto
@@ -56,61 +55,90 @@ El proyecto sigue una estructura modular y organizada. Las principales secciones
 
 ### Middleware:
 
-Archivo: frontMiddleware.js
-Ruta: /src/middlewares
+- Archivo: `frontMiddleware.js`
+- Ruta: `/src/middlewares`
 
 ### Contexto de Autenticación:
 
-Archivo: authContext.js
-Ruta: /hooks/authContext
+- Archivo: `authContext.js`
+- Ruta: `/hooks/authContext`
 
 ### Layout:
 
-Archivo: Layout.js
-Ruta: components/Layout
+- Archivo: `Layout.js`
+- Ruta: `components/Layout`
 
 ### Login:
 
-Archivo: Login.js
-Ruta: components/Login
+- Archivo: `Login.js`
+- Ruta: `components/Login`
+
+### Usuarios:
+
+- Archivo: `page.js`
+- Ruta: `app/users/page.js`
 
 ## Middleware
 
 El middleware se encarga de proteger rutas específicas de la aplicación. A continuación, se detallan sus funcionalidades:
 
-- Protección de Rutas: Comprueba si un token de autenticación está presente en las cookies. Si el token no existe y el usuario intenta acceder a rutas protegidas (como "/home", "/pacientes", "/cirugias" y "/usuarios"), se le redirige a la página de inicio de sesión.
-
-- Configuración: Las rutas protegidas son configuradas mediante un matcher que especifica cuáles URLs deben ser interceptadas por el middleware.
+- **Protección de Rutas:** Comprueba si un token de autenticación está presente en las cookies. Si el token no existe y el usuario intenta acceder a rutas protegidas (como "/home", "/pacientes", "/cirugias" y "/usuarios"), se le redirige a la página de inicio de sesión.
+- **Configuración:** Las rutas protegidas son configuradas mediante un matcher que especifica cuáles URLs deben ser interceptadas por el middleware.
 
 ## Contexto de Autenticación
 
 El contexto de autenticación es un componente fundamental que gestiona el estado del usuario en la aplicación. Sus principales funciones son:
 
-- Estado del Usuario: Almacena el estado actual del usuario, incluyendo su información y un indicador de carga.
-- Gestión del Token: Verifica la presencia y validez del token de autenticación almacenado en las cookies del navegador.
-- Carga de Datos del Usuario: Al decodificar el token, se extrae el ID del usuario para obtener su información desde el backend, asegurando que solo los usuarios autenticados y autorizados tengan acceso a sus datos.
+- **Estado del Usuario:** Almacena el estado actual del usuario, incluyendo su información y un indicador de carga.
+- **Gestión del Token:** Verifica la presencia y validez del token de autenticación almacenado en las cookies del navegador.
+- **Carga de Datos del Usuario:** Al decodificar el token, se extrae el ID del usuario para obtener su información desde el backend, asegurando que solo los usuarios autenticados y autorizados tengan acceso a sus datos.
 
 ## Manejo de Autenticación
 
 El proceso de autenticación se lleva a cabo a través de un formulario de inicio de sesión que permite a los usuarios ingresar sus credenciales. Los pasos principales son:
 
-- Ingreso de Credenciales: El usuario introduce su número de teléfono y contraseña.
-- Envío de Solicitud: Las credenciales se envían al servidor para su verificación.
-- Recepción del Token: Si la autenticación es exitosa, se recibe un token que se almacena en las cookies del navegador.
-- Decodificación del Token: Se utiliza una biblioteca para decodificar el token y extraer el - ID del usuario, que luego se utiliza para cargar la información del usuario desde la API.
-- Manejo de Errores: Si hay algún problema durante el proceso (credenciales incorrectas, token no válido, etc.), se muestra un mensaje de error al usuario.
+- **Ingreso de Credenciales:** El usuario introduce su número de teléfono y contraseña.
+- **Envío de Solicitud:** Las credenciales se envían al servidor para su verificación.
+- **Recepción del Token:** Si la autenticación es exitosa, se recibe un token que se almacena en las cookies del navegador.
+- **Decodificación del Token:** Se utiliza una biblioteca para decodificar el token y extraer el ID del usuario, que luego se utiliza para cargar la información del usuario desde la API.
+- **Manejo de Errores:** Si hay algún problema durante el proceso (credenciales incorrectas, token no válido, etc.), se muestra un mensaje de error al usuario.
 
 ## Layout
 
 El componente Layout es responsable de la estructura principal de la aplicación y juega un papel crucial en la gestión de la autenticación. Sus características principales son:
 
-- Carga de Usuario: Verifica si los datos del usuario están siendo cargados. Mientras esto ocurre, se muestra un spinner de carga de Ant Design para indicar al usuario que la aplicación está procesando la información.
-- Acceso Condicionado: Si el usuario no está autenticado, se muestra un mensaje indicando que debe iniciar sesión. Esto bloquea el acceso a las secciones protegidas de la aplicación.
-- Renderizado de Contenido: Si el usuario está autenticado, el layout renderiza el sidebar de navegación y el contenido principal de la aplicación.
+- **Carga de Usuario:** Verifica si los datos del usuario están siendo cargados. Mientras esto ocurre, se muestra un spinner de carga de Ant Design para indicar al usuario que la aplicación está procesando la información.
+- **Acceso Condicionado:** Si el usuario no está autenticado, se muestra un mensaje indicando que debe iniciar sesión. Esto bloquea el acceso a las secciones protegidas de la aplicación.
+- **Renderizado de Contenido:** Si el usuario está autenticado, el layout renderiza el sidebar de navegación y el contenido principal de la aplicación.
 
 ## Interfaz de Usuario
 
 La interfaz de usuario está compuesta por varios componentes que permiten una navegación fluida y una experiencia de usuario amigable. Las características incluyen:
 
-- Sidebar: Un menú de navegación que permite al usuario moverse entre diferentes secciones de la aplicación.
-- Spinner de Carga: Un indicador visual que muestra que los datos se están cargando cuando el usuario accede a una ruta protegida.
+- **Sidebar:** Un menú de navegación que permite al usuario moverse entre diferentes secciones de la aplicación.
+- **Spinner de Carga:** Un indicador visual que muestra que los datos se están cargando cuando el usuario accede a una ruta protegida.
+
+## Agregar Nuevas Páginas
+
+Para crear nuevas páginas, como la de "Usuarios", sigue estos pasos:
+
+1. **Crear el Archivo:** Agrega un nuevo archivo en la carpeta correspondiente, por ejemplo, `app/users/page.js`.
+
+2. **Importaciones Necesarias:**
+
+   - Importa React.
+   - Importa el contexto de autenticación (`useAuth`).
+   - Importa el componente `Layout`.
+   - Importa el spinner de Ant Design.
+
+3. **Uso del Contexto:**
+
+   - Accede al estado del usuario y al estado de carga mediante `useAuth`.
+   - Muestra un spinner mientras se cargan los datos.
+   - Verifica si el usuario está autenticado antes de renderizar el contenido.
+
+4. **Integración con el Layout:** Asegúrate de envolver el contenido de la página dentro del componente `Layout`.
+
+5. **Manejo de Errores y Carga de Datos:** Implementa lógica para manejar la carga de datos de usuarios y muestra mensajes apropiados si no hay acceso.
+
+Con estos pasos, podrás agregar nuevas secciones a tu aplicación manteniendo la seguridad y la estructura de tu proyecto.
