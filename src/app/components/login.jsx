@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import jwt from "jsonwebtoken";
+import { useAuth } from "../hooks/authContext"; // Asegúrate de que la ruta sea correcta
 
 const Login = () => {
   const [telefono, setTelefono] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { fetchUserData } = useAuth(); // Desestructuración del contexto
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,8 +32,14 @@ const Login = () => {
       }
 
       const { token } = await response.json();
-      const expirationDate = new Date(Date.now() + 86400e3).toUTCString(); 
+      const expirationDate = new Date(Date.now() + 86400e3).toUTCString();
       document.cookie = `token=${token}; path=/; expires=${expirationDate};`;
+
+      // Cargar los datos del usuario después de iniciar sesión
+      const decodedToken = jwt.decode(token);
+      if (decodedToken) {
+        await fetchUserData(decodedToken.id, token); // Carga los datos del usuario
+      }
 
       router.push("/home");
     } catch (error) {
