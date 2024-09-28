@@ -22,19 +22,19 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          fetchUserData(decodedToken.id, token); // Carga los datos del usuario
+          fetchUserData(decodedToken.id, token); 
         } else {
           setUser(null);
-          setLoading(false); // Establecer loading en false si el token está expirado
+          setLoading(false);
         }
       } catch (err) {
         console.error("Error al decodificar el token:", err);
         setError("Error al verificar sesión");
-        setLoading(false); // También establecer loading en false aquí
+        setLoading(false); 
       }
     } else {
       setUser(null);
-      setLoading(false); // Establecer loading en false si no hay token
+      setLoading(false); 
     }
   }, []);
 

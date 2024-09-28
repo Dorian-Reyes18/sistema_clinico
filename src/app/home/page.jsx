@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "../hooks/authContext"; // Asegúrate de que la ruta sea correcta
+import { useAuth } from "../hooks/authContext";
 import Layout from "../components/layout";
 import { Spin } from "antd";
 import HeaderUser from "../components/headerUser";
+import RecentSurgeries from "../components/home/welcomeMessage";
 
 const HomePage = () => {
-  const { user, loading, error } = useAuth(); // Usamos el hook useAuth
+  const { user, loading, error } = useAuth();
 
-  // Mientras se carga, mostramos un spinner
   if (loading) {
     return (
       <div
@@ -26,13 +26,10 @@ const HomePage = () => {
     );
   }
 
-  // Manejo de errores
   if (error) {
     return (
       <Layout>
-        <p style={{ textAlign: "center", color: "red" }}>
-          {error} {/* Muestra el mensaje de error */}
-        </p>
+        <p style={{ textAlign: "center", color: "red" }}>{error}</p>
       </Layout>
     );
   }
@@ -49,8 +46,8 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <HeaderUser />
       <div>
+        <RecentSurgeries />
         <h1>Bienvenido, {user.nombreYApellido}!</h1> <p>ID: {user.id}</p>
         <p>Usuario: {user.usuario}</p>
         <p>Teléfono: {user.telefono}</p>
