@@ -1,0 +1,37 @@
+.ant-layout-sider {
+  background: $color-rosa;
+
+  .css-dev-only-do-not-override-5wsri9.ant-menu-dark .ant-menu-item,
+  .css-dev-only-do-not-override-5wsri9.ant-menu-dark > .ant-menu .ant-menu-item,
+  .css-dev-only-do-not-override-5wsri9.ant-menu-dark .ant-menu-submenu-title,
+  .css-dev-only-do-not-override-5wsri9.ant-menu-dark
+    > .ant-menu
+    .ant-menu-submenu-title {
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .ant-menu {
+    background: transparent;
+
+    .ant-menu-item {
+      &:hover {
+        background: $color-rosa-oscuro !important;
+      }
+      .ant-menu-title-content {
+        a {
+          text-decoration: none;
+        }
+      }
+    }
+
+    .ant-menu-item-selected {
+      background-color: $color-rosa-oscuro;
+      .ant-menu-title-content {
+        a {
+          text-decoration: none;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
