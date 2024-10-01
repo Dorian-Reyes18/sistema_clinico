@@ -30,6 +30,43 @@ const Sidebar = () => {
     setCollapsed(!collapsed);
   };
 
+  const menuItems = [
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      label: <Link href="/">General</Link>,
+    },
+    {
+      key: "2",
+      icon: <MedicineBoxOutlined />,
+      label: <Link href="/cirugias">Cirugías</Link>,
+    },
+    {
+      key: "3",
+      icon: <UsergroupAddOutlined />,
+      label: <Link href="/pacientes">Pacientes</Link>,
+    },
+    {
+      key: "4",
+      icon: <UserOutlined />,
+      label: <Link href="/usuarios">Usuarios</Link>,
+    },
+    {
+      key: "6",
+      icon: <UserOutlined />,
+      label: "Configuración",
+      onClick: () => router.push("/configuracion"),
+      style: { marginTop: "auto" },
+    },
+    {
+      key: "5",
+      icon: <LogoutOutlined />,
+      label: "Cerrar Sesión",
+      onClick: handleLogout,
+      style: { marginTop: "0", marginBottom: 10 },
+    },
+  ];
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
       <div
@@ -63,52 +100,14 @@ const Sidebar = () => {
         theme="dark"
         mode="inline"
         defaultSelectedKeys={["1"]}
+        items={menuItems}
         style={{
           display: "flex",
           flexDirection: "column",
           height: collapsed ? "calc(100% - 90px)" : "calc(100% - 240px)",
           padding: "0 20px",
         }}
-      >
-        <Menu.Item key="1" icon={<HomeOutlined />}>
-          <Link href="/" passHref>
-            {collapsed ? null : "General"}
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="2" icon={<MedicineBoxOutlined />}>
-          <Link href="/cirugias" passHref>
-            {collapsed ? null : "Cirugías"}
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="3" icon={<UsergroupAddOutlined />}>
-          <Link href="/pacientes" passHref>
-            {collapsed ? null : "Pacientes"}
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="4" icon={<UserOutlined />}>
-          <Link href="/usuarios" passHref>
-            {collapsed ? null : "Usuarios"}
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item
-          key="6"
-          icon={<UserOutlined />}
-          onClick={() => router.push("/configuracion")}
-          style={{ marginTop: "auto" }}
-        >
-          {collapsed ? null : "Configuración"}
-        </Menu.Item>
-
-        <Menu.Item
-          key="5"
-          icon={<LogoutOutlined />}
-          onClick={handleLogout}
-          style={{ marginTop: "0", marginBottom: 10 }}
-        >
-          {collapsed ? null : "Cerrar Sesión"}
-        </Menu.Item>
-      </Menu>
+      />
     </Sider>
   );
 };

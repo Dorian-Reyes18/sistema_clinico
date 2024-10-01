@@ -16,7 +16,6 @@ export const fetchUserData = async (userId, token) => {
     }
 
     const userData = await response.json();
-    console.log("Datos del usuario:", userData);
     return userData;
   } catch (error) {
     console.error("Error al obtener datos del usuario:", error);

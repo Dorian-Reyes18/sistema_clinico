@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
-import { useAuth } from "../hooks/authContext";
+import { useAuth } from "../hooks/authContext"; // Verifica que esta ruta sea correcta
 import { Button, Spin, notification } from "antd";
 
 const Login = () => {

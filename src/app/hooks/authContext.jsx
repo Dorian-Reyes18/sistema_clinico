@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 // Servicios
@@ -62,7 +60,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, recentSurgeries, loadingSurgeries }}
+      value={{
+        user,
+        loading,
+        error,
+        recentSurgeries,
+        loadingSurgeries,
+        loadData,
+      }}
     >
       {children}
     </AuthContext.Provider>
