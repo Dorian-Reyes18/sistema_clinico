@@ -2,13 +2,18 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
+// Servicios
+import { fetchRecentSurgeries } from "@/services/fetchSurgerys";
+import { fetchUserData } from "@/services/fetchUsers";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [recentSurgeries, setRecentSurgeries] = useState([]);
+  const [loadingSurgeries, setLoadingSurgeries] = useState(true);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -22,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          fetchUserData(decodedToken.id, token); 
+          loadData(decodedToken.id, token);
         } else {
           setUser(null);
           setLoading(false);
@@ -30,45 +35,35 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error("Error al decodificar el token:", err);
         setError("Error al verificar sesión");
-        setLoading(false); 
+        setLoading(false);
       }
     } else {
       setUser(null);
-      setLoading(false); 
+      setLoading(false);
     }
   }, []);
 
-  const fetchUserData = async (userId, token) => {
+  const loadData = async (userId, token) => {
+    setLoading(true);
+    setLoadingSurgeries(true);
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/protected/usuarios/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || "Error al obtener datos del usuario");
-        return;
-      }
-
-      const userData = await response.json();
-      console.log("Datos del usuario:", userData);
+      const userData = await fetchUserData(userId, token);
       setUser(userData);
+
+      const recentSurgeriesData = await fetchRecentSurgeries(token);
+      setRecentSurgeries(recentSurgeriesData);
     } catch (error) {
-      console.error("Error al obtener datos del usuario:", error);
-      setError("Error inesperado al obtener datos del usuario");
+      setError(error.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
+      setLoadingSurgeries(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, fetchUserData }}>
+    <AuthContext.Provider
+      value={{ user, loading, error, recentSurgeries, loadingSurgeries }}
+    >
       {children}
     </AuthContext.Provider>
   );

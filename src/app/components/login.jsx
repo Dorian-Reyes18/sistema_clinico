@@ -10,14 +10,12 @@ const Login = () => {
   const [telefono, setTelefono] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { fetchUserData } = useAuth();
+  const { loadData, loading } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -31,7 +29,6 @@ const Login = () => {
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData.error || "Error inesperado");
-        setLoading(false);
         return;
       }
 
@@ -41,7 +38,7 @@ const Login = () => {
 
       const decodedToken = jwt.decode(token);
       if (decodedToken) {
-        await fetchUserData(decodedToken.id, token);
+        await loadData(decodedToken.id, token);
       }
 
       notification.success({
@@ -54,7 +51,6 @@ const Login = () => {
     } catch (error) {
       console.error("Error inesperado:", error);
       setError("Error inesperado al iniciar sesión");
-      setLoading(false);
     }
   };
 

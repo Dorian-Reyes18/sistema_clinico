@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../hooks/authContext";
-import { Spin } from "antd";
+import { Spin, message } from "antd"; 
 import Sidebar from "./Sidebar";
 import { useRouter } from "next/navigation";
 
 const Layout = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, error } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -13,6 +13,12 @@ const Layout = ({ children }) => {
       router.push("/login");
     }
   }, [loading, user, router]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error); 
+    }
+  }, [error]);
 
   if (loading) {
     return (
@@ -30,8 +36,9 @@ const Layout = ({ children }) => {
     );
   }
 
+  
   if (!user) {
-    return null;
+    return null; 
   }
 
   return (

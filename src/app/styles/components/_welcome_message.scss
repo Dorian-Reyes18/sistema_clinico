@@ -1,0 +1,25 @@
+.welcome-message {
+  width: fit-content;
+  background: $color-azul;
+  display: flex;
+  padding: 23px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+
+  .info {
+    color: $color-blanco;
+    margin: 0;
+    line-height: 30px;
+
+    h4 {
+      margin-bottom: 2rem;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}

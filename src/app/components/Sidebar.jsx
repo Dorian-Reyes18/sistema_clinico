@@ -21,7 +21,6 @@ const Sidebar = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Eliminar la cookie 'token'
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     message.success("Sesión cerrada correctamente");
     router.push("/login");

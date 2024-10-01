@@ -46,7 +46,8 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <div>
+      <HeaderUser/>
+      <div style={{ padding: 30 }}>
         <RecentSurgeries />
       </div>
     </Layout>
