@@ -3,19 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
-import { useAuth } from "../hooks/authContext"; // Verifica que esta ruta sea correcta
+import { useAuth } from "../hooks/authContext";
 import { Button, Spin, notification } from "antd";
 
 const Login = () => {
   const [telefono, setTelefono] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const { loadData, loading } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -45,12 +48,16 @@ const Login = () => {
         message: "Éxito",
         description: "Sesión iniciada correctamente",
         placement: "topRight",
-        duration: 4,
+        duration: 2,
       });
+
+      setIsRedirecting(true);
       router.push("/home");
     } catch (error) {
       console.error("Error inesperado:", error);
       setError("Error inesperado al iniciar sesión");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -67,7 +74,7 @@ const Login = () => {
           required
           className="form-control"
           placeholder="Escriba su teléfono"
-          disabled={loading}
+          disabled={loading || isSubmitting || isRedirecting}
         />
       </div>
       <div className="form-group">
@@ -81,15 +88,19 @@ const Login = () => {
           required
           className="form-control"
           placeholder="Escriba su contraseña"
-          disabled={loading}
+          disabled={loading || isSubmitting || isRedirecting}
         />
       </div>
       <button
         className="btn btn-primary btn-rosa"
         type="submit"
-        disabled={loading}
+        disabled={loading || isSubmitting || isRedirecting}
       >
-        {loading ? <Spin size="small" /> : <strong>Iniciar Sesión</strong>}{" "}
+        {loading || isSubmitting || isRedirecting ? (
+          <Spin size="small" />
+        ) : (
+          <strong>Iniciar Sesión</strong>
+        )}
       </button>
       {error && <p style={{ color: "red", fontSize: 14 }}>*{error}</p>}
     </form>

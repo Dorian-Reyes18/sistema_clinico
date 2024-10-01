@@ -1,6 +1,5 @@
-import IconLogOut from "@images/logouticon.svg";
 import React, { useState } from "react";
-import { Layout, Menu, Button, message } from "antd";
+import { Layout, Menu, Button, notification } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -22,7 +21,14 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    message.success("Sesión cerrada correctamente");
+
+    notification.success({
+      message: "Éxito",
+      description: "Sesión cerrada correctamente",
+      placement: "topRight",
+      duration: 2,
+    });
+
     router.push("/login");
   };
 
