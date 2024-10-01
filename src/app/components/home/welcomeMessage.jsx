@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/hooks/authContext";
-import { fetchRecentSurgeries } from "@/services/fetchSurgerys"; // Asegúrate de ajustar la ruta
+import { fetchRecentSurgeries } from "@/services/fetchSurgerys";
+import { Skeleton } from "antd";
 
 const RecentSurgeries = () => {
   const { user, loading } = useAuth();
@@ -31,17 +32,18 @@ const RecentSurgeries = () => {
       setSurgeryCount(recentSurgeries.length);
 
       if (recentSurgeries.length > 0) {
-        setRecentSurgery(recentSurgeries[0]); // Guardar la cirugía más reciente
-      } else if (surgeries.length > 0) {
+        setRecentSurgery(recentSurgeries[0]);
+        setError(null);
+      } else {
         setRecentSurgery(
           surgeries.reduce((latest, surgery) => {
             return new Date(surgery.fechaDeCreacion) >
               new Date(latest.fechaDeCreacion)
               ? surgery
               : latest;
-          })
+          }, surgeries[0])
         );
-        setError("No ha habido cirugías en los últimos 5 días.");
+        setError("No han habido cirugías en los últimos 5 días.");
       }
     } catch (error) {
       console.error("Error al cargar cirugías recientes:", error);
@@ -49,27 +51,53 @@ const RecentSurgeries = () => {
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>{error}</div>;
+  const formatDate = (dateString) => {
+    const options = { day: "numeric", month: "long", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("es-ES", options);
+  };
+
+  if (loading) {
+    return (
+      <div className="saludo">
+        <Skeleton active paragraph={{ rows: 4 }} />
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className="saludo">
       {surgeryCount > 0 ? (
         <div>
+          {user && <h2>Saludos {user.nombreYApellido}!</h2>}
           Se han agregado {surgeryCount} cirugías nuevas en los últimos 5 días.
+          {recentSurgery && (
+            <div>
+              La cirugía más reciente fue el{" "}
+              {formatDate(recentSurgery.fechaDeCreacion)}
+            </div>
+          )}
         </div>
       ) : (
-        recentSurgery && (
-          <div>
-            La cirugía más reciente fue el{" "}
-            {new Date(recentSurgery.fechaDeCreacion).toLocaleDateString()}
-            del paciente {recentSurgery.paciente.primerNombre}{" "}
-            {recentSurgery.paciente.primerApellido}.
-          </div>
-        )
+        <div>
+          {recentSurgery && (
+            <div className="welcome-message">
+              {user && <h2>Saludos {user.nombreYApellido}!</h2>}
+              <strong>{error} </strong>
+              <p>
+                {""} La cirugía masreciente fue en la paciente con{" "}
+                <strong>
+                  N° de expd. ( {recentSurgery.paciente.numeroExpediente}){" "}
+                  {recentSurgery.paciente.primerNombre}{" "}
+                  {recentSurgery.paciente.primerApellido}
+                </strong>{" "}
+                el día {formatDate(recentSurgery.fechaDeCreacion)}.
+              </p>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
 };
 
-export default RecentSurgeries; // Asegúrate de exportar el componente
+export default RecentSurgeries;

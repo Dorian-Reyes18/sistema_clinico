@@ -12,11 +12,11 @@ const useRecentSurgeries = () => {
     const getSurgeries = async () => {
       setLoading(true);
       try {
-        console.log("Token:", token); // Verifica que el token esté presente
+        console.log("Token:", token); 
         const data = await fetchRecentSurgeries(token);
         setSurgeries(data);
       } catch (error) {
-        console.error("Error en fetchRecentSurgeries:", error); // Para depuración
+        console.error("Error en fetchRecentSurgeries:", error); 
         setError(error.message);
       } finally {
         setLoading(false);

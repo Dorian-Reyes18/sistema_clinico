@@ -17,6 +17,6 @@ export const fetchRecentSurgeries = async (token) => {
     return await response.json();
   } catch (error) {
     console.error("Error en fetchRecentSurgeries:", error);
-    throw error; 
+    throw error;
   }
 };

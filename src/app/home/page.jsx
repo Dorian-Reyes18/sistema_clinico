@@ -48,10 +48,6 @@ const HomePage = () => {
     <Layout>
       <div>
         <RecentSurgeries />
-        <h1>Bienvenido, {user.nombreYApellido}!</h1> <p>ID: {user.id}</p>
-        <p>Usuario: {user.usuario}</p>
-        <p>Teléfono: {user.telefono}</p>
-        <p>Rol: {user.rol.nombreRol}</p>
       </div>
     </Layout>
   );
