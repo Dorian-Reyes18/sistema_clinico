@@ -4,8 +4,9 @@ import { useAuth } from "../hooks/authContext";
 import Layout from "../components/layout";
 import { Spin } from "antd";
 import HeaderUser from "../components/headerUser";
-import RecentSurgeries from "../components/home/welcomeMessage";
 import { usePathname } from "next/navigation";
+import RecentSurgeries from "../components/home/welcomeMessage";
+import TotalCardSurgeries from "../components/home/totalCardSurgeries";
 
 const HomePage = () => {
   const { user, loading, error } = useAuth();
@@ -51,6 +52,7 @@ const HomePage = () => {
       <HeaderUser currentPath={currentPath} />
       <div style={{ padding: 30 }}>
         <RecentSurgeries />
+        <TotalCardSurgeries />
       </div>
     </Layout>
   );

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 // Servicios
 import { fetchRecentSurgeries } from "@/services/fetchSurgerys";
 import { fetchUserData } from "@/services/fetchUsers";
+import { fetchSurgeriesPost } from "@/services/fetchSurgerysPost";
 
 const AuthContext = createContext();
 
@@ -12,6 +13,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [loadingSurgeries, setLoadingSurgeries] = useState(true);
+  const [surgeriesPost, setSurgeriesPost] = useState([]);
+  const [loadingSurgeriesPost, setLoadingSurgeriesPost] = useState(true);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -44,17 +47,22 @@ export const AuthProvider = ({ children }) => {
   const loadData = async (userId, token) => {
     setLoading(true);
     setLoadingSurgeries(true);
+    setLoadingSurgeriesPost(true);
     try {
       const userData = await fetchUserData(userId, token);
       setUser(userData);
 
       const recentSurgeriesData = await fetchRecentSurgeries(token);
       setRecentSurgeries(recentSurgeriesData);
+
+      const allSurgeriesPostData = await fetchSurgeriesPost(token);
+      setSurgeriesPost(allSurgeriesPostData);
     } catch (error) {
       setError(error.message);
     } finally {
       setLoading(false);
       setLoadingSurgeries(false);
+      setLoadingSurgeriesPost(false);
     }
   };
 
@@ -66,6 +74,7 @@ export const AuthProvider = ({ children }) => {
         error,
         recentSurgeries,
         loadingSurgeries,
+        loadingSurgeriesPost,
         loadData,
       }}
     >

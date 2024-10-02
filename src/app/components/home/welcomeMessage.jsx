@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/hooks/authContext";
-import { Skeleton } from "antd";
 import Image from "next/image";
 
 const getGreetingMessage = (user) => {
@@ -52,13 +51,6 @@ const RecentSurgeries = () => {
     return new Date(dateString).toLocaleDateString("es-ES", options);
   };
 
-  if (loading) {
-    return (
-      <div className="saludo">
-        <Skeleton active paragraph={{ rows: 4 }} />
-      </div>
-    );
-  }
 
   return (
     <div className="saludo">

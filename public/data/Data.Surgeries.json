@@ -1,0 +1,26 @@
+{
+  "Intrauterinas": [
+    {
+      "id": 1,
+      "nombre": "Cirugía percutánea"
+    },
+    {
+      "id": 2,
+      "nombre": "Cirugía Abierta"
+    },
+    {
+      "id": 3,
+      "nombre": "Cirugía Endoscópica"
+    }
+  ],
+  "PostOperatrorias": [
+    {
+      "id": 1,
+      "nombre": "Cirugía Neonetal"
+    },
+    {
+      "id": 2,
+      "nombre": "Cirugía Nervioso Central"
+    }
+  ]
+}
