@@ -1,14 +1,13 @@
+import apiUrl from "../global/apiURL";
+
 export const fetchUserData = async (userId, token) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/protected/usuarios/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${apiUrl}/protected/usuarios/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

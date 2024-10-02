@@ -16,7 +16,7 @@ const getGreetingMessage = (user) => {
 };
 
 const RecentSurgeries = () => {
-  const { user, loading, recentSurgeries, error } = useAuth(); 
+  const { user, loading, recentSurgeries, error } = useAuth();
   const [surgeryCount, setSurgeryCount] = useState(0);
   const [recentSurgery, setRecentSurgery] = useState(null);
 
@@ -72,7 +72,7 @@ const RecentSurgeries = () => {
           />
           <div className="info">
             <h4>
-              Saludos {getGreetingMessage(user)}, {user.nombreYApellido}!
+              Saludos {getGreetingMessage(user)} {user.nombreYApellido}
             </h4>
             <p>
               Se han agregado <strong>{surgeryCount} cirugías nuevas</strong> en
@@ -99,11 +99,13 @@ const RecentSurgeries = () => {
             <div className="info">
               {user && (
                 <h4>
-                  Saludos {getGreetingMessage(user)}, {user.nombreYApellido}!
+                  Saludos {getGreetingMessage(user)} {user.nombreYApellido}
                 </h4>
               )}
               <strong>{error}</strong>
-              <p>No se han agredo registros de cirugías en los últimos 5 días.</p>
+              <p>
+                No se han agredo registros de cirugías en los últimos 5 días.
+              </p>
               <p>
                 La cirugía más reciente fue de la paciente con{" "}
                 <strong>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
 import { useAuth } from "../hooks/authContext";
 import { Button, Spin, notification } from "antd";
+import apiUrl from "../../global/apiURL";
 
 const Login = () => {
   const [telefono, setTelefono] = useState("");
@@ -21,7 +22,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

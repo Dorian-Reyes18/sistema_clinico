@@ -1,15 +1,12 @@
-// services/surgeryService.js
+import apiUrl from "../global/apiURL";
 
 export const fetchRecentSurgeries = async (token) => {
-  const response = await fetch(
-    "http://localhost:3000/api/protected/orden_quirurgica_intra",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${apiUrl}/protected/orden_quirurgica_intra`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     const errorData = await response.json();

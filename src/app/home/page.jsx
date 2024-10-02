@@ -5,9 +5,11 @@ import Layout from "../components/layout";
 import { Spin } from "antd";
 import HeaderUser from "../components/headerUser";
 import RecentSurgeries from "../components/home/welcomeMessage";
+import { usePathname } from "next/navigation";
 
 const HomePage = () => {
   const { user, loading, error } = useAuth();
+  const currentPath = usePathname();
 
   if (loading) {
     return (
@@ -46,7 +48,7 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <HeaderUser/>
+      <HeaderUser currentPath={currentPath} />
       <div style={{ padding: 30 }}>
         <RecentSurgeries />
       </div>
