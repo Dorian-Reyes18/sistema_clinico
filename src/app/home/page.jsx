@@ -52,7 +52,7 @@ const HomePage = () => {
       <HeaderUser currentPath={currentPath} />
       <div style={{ padding: 30 }}>
         <RecentSurgeries />
-        <TotalCardSurgeries />
+        {/* <TotalCardSurgeries /> */}
       </div>
     </Layout>
   );

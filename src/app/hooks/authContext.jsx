@@ -8,13 +8,11 @@ import { fetchSurgeriesPost } from "@/services/fetchSurgerysPost";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [recentSurgeries, setRecentSurgeries] = useState([]);
-  const [loadingSurgeries, setLoadingSurgeries] = useState(true);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
-  const [loadingSurgeriesPost, setLoadingSurgeriesPost] = useState(true);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -46,8 +44,6 @@ export const AuthProvider = ({ children }) => {
 
   const loadData = async (userId, token) => {
     setLoading(true);
-    setLoadingSurgeries(true);
-    setLoadingSurgeriesPost(true);
     try {
       const userData = await fetchUserData(userId, token);
       setUser(userData);
@@ -61,8 +57,6 @@ export const AuthProvider = ({ children }) => {
       setError(error.message);
     } finally {
       setLoading(false);
-      setLoadingSurgeries(false);
-      setLoadingSurgeriesPost(false);
     }
   };
 
@@ -73,8 +67,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         recentSurgeries,
-        loadingSurgeries,
-        loadingSurgeriesPost,
+        surgeriesPost,
         loadData,
       }}
     >

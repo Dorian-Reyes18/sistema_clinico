@@ -51,7 +51,6 @@ const RecentSurgeries = () => {
     return new Date(dateString).toLocaleDateString("es-ES", options);
   };
 
-
   return (
     <div className="saludo">
       {surgeryCount > 0 ? (
@@ -61,19 +60,35 @@ const RecentSurgeries = () => {
             alt="Icono saludo"
             width={54}
             height={55}
+            style={{ marginRight: 20 }}
           />
           <div className="info">
             <h4>
               Saludos {getGreetingMessage(user)} {user.nombreYApellido}
             </h4>
             <p>
-              Se han agregado <strong>{surgeryCount} cirugías nuevas</strong> en
-              los últimos 5 días.
+              {surgeryCount === 1 ? (
+                <span>
+                  Se agregó <strong>una cirugía nueva</strong>
+                </span>
+              ) : (
+                <span>
+                  Se agregarón <strong>{surgeryCount} cirugías nuevas</strong>
+                </span>
+              )}{" "}
+              en los últimos 5 días.
             </p>
             {recentSurgery && (
               <div>
-                La cirugía más reciente fue el{" "}
-                {formatDate(recentSurgery.fechaDeCreacion)}.
+                <p>
+                  La cirugía más reciente fue de la paciente con{" "}
+                  <strong>
+                    N° de expd. ({recentSurgery.paciente.numeroExpediente}){" "}
+                    {recentSurgery.paciente.primerNombre}{" "}
+                    {recentSurgery.paciente.primerApellido}
+                  </strong>{" "}
+                  el día {formatDate(recentSurgery.fechaDeCreacion)}.
+                </p>
               </div>
             )}
           </div>
@@ -96,7 +111,7 @@ const RecentSurgeries = () => {
               )}
               <strong>{error}</strong>
               <p>
-                No se han agredo registros de cirugías en los últimos 5 días.
+                No se han agregado registros de cirugías en los últimos 5 días.
               </p>
               <p>
                 La cirugía más reciente fue de la paciente con{" "}
