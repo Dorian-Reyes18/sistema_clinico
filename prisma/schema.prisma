@@ -218,6 +218,7 @@ model EvaluacionActual {
 model OrdenQuirurgicaIntrauterina {
   id                       Int       @id @default(autoincrement())
   pacienteId               Int
+  tipoCirugia              String    @default("Sin Especificar") 
   fechaDeCreacion         DateTime?  @default(now())
   teniaDiagnostico        Boolean?
   evaluacionActualId      Int?      @unique
@@ -229,6 +230,7 @@ model OrdenQuirurgicaIntrauterina {
   diagnosticoPrenatal     DiagnosticoPrenatal[]
   resultadosPerinatales   ResultadosPerinatales[]
 }
+
 
 model IntrauterinaPercutanea {
   id                       Int       @id @default(autoincrement())

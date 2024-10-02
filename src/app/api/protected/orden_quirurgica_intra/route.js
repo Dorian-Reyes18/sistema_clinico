@@ -5,7 +5,6 @@ import { authenticateRequest } from "@/middlewares/authMiddleware";
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
 
-  // Manejo de errores específicos de Prisma
   if (error.code === "P2002") {
     return NextResponse.json(
       { error: "El número de expediente ya existe. Por favor, usa otro." },
@@ -59,6 +58,7 @@ export async function POST(req) {
   return handleRequest(req, async () => {
     const {
       pacienteId,
+      tipoCirugia, 
       teniaDiagnostico,
       evaluacionActualId,
       etapa,
@@ -66,7 +66,6 @@ export async function POST(req) {
       estado,
     } = await req.json();
 
-    // Validaciones
     if (!pacienteId) {
       return NextResponse.json(
         { error: "El ID del paciente es obligatorio." },
@@ -75,7 +74,6 @@ export async function POST(req) {
     }
 
     try {
-      // Verificar si el paciente existe
       const paciente = await prisma.paciente.findUnique({
         where: { id: pacienteId },
       });
@@ -89,6 +87,7 @@ export async function POST(req) {
       const nuevaOrden = await prisma.ordenQuirurgicaIntrauterina.create({
         data: {
           pacienteId,
+          tipoCirugia,
           teniaDiagnostico,
           evaluacionActualId,
           etapa,

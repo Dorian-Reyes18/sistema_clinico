@@ -5,7 +5,6 @@ import { authenticateRequest } from "@/middlewares/authMiddleware";
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
 
-  // Manejo específico para errores de Prisma
   if (error.code === "P2025") {
     return NextResponse.json(
       { error: "Orden quirúrgica no encontrada." },
@@ -72,7 +71,6 @@ export async function PUT(req, { params }) {
     const data = await req.json();
 
     try {
-      // Validación del paciente
       if (data.pacienteId) {
         const paciente = await prisma.paciente.findUnique({
           where: { id: data.pacienteId },
