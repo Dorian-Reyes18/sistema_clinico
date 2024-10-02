@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../hooks/authContext";
-import { Spin, message } from "antd"; 
+import { Spin, message } from "antd";
 import Sidebar from "./Sidebar";
+import Main from "./Main";
 import { useRouter } from "next/navigation";
 
 const Layout = ({ children }) => {
@@ -16,7 +17,7 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     if (error) {
-      message.error(error); 
+      message.error(error);
     }
   }, [error]);
 
@@ -36,17 +37,14 @@ const Layout = ({ children }) => {
     );
   }
 
-  
   if (!user) {
-    return null; 
+    return null;
   }
 
   return (
     <div style={{ display: "flex", width: "100%", height: "100%" }}>
       <Sidebar />
-      <main className="content-space" style={{ flexGrow: 1 }}>
-        {children}
-      </main>
+      <Main>{children}</Main>
     </div>
   );
 };

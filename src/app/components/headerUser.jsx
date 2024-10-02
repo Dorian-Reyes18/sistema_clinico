@@ -9,8 +9,6 @@ import Image from "next/image";
 const HeaderUser = ({ currentPath }) => {
   const { user, loading, error } = useAuth();
 
-  console.log(currentPath);
-
   if (loading) {
     return <p>Cargando usuario...</p>;
   }

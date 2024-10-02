@@ -9,8 +9,8 @@ import RecentSurgeries from "../components/home/welcomeMessage";
 import TotalCardSurgeries from "../components/home/totalCardSurgeries";
 
 const HomePage = () => {
-  const { user, loading, error } = useAuth();
   const currentPath = usePathname();
+  const { user, loading, error } = useAuth();
 
   if (loading) {
     return (
@@ -50,9 +50,16 @@ const HomePage = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
-      <div style={{ padding: 30 }}>
+      <div
+        style={{
+          padding: 30,
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+        }}
+      >
         <RecentSurgeries />
-        {/* <TotalCardSurgeries /> */}
+        <TotalCardSurgeries />
       </div>
     </Layout>
   );
