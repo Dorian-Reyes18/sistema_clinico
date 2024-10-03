@@ -15,15 +15,22 @@ const getGreetingMessage = (user) => {
 };
 
 const RecentSurgeries = () => {
-  const { user, loading, recentSurgeries, error } = useAuth();
+  const { user, loading, recentSurgeries, surgeriesPost, error } = useAuth();
   const [surgeryCount, setSurgeryCount] = useState(0);
   const [recentSurgery, setRecentSurgery] = useState(null);
 
   useEffect(() => {
     if (!loading && user) {
-      if (recentSurgeries) {
+      const validSurgeriesPost = Array.isArray(surgeriesPost)
+        ? surgeriesPost
+        : [];
+
+      const allSurgeries = [...recentSurgeries, ...validSurgeriesPost];
+
+      if (allSurgeries.length > 0) {
         const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
-        const recentSurgeryList = recentSurgeries.filter((surgery) => {
+
+        const recentSurgeryList = allSurgeries.filter((surgery) => {
           const surgeryDate = new Date(surgery.fechaDeCreacion);
           return surgeryDate >= fiveDaysAgo;
         });
@@ -34,17 +41,17 @@ const RecentSurgeries = () => {
           setRecentSurgery(recentSurgeryList[0]);
         } else {
           setRecentSurgery(
-            recentSurgeries.reduce((latest, surgery) => {
+            allSurgeries.reduce((latest, surgery) => {
               return new Date(surgery.fechaDeCreacion) >
                 new Date(latest.fechaDeCreacion)
                 ? surgery
                 : latest;
-            }, recentSurgeries[0])
+            }, allSurgeries[0])
           );
         }
       }
     }
-  }, [loading, user, recentSurgeries]);
+  }, [loading, user, recentSurgeries, surgeriesPost]);
 
   const formatDate = (dateString) => {
     const options = { day: "numeric", month: "long", year: "numeric" };
@@ -73,7 +80,7 @@ const RecentSurgeries = () => {
                 </span>
               ) : (
                 <span>
-                  Se agregarón <strong>{surgeryCount} cirugías nuevas</strong>
+                  Se agregaron <strong>{surgeryCount} cirugías nuevas</strong>
                 </span>
               )}{" "}
               en los últimos 5 días.
@@ -109,7 +116,7 @@ const RecentSurgeries = () => {
                   Saludos {getGreetingMessage(user)} {user.nombreYApellido}
                 </h4>
               )}
-              <strong>{error}</strong>
+              {error && <strong>{error}</strong>}
               <p>
                 No se han agregado registros de cirugías en los últimos 5 días.
               </p>
