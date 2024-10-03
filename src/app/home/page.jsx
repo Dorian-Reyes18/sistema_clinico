@@ -7,6 +7,7 @@ import HeaderUser from "../components/headerUser";
 import { usePathname } from "next/navigation";
 import RecentSurgeries from "../components/home/welcomeMessage";
 import TotalCardSurgeries from "../components/home/totalCardSurgeries";
+import SectionCalendar from "../components/home/sectionCalendar";
 
 const HomePage = () => {
   const currentPath = usePathname();
@@ -50,16 +51,12 @@ const HomePage = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
-      <div
-        style={{
-          padding: 30,
-          display: "flex",
-          flexDirection: "column",
-          gap: 30,
-        }}
-      >
-        <RecentSurgeries />
-        <TotalCardSurgeries />
+      <div className="content-container">
+        <div className="son-container">
+          <RecentSurgeries />
+          <TotalCardSurgeries />
+        </div>
+        <SectionCalendar />
       </div>
     </Layout>
   );

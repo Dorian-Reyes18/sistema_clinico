@@ -3,19 +3,13 @@
   gap: 30px;
   flex-wrap: wrap;
   justify-content: center;
-
-  @include media(desktop) {
-    width: 100%;
-  }
-
-  @include media(desktopXXL) {
-    width: 67%;
-  }
+  width: 100%;
+  
   .card-surgeries {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
     width: 250px;
     align-items: center;

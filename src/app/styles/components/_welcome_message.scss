@@ -3,19 +3,12 @@
   background: $color-azul;
   display: flex;
   padding: 23px;
+  width: 100%;
   border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   -ms-border-radius: 20px;
   -o-border-radius: 20px;
-
-  @include media(desktop) {
-    width: 100%;
-  }
-
-  @include media(desktopXXL) {
-    width: 67%;
-  }
 
   .info {
     color: $color-blanco;

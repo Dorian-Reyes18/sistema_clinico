@@ -1,0 +1,35 @@
+.section-calendar {
+  display: flex;
+  padding: 30px;
+  gap: 30px;
+
+  @include media(desktop) {
+    justify-content: flex-start;
+    padding: 0;
+    width: 100%;
+  }
+  @include media(desktopXXL) {
+    justify-content: center;
+    width: 30%;
+  }
+
+  .calendar-container {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    height: fit-content;
+    width: fit-content;
+
+    .react-calendar {
+      border: none;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  }
+}
