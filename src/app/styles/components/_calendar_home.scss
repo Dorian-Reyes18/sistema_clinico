@@ -4,13 +4,15 @@
   gap: 30px;
 
   @include media(desktop) {
-    justify-content: flex-start;
+    justify-content: center;
     padding: 0;
     width: 100%;
   }
   @include media(desktopXXL) {
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
     width: 30%;
+    flex-direction: column;
   }
 
   .calendar-container {
@@ -30,6 +32,40 @@
     h2 {
       text-align: center;
       margin-bottom: 10px;
+    }
+  }
+  .c-recent-surgery-container {
+    background: $color-rosa-opaco;
+    width: 379px;
+    height: 383px;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    border-radius: 39px;
+    -webkit-border-radius: 39px;
+    -moz-border-radius: 39px;
+    -ms-border-radius: 39px;
+    -o-border-radius: 39px;
+
+    @include media(desktop) {
+      height: 100%;
+    }
+    @include media(desktopXXL) {
+      height: 383px;
+    }
+
+    img {
+      width: 85px;
+      height: 85px;
+    }
+
+    .hr {
+      width: 100%;
+      border-top: 1.5px solid;
     }
   }
 }

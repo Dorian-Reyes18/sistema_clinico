@@ -11,6 +11,7 @@ const CalendarHome = () => {
 
   return (
     <div className="calendar-container">
+      <h4 style={{ textAlign: "center" }}>Calendario</h4>
       <Calendar onChange={onChange} value={date} />
     </div>
   );
