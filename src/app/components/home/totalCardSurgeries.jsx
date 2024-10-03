@@ -110,7 +110,7 @@ const TotalCardSurgeries = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="card-container">
       {surgeryTypes.map(({ title, count, Icon }) => (
         <CardSurgeries key={title} Icon={Icon} Title={title} count={count} />
       ))}

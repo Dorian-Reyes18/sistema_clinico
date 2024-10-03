@@ -4,15 +4,22 @@ import Image from "next/image";
 import DefaultIcon from "@images/home/todas.png";
 
 const CardSurgeries = ({ Icon, Title, count }) => {
+  const statusText = count === 1 ? "finalizada" : "finalizadas";
+
   return (
-    <div className="card-surgerie">
+    <div className="card-surgeries">
       <Image className="img" src={Icon || DefaultIcon} alt={Title} />
 
-      <p className="title">{Title === "Total" ? "Total de Cirugías" : `Cirugía ${Title}`}</p>
+      <span className="title">
+        {Title === "Total" ? "Total finalizadas" : `Cirugía ${Title}`}
+      </span>
 
-      <p className="final">
-        <strong>{count} Finalizadas</strong>
-      </p>
+      <span className="final">
+        <strong>
+          <strong style={{ fontSize: 25, marginRight: 10 }}>{count}</strong>{" "}
+          {statusText}
+        </strong>
+      </span>
     </div>
   );
 };

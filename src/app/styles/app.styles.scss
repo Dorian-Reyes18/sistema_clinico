@@ -3,6 +3,7 @@
 @import "./fonts/fonts";
 @import "./variables/variables";
 @import "./global/global.styles";
+@import "./mixins/mixins";
 
 // Componentes
 @import "./components/login";
@@ -10,3 +11,4 @@
 @import "./components/menu_nav";
 @import "./components/welcome_message";
 @import "./components/sidebar";
+@import "./components/card_surgeries";

@@ -55,7 +55,7 @@ const HomePage = () => {
           padding: 30,
           display: "flex",
           flexDirection: "column",
-          gap: 20,
+          gap: 30,
         }}
       >
         <RecentSurgeries />
