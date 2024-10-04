@@ -42,10 +42,10 @@ const CardSurgeryInfo = () => {
             </span>
             <span>{cirugiaMasReciente.paciente.edad} años de edad</span>
             <hr className="hr" />
-            <span>Etapa del procedimiento</span>
+            <span>Tipo de cirugía</span>
 
             <span>
-              <strong> {cirugiaMasReciente.etapa}</strong>
+              <strong> {cirugiaMasReciente.tipoCirugia}</strong>
             </span>
           </>
         ) : (

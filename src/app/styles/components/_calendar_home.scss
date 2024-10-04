@@ -45,11 +45,11 @@
     flex-direction: column;
     gap: 10px;
     text-align: center;
-    border-radius: 39px;
-    -webkit-border-radius: 39px;
-    -moz-border-radius: 39px;
-    -ms-border-radius: 39px;
-    -o-border-radius: 39px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
 
     @include media(desktop) {
       height: 100%;

@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation"; // Importa usePathname para obtener la ruta actual
 import LogoClinica from "@images/logo.svg";
 
 const { Sider } = Layout;
@@ -18,6 +19,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // Obtiene la ruta actual
 
   const handleLogout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -38,34 +40,34 @@ const Sidebar = () => {
 
   const menuItems = [
     {
-      key: "1",
+      key: "/home",
       icon: <HomeOutlined />,
       label: <Link href="/">General</Link>,
     },
     {
-      key: "2",
+      key: "/cirugias",
       icon: <MedicineBoxOutlined />,
       label: <Link href="/cirugias">Cirugías</Link>,
     },
     {
-      key: "3",
+      key: "/pacientes",
       icon: <UsergroupAddOutlined />,
       label: <Link href="/pacientes">Pacientes</Link>,
     },
     {
-      key: "4",
+      key: "/usuarios",
       icon: <UserOutlined />,
       label: <Link href="/usuarios">Usuarios</Link>,
     },
     {
-      key: "6",
+      key: "/configuracion",
       icon: <UserOutlined />,
       label: "Configuración",
       onClick: () => router.push("/configuracion"),
       style: { marginTop: "auto" },
     },
     {
-      key: "5",
+      key: "logout",
       icon: <LogoutOutlined />,
       label: "Cerrar Sesión",
       onClick: handleLogout,
@@ -105,7 +107,7 @@ const Sidebar = () => {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={["1"]}
+        selectedKeys={[pathname === "/" ? "/" : pathname]} // Cambia el estado activo según la ruta
         items={menuItems}
         style={{
           display: "flex",
