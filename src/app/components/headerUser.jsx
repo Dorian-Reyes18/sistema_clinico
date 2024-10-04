@@ -12,22 +12,22 @@ const HeaderUser = ({ currentPath }) => {
   const getPathData = (path) => {
     if (path === "/home") {
       return {
-        label: "General / Datos generales",
+        label: "Datos generales",
         imageSrc: "/images/home/HomeIcon.png",
       };
     } else if (path === "/cirugias") {
       return {
-        label: "Cirugías / Todas las cirugias",
+        label: "Cirugías",
         imageSrc: "/images/home/CirugiasIcon.png",
       };
     } else if (path === "/pacientes") {
       return {
-        label: "Pacientes / Registro",
+        label: "Pacientes",
         imageSrc: "/images/home/PacientesIcon.png",
       };
     } else if (path === "/usuarios") {
       return {
-        label: "Usuarios / Administración",
+        label: "Usuarios",
         imageSrc: "/images/home/UsuariosIcon.png",
       };
     } else {
@@ -51,7 +51,7 @@ const HeaderUser = ({ currentPath }) => {
             gap: 15,
           }}
         >
-          <Image src={imageSrc} alt="Icono saludo" width={20} height={18.18} />
+          <Image src={imageSrc} alt="Icono saludo" width={20} height={20} />
           <span>{label}</span>
         </p>
       </div>

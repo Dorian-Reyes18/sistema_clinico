@@ -19,7 +19,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   const handleLogout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -45,14 +45,14 @@ const Sidebar = () => {
       label: <Link href="/home">General</Link>,
     },
     {
-      key: "/cirugias",
-      icon: <MedicineBoxOutlined />,
-      label: <Link href="/cirugias">Cirugías</Link>,
-    },
-    {
       key: "/pacientes",
       icon: <UsergroupAddOutlined />,
       label: <Link href="/pacientes">Pacientes</Link>,
+    },
+    {
+      key: "/cirugias",
+      icon: <MedicineBoxOutlined />,
+      label: <Link href="/cirugias">Cirugías</Link>,
     },
     {
       key: "/usuarios",
