@@ -42,7 +42,7 @@ const Sidebar = () => {
     {
       key: "/home",
       icon: <HomeOutlined />,
-      label: <Link href="/">General</Link>,
+      label: <Link href="/home">General</Link>,
     },
     {
       key: "/cirugias",

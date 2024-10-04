@@ -4,14 +4,17 @@ const protectedRoutes = ["/home", "/pacientes", "/cirugias", "/usuarios"];
 
 export function middleware(req) {
   const token = req.cookies.get("token");
+  const pathname = req.nextUrl.pathname;
 
-  // Verificar si el token no existe y la ruta está protegida
-  if (!token && protectedRoutes.includes(req.nextUrl.pathname)) {
-    console.log("Redirigiendo a login desde:", req.nextUrl.pathname);
+  console.log("Ruta actual:", pathname);
+  console.log("Token encontrado:", token);
+
+  if (!token && protectedRoutes.includes(pathname)) {
+    console.log("Redirigiendo a login desde:", pathname);
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  console.log("Acceso permitido a:", req.nextUrl.pathname);
+  console.log("Acceso permitido a:", pathname);
   return NextResponse.next();
 }
 

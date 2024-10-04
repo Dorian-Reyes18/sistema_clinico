@@ -1,5 +1,5 @@
 import LoginPage from "./login/page";
-function HomePage() {
+function Index() {
   return (
     <div className="container-general">
       <LoginPage />
@@ -7,4 +7,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Index;
