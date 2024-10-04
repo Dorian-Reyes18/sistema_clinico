@@ -9,29 +9,50 @@ import Image from "next/image";
 const HeaderUser = ({ currentPath }) => {
   const { user, loading, error } = useAuth();
 
-  if (loading) {
-    return <p>Cargando usuario...</p>;
-  }
+  const getPathData = (path) => {
+    if (path === "/home") {
+      return {
+        label: "General / Datos generales",
+        imageSrc: "/images/home/HomeIcon.png",
+      };
+    } else if (path === "/cirugias") {
+      return {
+        label: "Cirugías / Todas las cirugias",
+        imageSrc: "/images/home/CirugiasIcon.png",
+      };
+    } else if (path === "/pacientes") {
+      return {
+        label: "Pacientes / Registro",
+        imageSrc: "/images/home/PacientesIcon.png",
+      };
+    } else if (path === "/usuarios") {
+      return {
+        label: "Usuarios / Administración",
+        imageSrc: "/images/home/UsuariosIcon.png",
+      };
+    } else {
+      return {
+        label: "Ruta no especificada",
+        imageSrc: "/images/DefaultIcon.png",
+      };
+    }
+  };
 
-  if (error) {
-    return <p style={{ color: "red" }}>{error}</p>;
-  }
-
-  if (!user) {
-    return <p>No has iniciado sesión.</p>;
-  }
+  const { label, imageSrc } = getPathData(currentPath);
 
   return (
     <div className="header-user">
       <div>
-        <p style={{ fontSize: 18, display: "flex", alignItems: "center", gap: 15 }}>
-          <Image
-            src="/images/HomeIcon.png"
-            alt="Icono saludo"
-            width={20}
-            height={18.18}
-          />
-          {currentPath === "/home" && <span>General / Datos generales</span>}
+        <p
+          style={{
+            fontSize: 18,
+            display: "flex",
+            alignItems: "center",
+            gap: 15,
+          }}
+        >
+          <Image src={imageSrc} alt="Icono saludo" width={20} height={18.18} />
+          <span>{label}</span>
         </p>
       </div>
       <div style={{ display: "flex", flexDirection: "row", gap: 14 }}>
