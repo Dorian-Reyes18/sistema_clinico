@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation"; // Importa usePathname para obtener la ruta actual
+import { usePathname } from "next/navigation";
 import LogoClinica from "@images/logo.svg";
 
 const { Sider } = Layout;
@@ -19,7 +19,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const pathname = usePathname(); // Obtiene la ruta actual
+  const pathname = usePathname(); 
 
   const handleLogout = () => {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -107,7 +107,7 @@ const Sidebar = () => {
       <Menu
         theme="dark"
         mode="inline"
-        selectedKeys={[pathname === "/" ? "/" : pathname]} // Cambia el estado activo según la ruta
+        selectedKeys={[pathname === "/" ? "/" : pathname]}
         items={menuItems}
         style={{
           display: "flex",

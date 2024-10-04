@@ -14,7 +14,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
-  const { loadData, loading } = useAuth();
+  const { loadData } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -75,7 +75,7 @@ const Login = () => {
           required
           className="form-control"
           placeholder="Escriba su teléfono"
-          disabled={loading || isSubmitting || isRedirecting}
+          disabled={isSubmitting || isRedirecting}
         />
       </div>
       <div className="form-group">
@@ -89,15 +89,15 @@ const Login = () => {
           required
           className="form-control"
           placeholder="Escriba su contraseña"
-          disabled={loading || isSubmitting || isRedirecting}
+          disabled={isSubmitting || isRedirecting}
         />
       </div>
       <button
         className="btn btn-primary btn-rosa"
         type="submit"
-        disabled={loading || isSubmitting || isRedirecting}
+        disabled={isSubmitting || isRedirecting}
       >
-        {loading || isSubmitting || isRedirecting ? (
+        {isSubmitting || isRedirecting ? (
           <Spin size="small" />
         ) : (
           <strong>Iniciar Sesión</strong>
