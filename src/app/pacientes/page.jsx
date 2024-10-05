@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import { Spin } from "antd";
 import HeaderUser from "../components/headerUser";
 import { usePathname } from "next/navigation";
+import AllPatients from "../components/Pacientes/allPatients";
 
 const Pacientes = () => {
   const currentPath = usePathname();
@@ -48,6 +49,7 @@ const Pacientes = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
+      <AllPatients />
     </Layout>
   );
 };

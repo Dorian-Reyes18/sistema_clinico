@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { fetchRecentSurgeries } from "@/services/fetchSurgerys";
 import { fetchUserData } from "@/services/fetchUsers";
 import { fetchSurgeriesPost } from "@/services/fetchSurgerysPost";
+import { fetchPatients } from "@/services/fetchPatients";
 
 const AuthContext = createContext();
 
@@ -13,27 +14,24 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
+  const [patients, setPatients] = useState([]);
 
-  // Helper function to get token from cookies
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
   };
 
-  // Effect to handle authentication and data loading
   useEffect(() => {
     const token = getCookie("token");
-    
+
     if (token) {
       try {
         const decodedToken = jwt.decode(token);
 
-        // Check if token is expired
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          loadData(decodedToken.id, token); // Load user data if valid token
+          loadData(decodedToken.id, token);
         } else {
-          // If token is expired or invalid, clear session
           handleInvalidSession();
         }
       } catch (err) {
@@ -41,18 +39,15 @@ export const AuthProvider = ({ children }) => {
         handleInvalidSession();
       }
     } else {
-      // If no token present, set user as null and stop loading
       handleInvalidSession();
     }
   }, []);
 
-  // Function to handle invalid session (token expired, no token, etc.)
   const handleInvalidSession = () => {
     setUser(null);
     setLoading(false);
   };
 
-  // Function to load user data and other data after verifying token
   const loadData = async (userId, token) => {
     setLoading(true);
     try {
@@ -64,6 +59,9 @@ export const AuthProvider = ({ children }) => {
 
       const allSurgeriesPostData = await fetchSurgeriesPost(token);
       setSurgeriesPost(allSurgeriesPostData);
+
+      const allPatients = await fetchPatients(token);
+      setPatients(allPatients);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -79,6 +77,7 @@ export const AuthProvider = ({ children }) => {
         error,
         recentSurgeries,
         surgeriesPost,
+        patients,
         loadData,
       }}
     >

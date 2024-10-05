@@ -1,0 +1,48 @@
+.container-patients {
+  padding: 30px;
+  width: 100%;
+
+  .container-t {
+    .base {
+      display: grid;
+      gap: 15px;
+      .year-container {
+        display: grid;
+        gap: 20px;
+
+        h3 {
+          margin-bottom: 25px;
+          .month-container {
+          }
+        }
+      }
+    }
+    .center {
+      text-align: center;
+    }
+
+    .table {
+      thead {
+        tr {
+          th {
+            align-content: baseline;
+            text-align: center;
+            @include media(desktop) {
+              font-size: 14px;
+            }
+            @include media(desktopXXL) {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
