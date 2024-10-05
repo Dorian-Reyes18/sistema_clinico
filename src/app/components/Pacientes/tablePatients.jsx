@@ -17,7 +17,6 @@ const TablePatients = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Agrupar los pacientes por año y mes
   const groupPatientsByYearAndMonth = (patients) => {
     return patients.reduce((acc, paciente) => {
       const date = new Date(paciente.fechaIngreso);
@@ -37,7 +36,6 @@ const TablePatients = () => {
     }, {});
   };
 
-  // Función para ordenar los meses en orden descendente (de diciembre a enero)
   const sortMonths = (months) => {
     const monthOrder = [
       "december",
@@ -56,7 +54,6 @@ const TablePatients = () => {
     return months.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
   };
 
-  // Ordenar los pacientes dentro de cada mes por la fecha de ingreso, más recientes primero
   const sortPatientsByDate = (patients) => {
     return patients.sort(
       (a, b) => new Date(b.fechaIngreso) - new Date(a.fechaIngreso)
@@ -64,7 +61,7 @@ const TablePatients = () => {
   };
 
   const groupedPatients = groupPatientsByYearAndMonth(patients);
-  const sortedYears = Object.keys(groupedPatients).sort((a, b) => b - a); // Años más recientes primero
+  const sortedYears = Object.keys(groupedPatients).sort((a, b) => b - a);
 
   return (
     <div className="base">
@@ -75,42 +72,55 @@ const TablePatients = () => {
             className="year-container"
             style={{ marginBottom: "20px" }}
           >
-            {/* Encabezado de año */}
             <h3>{year}</h3>
             <div className="months-container">
-              {sortMonths(Object.keys(groupedPatients[year])).map((month) => (
-                <div
-                  key={month}
-                  className="month-container"
-                  style={{ marginBottom: "15px" }}
-                >
-                  {/* Encabezado de mes */}
-                  <h5>{month}</h5>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">
-                          <strong>Exped</strong>
-                        </th>
-                        <th scope="col">Ingreso</th>
-                        <th scope="col">Nombre completo</th>
-                        <th scope="col">Edad</th>
-                        <th scope="col">Nacimiento</th>
-                        <th scope="col">Telf.1</th>
-                        <th scope="col">Telf.2</th>
-                        <th scope="col">Dep/Munic</th>
-                        <th scope="col">Domicilio</th>
-                        <th scope="col">Conyuge</th>
-                        <th scope="col">Opciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {groupedPatients[year][month].length > 0 ? (
-                        sortPatientsByDate(groupedPatients[year][month]).map(
-                          (paciente) => (
+              {sortMonths(Object.keys(groupedPatients[year])).map((month) => {
+                const monthPatients = groupedPatients[year][month];
+                const recordCount = monthPatients.length;
+                const recordText = recordCount === 1 ? "registro" : "registros";
+
+                return (
+                  <div
+                    key={month}
+                    className="month-container"
+                    style={{ marginBottom: "15px" }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: " center",
+                        gap: 15,
+                      }}
+                    >
+                      <h5>{month}</h5>
+                      <span className="record">
+                        {recordCount} {recordText}
+                      </span>
+                    </div>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">
+                            <strong>Exped</strong>
+                          </th>
+                          <th scope="col">Ingreso</th>
+                          <th scope="col">Nombre completo</th>
+                          <th scope="col">Edad</th>
+                          <th scope="col">Nacimiento</th>
+                          <th scope="col">Telf.1</th>
+                          <th scope="col">Telf.2</th>
+                          <th scope="col">Dep/Munic</th>
+                          <th scope="col">Domicilio</th>
+                          <th scope="col">Conyuge</th>
+                          <th scope="col">Opciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {recordCount > 0 ? (
+                          sortPatientsByDate(monthPatients).map((paciente) => (
                             <tr key={paciente.id}>
                               <td className="center">
-                                {paciente.numeroExpediente}
+                                <strong>{paciente.numeroExpediente}</strong>
                               </td>
                               <td>
                                 {new Date(
@@ -135,20 +145,28 @@ const TablePatients = () => {
                               <td className="center">{paciente.telefono2}</td>
                               <td>{paciente.municipio.nombre}</td>
                               <td>
-                                {paciente.domicilio.length >
-                                (isMobile ? 20 : 50) ? (
+                                {isMobile ? (
+                                  paciente.domicilio.length > 30 ? (
+                                    <Popover
+                                      content={paciente.domicilio}
+                                      title="Dirección Completa"
+                                      trigger="hover"
+                                    >
+                                      <span>
+                                        {paciente.domicilio.slice(0, 25)}...
+                                      </span>
+                                    </Popover>
+                                  ) : (
+                                    <span>{paciente.domicilio}</span>
+                                  )
+                                ) : paciente.domicilio.length > 45 ? (
                                   <Popover
                                     content={paciente.domicilio}
                                     title="Dirección Completa"
                                     trigger="hover"
                                   >
                                     <span>
-                                      {paciente.domicilio.length > 10
-                                        ? `${paciente.domicilio.slice(
-                                            0,
-                                            10
-                                          )}...`
-                                        : paciente.domicilio}
+                                      {paciente.domicilio.slice(0, 40)}...
                                     </span>
                                   </Popover>
                                 ) : (
@@ -157,28 +175,29 @@ const TablePatients = () => {
                               </td>
                               <td className="center">
                                 {paciente.conyuge
-                                  ? paciente.conyuge.edad
-                                  : "Sin conyuge"}{" "}
-                                años
+                                  ? `${paciente.conyuge.edad} años`
+                                  : "No"}
                               </td>
                               <td>
-                                <div>Ed</div>
-                                <div>El</div>
+                                <span className="btnedit center">
+                                  <div>Ed</div>
+                                  <div>El</div>
+                                </span>
                               </td>
                             </tr>
-                          )
-                        )
-                      ) : (
-                        <tr>
-                          <td colSpan="11">
-                            No hay pacientes registrados para este mes.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="11">
+                              No hay pacientes registrados para este mes.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))
