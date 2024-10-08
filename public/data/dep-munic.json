@@ -1,239 +1,237 @@
-[
-  {
-    "departamentos": [
-      {
-        "nombre": "NUEVA SEGOVIA",
-        "municipios": [
-          "JALAPA",
-          "SANTA MARIA",
-          "MACUELIZO",
-          "DIPILTO",
-          "OCOTAL",
-          "MOZONTE",
-          "SAN FERNANDO",
-          "CIUDAD ANTIGUA",
-          "EL JICARO",
-          "MURRA",
-          "QUILALI",
-          "WIWILI-NUEVA SEGOVIA"
-        ]
-      },
-      {
-        "nombre": "MADRIZ",
-        "municipios": [
-          "SOMOTO",
-          "YALAGUINA",
-          "TOTOGALPA",
-          "PALACAGUINA",
-          "TELPANECA",
-          "SAN JUAN DEL RIO COCO",
-          "SAN LUCAS",
-          "LAS SABANAS",
-          "SAN JOSE DE CUSMAPA"
-        ]
-      },
-      {
-        "nombre": "ESTELI",
-        "municipios": [
-          "PUEBLO NUEVO",
-          "CONDEGA",
-          "SAN JUAN DE LIMAY",
-          "ESTELI",
-          "SAN NICOLAS",
-          "LA TRINIDAD"
-        ]
-      },
-      {
-        "nombre": "CHINANDEGA",
-        "municipios": [
-          "SAN PEDRO DEL NORTE",
-          "SANTO TOMAS DEL NORTE",
-          "CINCO PINOS",
-          "SAN FRANCISCO DEL NORTE",
-          "EL VIEJO",
-          "PUERTO MORAZAN",
-          "SOMOTILLO",
-          "VILLA NUEVA",
-          "CORINTO",
-          "EL REALEJO",
-          "CHICHIGALPA",
-          "POSOLTEGA"
-        ]
-      },
-      {
-        "nombre": "LEON",
-        "municipios": [
-          "ACHUAPA",
-          "EL SAUCE",
-          "SANTA ROSA DEL PEÑON",
-          "QUEZALGUAQUE",
-          "TELICA",
-          "LARREYNAGA",
-          "EL JICARAL",
-          "LEON",
-          "LA PAZ CENTRO",
-          "NAGAROTE"
-        ]
-      },
-      {
-        "nombre": "MANAGUA",
-        "municipios": [
-          "SAN FRANCISCO LIBRE",
-          "TIPITAPA",
-          "MATEARE",
-          "VILLA EL CARMEN",
-          "MANAGUA",
-          "SAN RAFAEL DEL SUR",
-          "TICUANTEPE",
-          "EL CRUCERO",
-          "CIUDAD SANDINO"
-        ]
-      },
-      {
-        "nombre": "MASAYA",
-        "municipios": [
-          "NINDIRI",
-          "MASAYA",
-          "CATARINA",
-          "LA CONCEPCION",
-          "MASATEPE",
-          "TISMA",
-          "NANDASMO",
-          "NIQUINOHOMO",
-          "SAN JUAN DE ORIENTE"
-        ]
-      },
-      {
-        "nombre": "CARAZO",
-        "municipios": [
-          "SAN MARCOS",
-          "DIRIAMBA",
-          "DOLORES",
-          "JINOTEPE",
-          "EL ROSARIO",
-          "LA PAZ DE CARAZO",
-          "LA CONQUISTA",
-          "SANTA TERESA"
-        ]
-      },
-      {
-        "nombre": "GRANADA",
-        "municipios": ["GRANADA", "DIRIA", "DIRIOMO", "NANDAIME"]
-      },
-      {
-        "nombre": "RIVAS",
-        "municipios": [
-          "BELEN",
-          "POTOSI",
-          "BUENOS AIRES",
-          "MOYOGALPA",
-          "ALTAGRACIA",
-          "TOLA",
-          "RIVAS",
-          "SAN JORGE",
-          "SAN JUAN DEL SUR",
-          "CARDENAS"
-        ]
-      },
-      {
-        "nombre": "CHONTALES",
-        "municipios": [
-          "COMALAPA",
-          "JUIGALPA",
-          "LA LIBERTAD",
-          "SANTO DOMINGO",
-          "SAN PEDRO DE LOVAGO",
-          "SANTO TOMAS",
-          "ACOYAPA",
-          "VILLA SANDINO",
-          "SAN FRANCISCO DE CUAPA",
-          "EL AYOTE"
-        ]
-      },
-      {
-        "nombre": "BOACO",
-        "municipios": [
-          "SAN JOSE DE LOS REMATES",
-          "SANTA LUCIA",
-          "BOACO",
-          "CAMOAPA",
-          "TEUSTEPE",
-          "SAN LORENZO"
-        ]
-      },
-      {
-        "nombre": "MATAGALPA",
-        "municipios": [
-          "RANCHO GRANDE",
-          "EL TUMA LA DALIA",
-          "RIO BLANCO",
-          "MATAGALPA",
-          "SAN RAMON",
-          "MATIGUAS",
-          "SAN DIONISIO",
-          "ESQUIPULAS",
-          "WASLALA"
-        ]
-      },
-      {
-        "nombre": "JINOTEGA",
-        "municipios": [
-          "WIWILI-JINOTEGA",
-          "EL CUA",
-          "SANTA MARIA DE PANTASMA",
-          "SAN SEBASTIAN DE YALI",
-          "LA CONCORDIA",
-          "SAN RAFAEL DEL NORTE",
-          "JINOTEGA",
-          "SAN JOSE DE BOCAY"
-        ]
-      },
-      {
-        "nombre": "RACCN",
-        "municipios": ["WASPAN", "BILWI", "PRINZAPOLKA"]
-      },
-      {
-        "nombre": "SECTOR MINERO",
-        "municipios": [
-          "ROSITA",
-          "BONANZA",
-          "SIUNA",
-          "MULUKUKU",
-          "BOCANA DE PAIWAS"
-        ]
-      },
-      {
-        "nombre": "RACCS",
-        "municipios": [
-          "LA CRUZ DE RIO GRANDE",
-          "LAGUNA DE PERLAS",
-          "KUKRA HILL",
-          "BLUEFIELDS",
-          "CORN ISLAND",
-          "LA DESEMBOCADURA DE RIO GRANDE",
-          "EL TORTUGUERO"
-        ]
-      },
-      {
-        "nombre": "RIO SAN JUAN",
-        "municipios": [
-          "EL ALMENDRO",
-          "MORRITO",
-          "SAN MIGUELITO",
-          "SAN CARLOS",
-          "EL CASTILLO",
-          "SAN JUAN DE NICARAGUA"
-        ]
-      },
-      {
-        "nombre": "ZELAYA CENTRAL",
-        "municipios": [
-          "EL CORAL",
-          "EL RAMA",
-          "MUELLE DE LOS BUEYES",
-          "NUEVA GUINEA"
-        ]
-      }
-    ]
-  }
-]
+{
+  "departamentos": [
+    {
+      "nombre": "NUEVA SEGOVIA",
+      "municipios": [
+        "JALAPA",
+        "SANTA MARIA",
+        "MACUELIZO",
+        "DIPILTO",
+        "OCOTAL",
+        "MOZONTE",
+        "SAN FERNANDO",
+        "CIUDAD ANTIGUA",
+        "EL JICARO",
+        "MURRA",
+        "QUILALI",
+        "WIWILI-NUEVA SEGOVIA"
+      ]
+    },
+    {
+      "nombre": "MADRIZ",
+      "municipios": [
+        "SOMOTO",
+        "YALAGUINA",
+        "TOTOGALPA",
+        "PALACAGUINA",
+        "TELPANECA",
+        "SAN JUAN DEL RIO COCO",
+        "SAN LUCAS",
+        "LAS SABANAS",
+        "SAN JOSE DE CUSMAPA"
+      ]
+    },
+    {
+      "nombre": "ESTELI",
+      "municipios": [
+        "PUEBLO NUEVO",
+        "CONDEGA",
+        "SAN JUAN DE LIMAY",
+        "ESTELI",
+        "SAN NICOLAS",
+        "LA TRINIDAD"
+      ]
+    },
+    {
+      "nombre": "CHINANDEGA",
+      "municipios": [
+        "SAN PEDRO DEL NORTE",
+        "SANTO TOMAS DEL NORTE",
+        "CINCO PINOS",
+        "SAN FRANCISCO DEL NORTE",
+        "EL VIEJO",
+        "PUERTO MORAZAN",
+        "SOMOTILLO",
+        "VILLA NUEVA",
+        "CORINTO",
+        "EL REALEJO",
+        "CHICHIGALPA",
+        "POSOLTEGA"
+      ]
+    },
+    {
+      "nombre": "LEON",
+      "municipios": [
+        "ACHUAPA",
+        "EL SAUCE",
+        "SANTA ROSA DEL PEÑON",
+        "QUEZALGUAQUE",
+        "TELICA",
+        "LARREYNAGA",
+        "EL JICARAL",
+        "LEON",
+        "LA PAZ CENTRO",
+        "NAGAROTE"
+      ]
+    },
+    {
+      "nombre": "MANAGUA",
+      "municipios": [
+        "SAN FRANCISCO LIBRE",
+        "TIPITAPA",
+        "MATEARE",
+        "VILLA EL CARMEN",
+        "MANAGUA",
+        "SAN RAFAEL DEL SUR",
+        "TICUANTEPE",
+        "EL CRUCERO",
+        "CIUDAD SANDINO"
+      ]
+    },
+    {
+      "nombre": "MASAYA",
+      "municipios": [
+        "NINDIRI",
+        "MASAYA",
+        "CATARINA",
+        "LA CONCEPCION",
+        "MASATEPE",
+        "TISMA",
+        "NANDASMO",
+        "NIQUINOHOMO",
+        "SAN JUAN DE ORIENTE"
+      ]
+    },
+    {
+      "nombre": "CARAZO",
+      "municipios": [
+        "SAN MARCOS",
+        "DIRIAMBA",
+        "DOLORES",
+        "JINOTEPE",
+        "EL ROSARIO",
+        "LA PAZ DE CARAZO",
+        "LA CONQUISTA",
+        "SANTA TERESA"
+      ]
+    },
+    {
+      "nombre": "GRANADA",
+      "municipios": ["GRANADA", "DIRIA", "DIRIOMO", "NANDAIME"]
+    },
+    {
+      "nombre": "RIVAS",
+      "municipios": [
+        "BELEN",
+        "POTOSI",
+        "BUENOS AIRES",
+        "MOYOGALPA",
+        "ALTAGRACIA",
+        "TOLA",
+        "RIVAS",
+        "SAN JORGE",
+        "SAN JUAN DEL SUR",
+        "CARDENAS"
+      ]
+    },
+    {
+      "nombre": "CHONTALES",
+      "municipios": [
+        "COMALAPA",
+        "JUIGALPA",
+        "LA LIBERTAD",
+        "SANTO DOMINGO",
+        "SAN PEDRO DE LOVAGO",
+        "SANTO TOMAS",
+        "ACOYAPA",
+        "VILLA SANDINO",
+        "SAN FRANCISCO DE CUAPA",
+        "EL AYOTE"
+      ]
+    },
+    {
+      "nombre": "BOACO",
+      "municipios": [
+        "SAN JOSE DE LOS REMATES",
+        "SANTA LUCIA",
+        "BOACO",
+        "CAMOAPA",
+        "TEUSTEPE",
+        "SAN LORENZO"
+      ]
+    },
+    {
+      "nombre": "MATAGALPA",
+      "municipios": [
+        "RANCHO GRANDE",
+        "EL TUMA LA DALIA",
+        "RIO BLANCO",
+        "MATAGALPA",
+        "SAN RAMON",
+        "MATIGUAS",
+        "SAN DIONISIO",
+        "ESQUIPULAS",
+        "WASLALA"
+      ]
+    },
+    {
+      "nombre": "JINOTEGA",
+      "municipios": [
+        "WIWILI-JINOTEGA",
+        "EL CUA",
+        "SANTA MARIA DE PANTASMA",
+        "SAN SEBASTIAN DE YALI",
+        "LA CONCORDIA",
+        "SAN RAFAEL DEL NORTE",
+        "JINOTEGA",
+        "SAN JOSE DE BOCAY"
+      ]
+    },
+    {
+      "nombre": "RACCN",
+      "municipios": ["WASPAN", "BILWI", "PRINZAPOLKA"]
+    },
+    {
+      "nombre": "SECTOR MINERO",
+      "municipios": [
+        "ROSITA",
+        "BONANZA",
+        "SIUNA",
+        "MULUKUKU",
+        "BOCANA DE PAIWAS"
+      ]
+    },
+    {
+      "nombre": "RACCS",
+      "municipios": [
+        "LA CRUZ DE RIO GRANDE",
+        "LAGUNA DE PERLAS",
+        "KUKRA HILL",
+        "BLUEFIELDS",
+        "CORN ISLAND",
+        "LA DESEMBOCADURA DE RIO GRANDE",
+        "EL TORTUGUERO"
+      ]
+    },
+    {
+      "nombre": "RIO SAN JUAN",
+      "municipios": [
+        "EL ALMENDRO",
+        "MORRITO",
+        "SAN MIGUELITO",
+        "SAN CARLOS",
+        "EL CASTILLO",
+        "SAN JUAN DE NICARAGUA"
+      ]
+    },
+    {
+      "nombre": "ZELAYA CENTRAL",
+      "municipios": [
+        "EL CORAL",
+        "EL RAMA",
+        "MUELLE DE LOS BUEYES",
+        "NUEVA GUINEA"
+      ]
+    }
+  ]
+}
