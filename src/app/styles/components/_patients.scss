@@ -29,6 +29,8 @@
           .record {
             font-weight: 700;
             color: $color-rosa-oscuro;
+            display: flex;
+            align-items: center;
 
             @include media(desktop) {
               font-size: 13px;

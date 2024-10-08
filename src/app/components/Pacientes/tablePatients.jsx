@@ -1,6 +1,7 @@
 import { useAuth } from "@/app/hooks/authContext";
 import { Popover, Pagination } from "antd";
 import { useEffect, useState, useMemo } from "react";
+import SearchBar from "./Search";
 
 const TablePatients = () => {
   const { patients } = useAuth();
@@ -9,6 +10,7 @@ const TablePatients = () => {
   const [patientsPerPage] = useState(50);
   const [depMunicData, setDepMunicData] = useState([]);
   const [allMonths, setAllMonths] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState(patients);
 
   useEffect(() => {
     const fetchMunicData = async () => {
@@ -32,7 +34,7 @@ const TablePatients = () => {
   }, []);
 
   const groupedPatients = useMemo(() => {
-    return patients.reduce((acc, paciente) => {
+    return filteredPatients.reduce((acc, paciente) => {
       const date = new Date(paciente.fechaIngreso);
       const year = date.getFullYear();
       const month = date
@@ -44,7 +46,7 @@ const TablePatients = () => {
       acc[year][month].push(paciente);
       return acc;
     }, {});
-  }, [patients]);
+  }, [filteredPatients]);
 
   useEffect(() => {
     if (Object.keys(groupedPatients).length > 0) {
@@ -116,6 +118,7 @@ const TablePatients = () => {
 
   return (
     <div className="base">
+      <SearchBar data={patients} onSearch={setFilteredPatients} />
       {paginatedMonths.length > 0 ? (
         paginatedMonths.map(({ year, month, patients }) => (
           <div key={`${year}-${month}`} className="month-container">
@@ -164,15 +167,18 @@ const TablePatients = () => {
       ) : (
         <div>No hay pacientes registrados</div>
       )}
-      <div className="pag-container">
-        <Pagination
-          current={currentPage}
-          pageSize={patientsPerPage}
-          total={allMonths.length}
-          onChange={setCurrentPage}
-          style={{ marginTop: "20px" }}
-        />
-      </div>
+      {/* Mostrar el paginador solo si no hay filtro activo */}
+      {filteredPatients.length === patients.length && (
+        <div className="pag-container">
+          <Pagination
+            current={currentPage}
+            pageSize={patientsPerPage}
+            total={allMonths.length}
+            onChange={setCurrentPage}
+            style={{ marginTop: "20px" }}
+          />
+        </div>
+      )}
     </div>
   );
 };
