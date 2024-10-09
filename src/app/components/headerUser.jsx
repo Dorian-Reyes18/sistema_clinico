@@ -25,6 +25,11 @@ const HeaderUser = ({ currentPath }) => {
         label: "Pacientes",
         imageSrc: "/images/home/PacientesIcon.png",
       };
+    } else if (path === "/pacientes/crearPaciente") {
+      return {
+        label: "Pacientes / Crear paciente",
+        imageSrc: "/images/home/PacientesIcon.png",
+      };
     } else if (path === "/usuarios") {
       return {
         label: "Usuarios",

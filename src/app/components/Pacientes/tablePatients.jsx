@@ -1,17 +1,19 @@
 import { useAuth } from "@/app/hooks/authContext";
 import { Popover, Pagination } from "antd";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import SearchBar from "./Search";
+import CreatePatientButton from "./CreatePatientBtn";
 
 const TablePatients = () => {
   const { patients } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [patientsPerPage] = useState(50);
-  const [depMunicData, setDepMunicData] = useState([]);
+  const [depMunicData, setDepMunicData] = useState(new Map());
   const [allMonths, setAllMonths] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState(patients);
 
+  // Fetch municipal data on mount
   useEffect(() => {
     const fetchMunicData = async () => {
       try {
@@ -19,20 +21,31 @@ const TablePatients = () => {
         if (!response.ok)
           throw new Error("Error al obtener datos de municipios");
         const data = await response.json();
-        setDepMunicData(data);
+
+        // Convert to a Map for faster lookups
+        const depMunicMap = new Map();
+        data.departamentos.forEach((departamento) => {
+          departamento.municipios.forEach((municipio) => {
+            depMunicMap.set(municipio, departamento.nombre);
+          });
+        });
+        setDepMunicData(depMunicMap);
       } catch (error) {
         console.error("Error fetching dep-munic data:", error);
       }
     };
 
+    // Handle screen resize
     const handleResize = () => setIsMobile(window.innerWidth < 1400);
-
     handleResize();
+
     fetchMunicData();
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Group patients by year and month
   const groupedPatients = useMemo(() => {
     return filteredPatients.reduce((acc, paciente) => {
       const date = new Date(paciente.fechaIngreso);
@@ -41,57 +54,77 @@ const TablePatients = () => {
         .toLocaleString("default", { month: "long" })
         .toLowerCase();
 
-      acc[year] = acc[year] || {};
-      acc[year][month] = acc[year][month] || [];
+      if (!acc[year]) acc[year] = {};
+      if (!acc[year][month]) acc[year][month] = [];
+
       acc[year][month].push(paciente);
       return acc;
     }, {});
   }, [filteredPatients]);
 
+  // Update the list of months and patients when groupedPatients changes
   useEffect(() => {
-    if (Object.keys(groupedPatients).length > 0) {
-      const sortedYears = Object.keys(groupedPatients).sort((a, b) => b - a);
-      const monthsArray = sortedYears.flatMap((year) =>
+    const monthsArray = Object.keys(groupedPatients)
+      .sort((a, b) => b - a) // Sort years in descending order
+      .flatMap((year) =>
         Object.keys(groupedPatients[year]).map((month) => ({
           year,
           month,
           patients: groupedPatients[year][month],
         }))
       );
-      setAllMonths(monthsArray);
-    }
+    setAllMonths(monthsArray);
   }, [groupedPatients]);
 
+  // Paginate the grouped months
   const paginatedMonths = useMemo(() => {
     const startIndex = (currentPage - 1) * patientsPerPage;
     return allMonths.slice(startIndex, startIndex + patientsPerPage);
   }, [currentPage, allMonths, patientsPerPage]);
 
-  const findDepartmentByMunicipio = (municipio) => {
-    if (!depMunicData.departamentos) return "Desconocido";
-    const found = depMunicData.departamentos.find((departamento) =>
-      departamento.municipios.includes(municipio)
-    );
-    return found ? found.nombre : "Desconocido";
+  // Helper functions
+  const findDepartmentByMunicipio = useCallback(
+    (municipio) => depMunicData.get(municipio) || "Desconocido",
+    [depMunicData]
+  );
+
+  const formatFullName = (paciente) => {
+    return `${paciente.primerNombre} ${paciente.segundoNombre} ${paciente.primerApellido} ${paciente.segundoApellido}`.trim();
   };
 
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+
+  const truncateAddress = (address) => {
+    const maxLength = isMobile ? 25 : 40;
+    return address.length > maxLength
+      ? `${address.slice(0, maxLength)}...`
+      : address;
+  };
+
+  // Render row for each patient
   const renderPatientRow = (paciente) => (
     <tr key={paciente.id}>
       <td className="center">
         <strong>{paciente.numeroExpediente}</strong>
       </td>
-      <td>{new Date(paciente.fechaIngreso).toLocaleDateString()}</td>
-      <td>{`${paciente.primerNombre} ${paciente.segundoNombre} ${paciente.primerApellido} ${paciente.segundoApellido}`}</td>
+      <td>{formatDate(paciente.fechaIngreso)}</td>
+      <td>{formatFullName(paciente)}</td>
       <td className="center">{paciente.edad}</td>
-      <td className="center">
-        {new Date(paciente.fechaNac).toLocaleDateString()}
-      </td>
+      <td className="center">{formatDate(paciente.fechaNac)}</td>
       <td className="center">{paciente.telefono1}</td>
       <td className="center">{paciente.telefono2}</td>
       <td>{`${paciente.municipio.nombre} - ${findDepartmentByMunicipio(
         paciente.municipio.nombre
       )}`}</td>
-      <td>{renderAddress(paciente.domicilio)}</td>
+      <td>
+        <Popover
+          content={paciente.domicilio}
+          title="Dirección Completa"
+          trigger="hover"
+        >
+          <span>{truncateAddress(paciente.domicilio)}</span>
+        </Popover>
+      </td>
       <td className="center">
         {paciente.conyuge ? `${paciente.conyuge.edad} años` : "No"}
       </td>
@@ -104,31 +137,24 @@ const TablePatients = () => {
     </tr>
   );
 
-  const renderAddress = (domicilio) => {
-    const truncatedAddress =
-      domicilio.length > (isMobile ? 30 : 45)
-        ? domicilio.slice(0, isMobile ? 25 : 40) + "..."
-        : domicilio;
-    return (
-      <Popover content={domicilio} title="Dirección Completa" trigger="hover">
-        <span>{truncatedAddress}</span>
-      </Popover>
-    );
-  };
-
   return (
     <div className="base">
       <div className="actions-inputs">
+        <CreatePatientButton />{" "}
+        {/* Aquí agregamos el botón de Crear Paciente */}
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
+
       {paginatedMonths.length > 0 ? (
         paginatedMonths.map(({ year, month, patients }) => (
           <div key={`${year}-${month}`} className="month-container">
             <div className="text-head">
               <h3>{`${month} - ${year}`}</h3>
-              <span className="record">{`${patients.length} ${
-                patients.length === 1 ? "registro" : "registros"
-              }`}</span>
+              <span className="record">
+                {`${patients.length} ${
+                  patients.length === 1 ? "registro" : "registros"
+                }`}
+              </span>
             </div>
             <table className="table">
               <thead>
@@ -169,6 +195,7 @@ const TablePatients = () => {
       ) : (
         <div>No hay pacientes registrados</div>
       )}
+
       {filteredPatients.length === patients.length && (
         <div className="pag-container">
           <Pagination

@@ -1,7 +1,7 @@
 html {
   height: 100%;
   // overflow-y: hidden;
-  
+
   body {
     background: $color-gris;
     height: 100%;
@@ -43,6 +43,7 @@ html {
   }
 
   .btn {
+    color: $color-blanco;
     width: fit-content;
     padding: 8px 25px;
     border-radius: 25px;
@@ -50,6 +51,10 @@ html {
     -moz-border-radius: 25px;
     -ms-border-radius: 25px;
     -o-border-radius: 25px;
+
+    &:hover {
+      color: $color-blanco;
+    }
   }
   .btn-rosa {
     background-color: $color-rosa !important;
@@ -57,6 +62,17 @@ html {
     &:hover {
       background-color: $color-rosa-oscuro !important;
       border-color: $color-rosa-oscuro !important;
+    }
+    &:focus-visible {
+      box-shadow: $color-shadow-button;
+    }
+  }
+  .btn-azul {
+    background-color: $color-azul !important;
+    border-color: $color-azul !important;
+    &:hover {
+      background-color: $color-azul-oscuro !important;
+      border-color: $color-azul-oscuro !important;
     }
     &:focus-visible {
       box-shadow: $color-shadow-button;

@@ -13,6 +13,10 @@
   .ant-menu {
     background: transparent;
 
+    .ant-menu-sub {
+      background: transparent !important;
+    }
+
     .ant-menu-item {
       &:hover {
         background: $color-rosa-oscuro !important;

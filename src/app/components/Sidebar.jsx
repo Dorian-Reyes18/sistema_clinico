@@ -107,7 +107,17 @@ const Sidebar = () => {
       <Menu
         theme="dark"
         mode="inline"
-        selectedKeys={[pathname === "/" ? "/" : pathname]}
+        selectedKeys={[
+          pathname.startsWith("/pacientes")
+            ? "/pacientes"
+            : pathname.startsWith("/cirugias")
+            ? "/cirugias"
+            : pathname.startsWith("/usuarios")
+            ? "/usuarios"
+            : pathname === "/"
+            ? "/"
+            : pathname,
+        ]}
         items={menuItems}
         style={{
           display: "flex",
