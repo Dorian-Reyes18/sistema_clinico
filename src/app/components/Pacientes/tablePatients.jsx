@@ -13,7 +13,6 @@ const TablePatients = () => {
   const [allMonths, setAllMonths] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState(patients);
 
-  // Fetch municipal data on mount
   useEffect(() => {
     const fetchMunicData = async () => {
       try {
@@ -22,7 +21,6 @@ const TablePatients = () => {
           throw new Error("Error al obtener datos de municipios");
         const data = await response.json();
 
-        // Convert to a Map for faster lookups
         const depMunicMap = new Map();
         data.departamentos.forEach((departamento) => {
           departamento.municipios.forEach((municipio) => {
@@ -35,7 +33,6 @@ const TablePatients = () => {
       }
     };
 
-    // Handle screen resize
     const handleResize = () => setIsMobile(window.innerWidth < 1400);
     handleResize();
 
@@ -45,7 +42,6 @@ const TablePatients = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Group patients by year and month
   const groupedPatients = useMemo(() => {
     return filteredPatients.reduce((acc, paciente) => {
       const date = new Date(paciente.fechaIngreso);
@@ -62,10 +58,9 @@ const TablePatients = () => {
     }, {});
   }, [filteredPatients]);
 
-  // Update the list of months and patients when groupedPatients changes
   useEffect(() => {
     const monthsArray = Object.keys(groupedPatients)
-      .sort((a, b) => b - a) // Sort years in descending order
+      .sort((a, b) => b - a)
       .flatMap((year) =>
         Object.keys(groupedPatients[year]).map((month) => ({
           year,
@@ -76,13 +71,11 @@ const TablePatients = () => {
     setAllMonths(monthsArray);
   }, [groupedPatients]);
 
-  // Paginate the grouped months
   const paginatedMonths = useMemo(() => {
     const startIndex = (currentPage - 1) * patientsPerPage;
     return allMonths.slice(startIndex, startIndex + patientsPerPage);
   }, [currentPage, allMonths, patientsPerPage]);
 
-  // Helper functions
   const findDepartmentByMunicipio = useCallback(
     (municipio) => depMunicData.get(municipio) || "Desconocido",
     [depMunicData]
@@ -101,7 +94,6 @@ const TablePatients = () => {
       : address;
   };
 
-  // Render row for each patient
   const renderPatientRow = (paciente) => (
     <tr key={paciente.id}>
       <td className="center">
@@ -141,7 +133,6 @@ const TablePatients = () => {
     <div className="base">
       <div className="actions-inputs">
         <CreatePatientButton />{" "}
-        {/* Aquí agregamos el botón de Crear Paciente */}
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
 
@@ -193,7 +184,7 @@ const TablePatients = () => {
           </div>
         ))
       ) : (
-        <div>No hay pacientes registrados</div>
+        <div>Ninguna coincidencia de búsqueda</div>
       )}
 
       {filteredPatients.length === patients.length && (

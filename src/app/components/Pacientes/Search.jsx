@@ -47,7 +47,7 @@ const SearchBar = ({ data, onSearch }) => {
     <div className="wrapper">
       <div className="input-wrapper">
         <Input
-          placeholder="Exped, Nomb, Apell, Telf, fecha..."
+          placeholder="Exped, nomb, apell, telf, fecha..."
           value={searchTerm}
           onChange={handleChange}
           className="form-control mb-3"

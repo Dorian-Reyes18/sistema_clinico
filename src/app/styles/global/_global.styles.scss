@@ -63,6 +63,10 @@ html {
       background-color: $color-rosa-oscuro !important;
       border-color: $color-rosa-oscuro !important;
     }
+    &:active {
+      color: $color-blanco !important;
+    }
+
     &:focus-visible {
       box-shadow: $color-shadow-button;
     }
@@ -70,6 +74,11 @@ html {
   .btn-azul {
     background-color: $color-azul !important;
     border-color: $color-azul !important;
+
+    &:active {
+      color: $color-blanco !important;
+    }
+
     &:hover {
       background-color: $color-azul-oscuro !important;
       border-color: $color-azul-oscuro !important;
