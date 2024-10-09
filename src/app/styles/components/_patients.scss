@@ -10,6 +10,38 @@
       display: grid;
       gap: 30px;
 
+      .actions-inputs {
+        display: flex;
+        justify-content: flex-end;
+        .wrapper {
+          position: relative;
+          width: fit-content;
+
+          .input-wrapper {
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            &::before {
+              position: absolute;
+              z-index: 1;
+              content: "";
+              background-image: url("/images/SearchIcon.png");
+              background-size: 27px;
+              width: 27px;
+              height: 20.38px;
+              display: flex;
+              right: 10px;
+            }
+            .form-control {
+              margin: 0 !important;
+              width: 350px;
+            }
+          }
+        }
+      }
+
       .month-container {
         background: $color-blanco;
         padding: 20px;

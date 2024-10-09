@@ -118,7 +118,9 @@ const TablePatients = () => {
 
   return (
     <div className="base">
-      <SearchBar data={patients} onSearch={setFilteredPatients} />
+      <div className="actions-inputs">
+        <SearchBar data={patients} onSearch={setFilteredPatients} />
+      </div>
       {paginatedMonths.length > 0 ? (
         paginatedMonths.map(({ year, month, patients }) => (
           <div key={`${year}-${month}`} className="month-container">
@@ -167,7 +169,6 @@ const TablePatients = () => {
       ) : (
         <div>No hay pacientes registrados</div>
       )}
-      {/* Mostrar el paginador solo si no hay filtro activo */}
       {filteredPatients.length === patients.length && (
         <div className="pag-container">
           <Pagination

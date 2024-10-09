@@ -1,7 +1,7 @@
 html {
   height: 100%;
   // overflow-y: hidden;
-  
+
   body {
     height: 100%;
     color: $color-letra-gris;
@@ -24,6 +24,14 @@ html {
     .form-control {
       border-radius: 23px;
       width: 255px;
+
+      &::placeholder {
+        color: $color-gris-placeholder;
+      }
+
+      &:hover {
+        border: 1px solid $color-rosa;
+      }
 
       &:focus {
         box-shadow: $color-shadow-button;

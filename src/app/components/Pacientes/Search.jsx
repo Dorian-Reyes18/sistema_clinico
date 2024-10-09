@@ -44,12 +44,16 @@ const SearchBar = ({ data, onSearch }) => {
   };
 
   return (
-    <Input
-      placeholder="Buscar..."
-      value={searchTerm}
-      onChange={handleChange}
-      className="form-control mb-3"
-    />
+    <div className="wrapper">
+      <div className="input-wrapper">
+        <Input
+          placeholder="Exped, Nomb, Apell, Telf, fecha..."
+          value={searchTerm}
+          onChange={handleChange}
+          className="form-control mb-3"
+        />
+      </div>
+    </div>
   );
 };
 export default SearchBar;
