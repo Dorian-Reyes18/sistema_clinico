@@ -163,7 +163,7 @@ const TablePatients = () => {
                     "Conyuge",
                     "Opciones",
                   ].map((heading) => (
-                    <th key={heading} scope="col">
+                    <th key={heading} scope="col" className="co">
                       {heading}
                     </th>
                   ))}

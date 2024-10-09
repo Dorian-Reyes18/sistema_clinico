@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
           alignItems: "center",
         }}
       >
-        <Spin size="large" />
+        <Spin size="large" className="spinLayout" />
       </div>
     );
   }

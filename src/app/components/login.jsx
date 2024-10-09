@@ -98,9 +98,8 @@ const Login = () => {
         disabled={isSubmitting || isRedirecting}
       >
         {isSubmitting || isRedirecting ? (
-          <Spin size="small" />
+          <Spin size="small" className="spin-login" />
         ) : (
-          
           <strong>Iniciar Sesión</strong>
         )}
       </button>

@@ -88,10 +88,6 @@ html {
     }
   }
 
-  .custom-spinner .ant-spin-dot {
-    color: pink;
-  }
-
   /* sidebar.css */
   .ant-menu .ant-menu-item,
   .ant-menu .ant-menu-submenu,
@@ -103,9 +99,24 @@ html {
     -o-border-radius: 23px;
   }
 
-  .ant-spin-dot-holder {
+  .spin-login {
     .ant-spin-dot-item {
-      color: $color-blanco !important;
+      color: $color-blanco;
+    }
+  }
+
+  .ant-popover-inner-content {
+    font-size: 14px;
+  }
+
+  .ant-popover-title {
+    font-family: $montserrat-bold;
+    color: $color-letra-gris;
+  }
+
+  .custom-spinner {
+    .ant-spin-dot {
+      color: pink !important;
     }
   }
 }

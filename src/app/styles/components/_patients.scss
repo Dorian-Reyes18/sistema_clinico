@@ -80,12 +80,18 @@
         }
 
         .table {
+          color: $color-gris;
           font-family: $montserrat-regular;
           margin: 0;
 
           thead {
             tr {
+              .co {
+                color: $color-letra-gris;
+                font-family: $montserrat-bold;
+              }
               th {
+                color: $color-letra-gris;
                 align-content: baseline;
                 text-align: center;
                 @include media(desktop) {
@@ -100,6 +106,7 @@
           tbody {
             tr {
               td {
+                color: $color-letra-gris;
                 font-size: 14px;
                 @include media(desktop) {
                   font-size: 13px;
