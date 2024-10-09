@@ -1,8 +1,9 @@
 html {
   height: 100%;
   // overflow-y: hidden;
-
+  
   body {
+    background: $color-gris;
     height: 100%;
     color: $color-letra-gris;
     h1,
@@ -22,6 +23,7 @@ html {
       font-family: $montserrat-regular;
     }
     .form-control {
+      border: 1px solid $border-inputs;
       border-radius: 23px;
       width: 255px;
 
