@@ -41,6 +41,7 @@
       align-items: center;
       padding: 25px;
       width: 50%;
+
       .cont-login {
         form {
           flex-direction: column;
@@ -50,12 +51,6 @@
 
           label {
             margin-bottom: 6px;
-          }
-
-          // Spiner de login
-          :where(.css-dev-only-do-not-override-5wsri9).ant-spin
-            .ant-spin-dot-holder {
-            color: #fff;
           }
         }
       }

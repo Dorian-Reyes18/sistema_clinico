@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
-// Servicios
-import { fetchRecentSurgeries } from "@/services/fetchSurgerys";
-import { fetchUserData } from "@/services/fetchUsers";
-import { fetchSurgeriesPost } from "@/services/fetchSurgerysPost";
-import { fetchPatients } from "@/services/fetchPatients";
+import {
+  fetchRecentSurgeries,
+  fetchUserData,
+  fetchSurgeriesPost,
+  fetchPatients,
+} from "@/services/fetchAllData";
 
 const AuthContext = createContext();
 
@@ -28,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decodedToken = jwt.decode(token);
-
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
           loadData(decodedToken.id, token);
         } else {
@@ -53,13 +53,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await fetchUserData(userId, token);
       setUser(userData);
-
       const recentSurgeriesData = await fetchRecentSurgeries(token);
       setRecentSurgeries(recentSurgeriesData);
-
       const allSurgeriesPostData = await fetchSurgeriesPost(token);
       setSurgeriesPost(allSurgeriesPostData);
-
       const allPatients = await fetchPatients(token);
       setPatients(allPatients);
     } catch (error) {

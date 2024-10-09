@@ -1,14 +1,15 @@
+:where(.css-dev-only-do-not-override-ccdg5a) {
+  .ant-menu-dark {
+    .ant-menu-item,
+    > .ant-menu .ant-menu-item,
+    .ant-menu-submenu-title,
+    > .ant-menu .ant-menu-submenu-title {
+      color: rgb(255, 255, 255);
+    }
+  }
+}
 .ant-layout-sider {
   background: $color-rosa;
-
-  .css-dev-only-do-not-override-5wsri9.ant-menu-dark .ant-menu-item,
-  .css-dev-only-do-not-override-5wsri9.ant-menu-dark > .ant-menu .ant-menu-item,
-  .css-dev-only-do-not-override-5wsri9.ant-menu-dark .ant-menu-submenu-title,
-  .css-dev-only-do-not-override-5wsri9.ant-menu-dark
-    > .ant-menu
-    .ant-menu-submenu-title {
-    color: rgb(255, 255, 255) !important;
-  }
 
   .ant-menu {
     background: transparent;

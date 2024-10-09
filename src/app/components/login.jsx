@@ -100,6 +100,7 @@ const Login = () => {
         {isSubmitting || isRedirecting ? (
           <Spin size="small" />
         ) : (
+          
           <strong>Iniciar Sesión</strong>
         )}
       </button>

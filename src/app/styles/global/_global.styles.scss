@@ -93,4 +93,10 @@ html {
     -ms-border-radius: 23px;
     -o-border-radius: 23px;
   }
+
+  .ant-spin-dot-holder {
+    .ant-spin-dot-item {
+      color: $color-blanco !important;
+    }
+  }
 }

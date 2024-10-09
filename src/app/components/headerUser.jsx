@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/authContext";
 import LogoDoctor from "@images/doctorIcon.svg";
 import LogoUser from "@images/userIcon.svg";
 import Image from "next/image";
+import VolverBtn from "./VolverBtn";
 
 const HeaderUser = ({ currentPath }) => {
   const { user, loading, error } = useAuth();
@@ -56,6 +57,7 @@ const HeaderUser = ({ currentPath }) => {
             gap: 15,
           }}
         >
+          <VolverBtn currentPath={currentPath} /> 
           <Image src={imageSrc} alt="Icono saludo" width={20} height={20} />
           <span>{label}</span>
         </p>
