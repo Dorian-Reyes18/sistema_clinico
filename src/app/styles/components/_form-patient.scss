@@ -46,24 +46,29 @@
             display: flex;
             flex-direction: column;
             gap: 3px;
-
-            .select {
-              min-width: 180px;
-              width: fit-content;
-              max-width: 300px;
-            }
-            .tlf {
-              min-width: 110px;
-              width: fit-content;
-              max-width: 110px;
-            }
-            .value {
-              width: fit-content;
-              max-width: 70px;
-            }
-            .requerido {
-              font-size: 14px;
-            }
+          }
+          .select {
+            min-width: 200px;
+            width: fit-content;
+            max-width: 300px;
+          }
+          .tlf {
+            min-width: 110px;
+            width: fit-content;
+            max-width: 110px;
+          }
+          .value {
+            width: fit-content;
+            max-width: 70px;
+          }
+          .text {
+            width: 150px;
+          }
+          .requerido {
+            font-size: 14px;
+          }
+          .textarea {
+            width: 350px;
           }
         }
       }

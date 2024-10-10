@@ -1,8 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
 import { useAuth } from "@/app/hooks/authContext";
+
+const useDebounce = (callback, delay) => {
+  const timerRef = React.useRef();
+
+  const debouncedCallback = useCallback(
+    (...args) => {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay]
+  );
+
+  return debouncedCallback;
+};
 
 const PacienteForm = ({ conyugeId, onSubmit }) => {
   const { metadata } = useAuth();
@@ -60,9 +76,8 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
     }
   }, [formik.values.fechaNac]);
 
-  useEffect(() => {
-    // Enviar los datos automáticamente cuando los campos requeridos estén llenos
-    if (
+  const handleDebounceSubmit = useDebounce(() => {
+    const isFormValid =
       formik.values.municipioId &&
       formik.values.numeroExpediente &&
       formik.values.primerNombre &&
@@ -74,10 +89,15 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       !formik.errors.primerNombre &&
       !formik.errors.primerApellido &&
       !formik.errors.fechaNac &&
-      !formik.errors.telefono1
-    ) {
+      !formik.errors.telefono1;
+
+    if (isFormValid) {
       formik.submitForm();
     }
+  }, 300); // Ajusta el tiempo de espera según sea necesario
+
+  useEffect(() => {
+    handleDebounceSubmit();
   }, [formik.values, formik.errors]);
 
   const handleDepartamentoChange = (value) => {
@@ -87,6 +107,11 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
     );
     setMunicipiosFiltrados(municipios);
     formik.setFieldValue("municipioId", null);
+  };
+
+  const handleChange = (e) => {
+    formik.handleChange(e);
+    handleDebounceSubmit();
   };
 
   return (
@@ -100,8 +125,8 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           name="silaisId"
           onChange={(value) => {
             formik.setFieldValue("silaisId", value);
-            formik.submitForm(); // Enviar si se cambia este campo
-          }} // Agrega esto
+            formik.submitForm();
+          }}
           value={formik.values.silaisId}
         >
           {metadata.silais.map((item) => (
@@ -138,7 +163,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           name="municipioId"
           onChange={(value) => {
             formik.setFieldValue("municipioId", value);
-            formik.submitForm(); // Enviar si se cambia este campo
+            formik.submitForm();
           }}
           onBlur={formik.handleBlur}
           value={formik.values.municipioId}
@@ -160,12 +185,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="numeroExpediente">Número de Expediente:</label>
         <Input
+          className="text"
           id="numeroExpediente"
           name="numeroExpediente"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm(); // Enviar si se cambia este campo
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.numeroExpediente}
         />
@@ -179,12 +202,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="primerNombre">Primer Nombre:</label>
         <Input
+          className="text"
           id="primerNombre"
           name="primerNombre"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm(); // Enviar si se cambia este campo
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.primerNombre}
         />
@@ -198,12 +219,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="segundoNombre">Segundo Nombre:</label>
         <Input
+          className="text"
           id="segundoNombre"
           name="segundoNombre"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm();
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.segundoNombre}
         />
@@ -217,12 +236,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="primerApellido">Primer Apellido:</label>
         <Input
+          className="text"
           id="primerApellido"
           name="primerApellido"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm(); // Enviar si se cambia este campo
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.primerApellido}
         />
@@ -236,12 +253,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="segundoApellido">Segundo Apellido:</label>
         <Input
+          className="text"
           id="segundoApellido"
           name="segundoApellido"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm();
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.segundoApellido}
         />
@@ -258,10 +273,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           id="fechaNac"
           name="fechaNac"
           type="date"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm(); // Enviar si se cambia este campo
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.fechaNac}
         />
@@ -278,9 +290,8 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           className="value"
           id="edad"
           name="edad"
-          type="number"
+          disabled={true}
           value={formik.values.edad}
-          disabled
         />
       </div>
 
@@ -290,11 +301,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           className="tlf"
           id="telefono1"
           name="telefono1"
-          type="text"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.submitForm();
-          }}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.telefono1}
         />
@@ -311,21 +318,27 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           className="tlf"
           id="telefono2"
           name="telefono2"
-          type="text"
-          onChange={formik.handleChange}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.telefono2}
         />
+        {formik.touched.telefono2 && formik.errors.telefono2 ? (
+          <div className="requerido" style={{ color: "red" }}>
+            {formik.errors.telefono2}
+          </div>
+        ) : null}
       </div>
 
       <div className="item">
         <label htmlFor="domicilio">Domicilio:</label>
         <Input.TextArea
+          className="textarea"
           id="domicilio"
           name="domicilio"
-          onChange={formik.handleChange}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.domicilio}
+          rows={1}
         />
       </div>
     </form>
