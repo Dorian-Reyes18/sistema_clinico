@@ -30,3 +30,6 @@ export const fetchRecentSurgeries = async (token) => {
 export const fetchSurgeriesPost = async (token) => {
   return fetchData("/protected/orden_quirurgica_post", token);
 };
+export const fetchMetadata = async (token) => {
+  return fetchData("/protected/metadata", token);
+};

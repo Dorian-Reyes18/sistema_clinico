@@ -3,9 +3,9 @@
 import { useAuth } from "../../hooks/authContext";
 import Layout from "../../components/layout";
 import { Spin } from "antd";
-import HeaderUser from "../../components/headerUser";
 import { usePathname } from "next/navigation";
-
+import HeaderUser from "../../components/headerUser";
+import AllDataForms from "@/app/components/Pacientes/AllDataForms";
 const CrearPaciente = () => {
   const currentPath = usePathname();
   const { user, loading, error } = useAuth();
@@ -48,6 +48,7 @@ const CrearPaciente = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
+      <AllDataForms />
     </Layout>
   );
 };

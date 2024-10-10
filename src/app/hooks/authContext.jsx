@@ -5,6 +5,7 @@ import {
   fetchUserData,
   fetchSurgeriesPost,
   fetchPatients,
+  fetchMetadata,
 } from "@/services/fetchAllData";
 
 const AuthContext = createContext();
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [metadata, setMetadata] = useState([]);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -59,6 +61,8 @@ export const AuthProvider = ({ children }) => {
       setSurgeriesPost(allSurgeriesPostData);
       const allPatients = await fetchPatients(token);
       setPatients(allPatients);
+      const metadata = await fetchMetadata(token);
+      setMetadata(metadata);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -75,6 +79,7 @@ export const AuthProvider = ({ children }) => {
         recentSurgeries,
         surgeriesPost,
         patients,
+        metadata,
         loadData,
       }}
     >
