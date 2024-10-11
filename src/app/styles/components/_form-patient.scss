@@ -70,6 +70,14 @@
           .textarea {
             width: 350px;
           }
+          .calendar {
+            width: 195px;
+            height: 30px;
+
+            .MuiInputBase-input {
+              padding: 4px 15px !important;
+            }
+          }
         }
       }
     }

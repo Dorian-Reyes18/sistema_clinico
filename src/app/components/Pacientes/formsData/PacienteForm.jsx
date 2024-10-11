@@ -3,6 +3,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
 import { useAuth } from "@/app/hooks/authContext";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
 
 const useDebounce = (callback, delay) => {
   const timerRef = React.useRef();
@@ -19,6 +24,8 @@ const useDebounce = (callback, delay) => {
 
   return debouncedCallback;
 };
+
+dayjs.locale("es");
 
 const PacienteForm = ({ conyugeId, onSubmit }) => {
   const { metadata } = useAuth();
@@ -200,6 +207,62 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       </div>
 
       <div className="item">
+        <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+          <DatePicker
+            id="fechaNac"
+            name="fechaNac"
+            className="calendar"
+            value={
+              formik.values.fechaNac ? dayjs(formik.values.fechaNac) : null
+            }
+            onChange={(date) => {
+              formik.setFieldValue(
+                "fechaNac",
+                date ? date.toISOString() : null
+              );
+              formik.submitForm();
+            }}
+            onBlur={formik.handleBlur}
+            renderInput={(params) => <Input {...params} />}
+          />
+        </LocalizationProvider>
+        {formik.touched.fechaNac && formik.errors.fechaNac ? (
+          <div className="requerido" style={{ color: "red" }}>
+            {formik.errors.fechaNac}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="item">
+        <label htmlFor="edad">Edad:</label>
+        <Input
+          className="value"
+          id="edad"
+          name="edad"
+          disabled={true}
+          value={formik.values.edad}
+        />
+      </div>
+
+      <div className="item">
+        <label htmlFor="telefono1">Teléfono 1:</label>
+        <Input
+          className="tlf"
+          id="telefono1"
+          name="telefono1"
+          onChange={handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.telefono1}
+        />
+        {formik.touched.telefono1 && formik.errors.telefono1 ? (
+          <div className="requerido" style={{ color: "red" }}>
+            {formik.errors.telefono1}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="item">
         <label htmlFor="primerNombre">Primer Nombre:</label>
         <Input
           className="text"
@@ -263,51 +326,6 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
         {formik.touched.segundoApellido && formik.errors.segundoApellido ? (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.segundoApellido}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
-        <Input
-          id="fechaNac"
-          name="fechaNac"
-          type="date"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.fechaNac}
-        />
-        {formik.touched.fechaNac && formik.errors.fechaNac ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.fechaNac}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="edad">Edad:</label>
-        <Input
-          className="value"
-          id="edad"
-          name="edad"
-          disabled={true}
-          value={formik.values.edad}
-        />
-      </div>
-
-      <div className="item">
-        <label htmlFor="telefono1">Teléfono 1:</label>
-        <Input
-          className="tlf"
-          id="telefono1"
-          name="telefono1"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.telefono1}
-        />
-        {formik.touched.telefono1 && formik.errors.telefono1 ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.telefono1}
           </div>
         ) : null}
       </div>
