@@ -242,6 +242,12 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           name="edad"
           disabled={true}
           value={formik.values.edad}
+          style={{
+            color: "#4b4b4b", 
+            backgroundColor: "#fff", 
+            opacity: 1, 
+            cursor: "not-allowed", 
+          }}
         />
       </div>
 
@@ -258,6 +264,23 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
         {formik.touched.telefono1 && formik.errors.telefono1 ? (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.telefono1}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="item">
+        <label htmlFor="telefono2">Teléfono 2:</label>
+        <Input
+          className="tlf"
+          id="telefono2"
+          name="telefono2"
+          onChange={handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.telefono2}
+        />
+        {formik.touched.telefono2 && formik.errors.telefono2 ? (
+          <div className="requerido" style={{ color: "red" }}>
+            {formik.errors.telefono2}
           </div>
         ) : null}
       </div>
@@ -326,23 +349,6 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
         {formik.touched.segundoApellido && formik.errors.segundoApellido ? (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.segundoApellido}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="telefono2">Teléfono 2:</label>
-        <Input
-          className="tlf"
-          id="telefono2"
-          name="telefono2"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.telefono2}
-        />
-        {formik.touched.telefono2 && formik.errors.telefono2 ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.telefono2}
           </div>
         ) : null}
       </div>

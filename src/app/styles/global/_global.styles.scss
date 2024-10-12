@@ -119,4 +119,11 @@ html {
       color: pink !important;
     }
   }
+
+  .ant-menu-item,
+  > .ant-menu .ant-menu-item,
+  .ant-menu-submenu-title,
+  > .ant-menu .ant-menu-submenu-title {
+    color: rgb(255, 255, 255) !important;
+  }
 }
