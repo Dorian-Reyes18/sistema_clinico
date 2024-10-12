@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import ConyugeForm from "./formsData/ConyugeForm";
 import PacienteForm from "./formsData/PacienteForm";
 import DiabetesForm from "./formsData/DiabetesForm";
+import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm"; // Asegúrate de importar el nuevo componente
 
 const AllDataForms = () => {
   const [conyugeData, setConyugeData] = useState(null);
   const [pacienteData, setPacienteData] = useState(null);
   const [diabetesData, setDiabetesData] = useState(null);
+  const [antecedentesData, setAntecedentesData] = useState({
+    opcion: false,
+    descripcion: "",
+  });
 
   const handleConyugeFormSubmit = (data) => {
     setConyugeData(data);
@@ -21,6 +26,11 @@ const AllDataForms = () => {
   const handleDiabetesFormSubmit = (data) => {
     setDiabetesData(data);
     console.log("Datos de diabetes recibidos:", data);
+  };
+
+  const handleAntecedentesSubmit = (data) => {
+    setAntecedentesData(data);
+    console.log("Datos de antecedentes familiares:", data);
   };
 
   return (
@@ -45,7 +55,7 @@ const AllDataForms = () => {
         <div className="group-form">
           <div className="header">
             <span>
-              <strong>Datos del Conyuge</strong>
+              <strong>Datos del Cónyuge</strong>
             </span>
           </div>
           <div className="body">
@@ -63,6 +73,21 @@ const AllDataForms = () => {
             <DiabetesForm
               pacienteId={pacienteData?.id}
               onSubmit={handleDiabetesFormSubmit}
+            />
+          </div>
+        </div>
+
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Antecedentes familiares de defectos</strong>
+            </span>
+          </div>
+          <div className="body">
+            <AntecedentesFamiliaresForm
+              pacienteId={pacienteData?.id}
+              onSubmit={handleAntecedentesSubmit}
+              initialValues={antecedentesData}
             />
           </div>
         </div>
