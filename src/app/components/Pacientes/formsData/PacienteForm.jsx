@@ -190,7 +190,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       </div>
 
       <div className="item">
-        <label htmlFor="numeroExpediente">Número de Expediente:</label>
+        <label htmlFor="numeroExpediente">N° de Expediente:</label>
         <Input
           className="text"
           id="numeroExpediente"

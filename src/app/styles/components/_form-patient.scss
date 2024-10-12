@@ -5,9 +5,10 @@
   flex-direction: column;
 
   .forms-container {
-    display: flex;
     gap: 30px;
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     .group-form {
       background-color: $color-blanco;
@@ -77,6 +78,10 @@
             .MuiInputBase-input {
               padding: 4px 15px !important;
             }
+          }
+          .item-switch {
+            display: flex;
+            gap: 10px;
           }
         }
       }
