@@ -32,13 +32,23 @@ export async function GET(req) {
     try {
       const pacientes = await prisma.paciente.findMany({
         include: {
+          silais: true,
+          municipio: true,
           conyuge: {
             include: {
               sangreRh: true,
             },
           },
-          silais: true,
-          municipio: true,
+          tipoDiabetes: {
+            include: {
+              antecedentesPersonales: true,
+              evaluacionActual: true,
+            },
+          },
+          antecedentesPersonales: true,
+          antecedentesFamiliaresDefectos: true,
+          antecedentesObstetricos: true,
+          embarazoActual: true,
         },
       });
 
@@ -96,7 +106,7 @@ export async function POST(req) {
           telefono2,
           fechaIngreso,
           domicilio,
-          conyugeId: conyugeId ? conyugeId : undefined, // Cambiado aquí
+          conyugeId: conyugeId ? conyugeId : undefined,
         },
         include: {
           silais: true,
@@ -115,16 +125,13 @@ export async function POST(req) {
         { status: 201 }
       );
     } catch (error) {
-      // Detalles del error en la consola
       console.error("Error al crear el paciente:", error);
-
-      // Mensaje amigable para el JSON
       return NextResponse.json(
         {
           error:
             "No se pudo crear el paciente. Verifique los datos proporcionados.",
         },
-        { status: 400 } // O el código de estado que consideres apropiado
+        { status: 400 }
       );
     }
   });
