@@ -4,6 +4,7 @@ import PacienteForm from "./formsData/PacienteForm";
 import DiabetesForm from "./formsData/DiabetesForm";
 import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm";
 import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
+import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 
 const AllDataForms = () => {
   const [conyugeData, setConyugeData] = useState(null);
@@ -21,6 +22,7 @@ const AllDataForms = () => {
     cesarea: "0",
     legrado: "0",
   });
+  const [antecedentesPersonales, setAntecedentesPersonales] = useState();
 
   const handleConyugeFormSubmit = (data) => {
     setConyugeData(data);
@@ -47,6 +49,9 @@ const AllDataForms = () => {
     console.log("Datos obstétricos recibidos:", data);
   };
 
+  const handleAntecedentespersonalesForm = (data) => {
+    console.log("Antecedentes personales recibidos", data);
+  };
   return (
     <div className="patient-form-container">
       <h4>Datos generales del paciente</h4>
@@ -116,6 +121,19 @@ const AllDataForms = () => {
               pacienteId={pacienteData?.id}
               onSubmit={handleAntecedentesObstetricosSubmit}
               initialValues={antObstetricos}
+            />
+          </div>
+        </div>
+        <div className="group-form">
+          <div className="header">
+            <strong>Antecedentes Personales</strong>
+          </div>
+          <div className="body">
+            <AntecedentePersonalesForm
+              pacienteId={pacienteData?.id}
+              diabetesId={diabetesData?.id}
+              onSubmit={handleAntecedentespersonalesForm}
+              initialValues={antecedentesPersonales}
             />
           </div>
         </div>
