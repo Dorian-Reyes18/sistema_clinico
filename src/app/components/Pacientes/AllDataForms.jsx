@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import ConyugeForm from "./formsData/ConyugeForm";
 import PacienteForm from "./formsData/PacienteForm";
 import DiabetesForm from "./formsData/DiabetesForm";
-import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm"; // Asegúrate de importar el nuevo componente
+import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm";
+import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 
 const AllDataForms = () => {
   const [conyugeData, setConyugeData] = useState(null);
@@ -11,6 +12,14 @@ const AllDataForms = () => {
   const [antecedentesData, setAntecedentesData] = useState({
     opcion: false,
     descripcion: "",
+  });
+  const [antObstetricos, setAntObstetricos] = useState({
+    pacienteId: 0,
+    gesta: "0",
+    parto: "0",
+    aborto: "0",
+    cesarea: "0",
+    legrado: "0",
   });
 
   const handleConyugeFormSubmit = (data) => {
@@ -31,6 +40,11 @@ const AllDataForms = () => {
   const handleAntecedentesSubmit = (data) => {
     setAntecedentesData(data);
     console.log("Datos de antecedentes familiares:", data);
+  };
+
+  const handleAntecedentesObstetricosSubmit = (data) => {
+    setAntObstetricos(data);
+    console.log("Datos obstétricos recibidos:", data);
   };
 
   return (
@@ -88,6 +102,20 @@ const AllDataForms = () => {
               pacienteId={pacienteData?.id}
               onSubmit={handleAntecedentesSubmit}
               initialValues={antecedentesData}
+            />
+          </div>
+        </div>
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Antecedentes Obstetricos</strong>
+            </span>
+          </div>
+          <div className="body">
+            <AntecedentesObstForm
+              pacienteId={pacienteData?.id}
+              onSubmit={handleAntecedentesObstetricosSubmit}
+              initialValues={antObstetricos}
             />
           </div>
         </div>
