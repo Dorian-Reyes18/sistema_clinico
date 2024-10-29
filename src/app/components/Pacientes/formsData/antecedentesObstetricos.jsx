@@ -49,6 +49,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
       <div className="item">
         <label htmlFor="gesta">Gesta:</label>
         <Input
+          placeholder="valor..."
           className="value"
           id="gesta"
           name="gesta"
@@ -61,6 +62,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
       <div className="item">
         <label htmlFor="parto">Parto:</label>
         <Input
+          placeholder="valor..."
           className="value"
           id="parto"
           name="parto"
@@ -73,6 +75,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
       <div className="item">
         <label htmlFor="aborto">Aborto:</label>
         <Input
+          placeholder="valor..."
           className="value"
           id="aborto"
           name="aborto"
@@ -85,6 +88,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
       <div className="item">
         <label htmlFor="cesarea">Cesárea:</label>
         <Input
+          placeholder="valor..."
           className="value"
           id="cesarea"
           name="cesarea"
@@ -97,6 +101,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
       <div className="item">
         <label htmlFor="legrado">Legrado:</label>
         <Input
+          placeholder="valor..."
           className="value"
           id="legrado"
           name="legrado"

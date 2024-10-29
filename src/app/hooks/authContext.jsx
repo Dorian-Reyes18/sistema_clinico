@@ -52,21 +52,69 @@ export const AuthProvider = ({ children }) => {
 
   const loadData = async (userId, token) => {
     setLoading(true);
+
+    // Intentamos cargar los datos de la caché
+    const cachedUserData = JSON.parse(sessionStorage.getItem("userData"));
+    const cachedRecentSurgeriesData = JSON.parse(
+      sessionStorage.getItem("recentSurgeriesData")
+    );
+    const cachedSurgeriesPostData = JSON.parse(
+      sessionStorage.getItem("surgeriesPostData")
+    );
+    const cachedPatientsData = JSON.parse(
+      sessionStorage.getItem("patientsData")
+    );
+    const cachedMetadataData = JSON.parse(
+      sessionStorage.getItem("metadataData")
+    );
+
+    // Si hay datos en caché, los mostramos primero
+    if (cachedUserData) setUser(cachedUserData);
+    if (cachedRecentSurgeriesData)
+      setRecentSurgeries(cachedRecentSurgeriesData);
+    if (cachedSurgeriesPostData) setSurgeriesPost(cachedSurgeriesPostData);
+    if (cachedPatientsData) setPatients(cachedPatientsData);
+    if (cachedMetadataData) setMetadata(cachedMetadataData);
+
+    // Ahora hacemos los fetch para actualizar en el fondo
     try {
-      const userData = await fetchUserData(userId, token);
-      setUser(userData);
-      const recentSurgeriesData = await fetchRecentSurgeries(token);
-      setRecentSurgeries(recentSurgeriesData);
-      const allSurgeriesPostData = await fetchSurgeriesPost(token);
-      setSurgeriesPost(allSurgeriesPostData);
-      const allPatients = await fetchPatients(token);
-      setPatients(allPatients);
-      const metadata = await fetchMetadata(token);
-      setMetadata(metadata);
+      await refreshDataInBackground(userId, token);
     } catch (error) {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshDataInBackground = async (userId, token) => {
+    try {
+      const newUserData = await fetchUserData(userId, token);
+      const newRecentSurgeries = await fetchRecentSurgeries(token);
+      const newSurgeriesPost = await fetchSurgeriesPost(token);
+      const newPatients = await fetchPatients(token);
+      const newMetadata = await fetchMetadata(token);
+
+      // Actualizamos los estados y la caché
+      setUser(newUserData);
+      setRecentSurgeries(newRecentSurgeries);
+      setSurgeriesPost(newSurgeriesPost);
+      setPatients(newPatients);
+      setMetadata(newMetadata);
+
+      // Cacheamos los nuevos datos
+      sessionStorage.setItem("userData", JSON.stringify(newUserData));
+      sessionStorage.setItem(
+        "recentSurgeriesData",
+        JSON.stringify(newRecentSurgeries)
+      );
+      sessionStorage.setItem(
+        "surgeriesPostData",
+        JSON.stringify(newSurgeriesPost)
+      );
+      sessionStorage.setItem("patientsData", JSON.stringify(newPatients));
+      sessionStorage.setItem("metadataData", JSON.stringify(newMetadata));
+    } catch (error) {
+      console.error("Error al actualizar en segundo plano:", error);
     }
   };
 

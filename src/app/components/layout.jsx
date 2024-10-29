@@ -21,7 +21,8 @@ const Layout = ({ children }) => {
     }
   }, [error]);
 
-  if (loading) {
+  // Si no hay usuario y no hay datos, mostrar la pantalla de carga
+  if (loading && !user) {
     return (
       <div
         style={{
@@ -37,8 +38,9 @@ const Layout = ({ children }) => {
     );
   }
 
+  // Si no hay usuario pero ya se han cargado datos, no mostrar la pantalla de carga
   if (!user) {
-    return null;
+    return null; 
   }
 
   return (
