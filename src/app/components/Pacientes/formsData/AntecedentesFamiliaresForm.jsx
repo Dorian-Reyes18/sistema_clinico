@@ -6,9 +6,8 @@ const AntecedentesFamiliaresForm = ({
   mode,
   pacienteId,
   onSubmit,
-  initialValues = {}, // Asegúrate de proporcionar un valor por defecto
+  initialValues = {},
 }) => {
-  // Configura los valores iniciales de forma segura
   const formik = useFormik({
     initialValues: {
       opcion: mode === "isEditMode" ? initialValues.opcion || false : false,
@@ -23,17 +22,21 @@ const AntecedentesFamiliaresForm = ({
     },
   });
 
-  console.log(initialValues);
-
   const handleSwitchChange = (checked) => {
     formik.setFieldValue("opcion", checked);
     if (!checked) {
-      formik.setFieldValue("descripcion", ""); // Limpia la descripción si está desactivado
+      formik.setFieldValue("descripcion", "");
     }
   };
 
   const handleBlur = () => {
-    formik.submitForm(); // Envía el formulario al perder el foco
+    const { opcion, descripcion } = formik.values;
+
+    if (opcion && descripcion) {
+      formik.submitForm();
+    } else if (!opcion) {
+      formik.submitForm();
+    }
   };
 
   return (
@@ -51,7 +54,7 @@ const AntecedentesFamiliaresForm = ({
           value={formik.values.descripcion}
           onChange={formik.handleChange}
           onBlur={handleBlur}
-          disabled={!formik.values.opcion} // Deshabilita si "opcion" es false
+          disabled={!formik.values.opcion}
         />
       </div>
     </form>
