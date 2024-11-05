@@ -5,6 +5,7 @@ import DiabetesForm from "./formsData/DiabetesForm";
 import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm";
 import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
+import EmbarazoActual from "./formsData/EmbarazoActual";
 
 const AllDataForms = () => {
   const [conyugeData, setConyugeData] = useState(null);
@@ -52,6 +53,22 @@ const AllDataForms = () => {
   const handleAntecedentespersonalesForm = (data) => {
     console.log("Antecedentes personales recibidos", data);
   };
+  const handleEmbarazoActualForm = (data) => {
+    console.log("Embarazo actual recibido", data);
+  };
+
+  //Anotaciones:  Si estamos en el modo de creación de registros debemos hacer una creación de datos en cadena es decir al accionar el boton guardar se crean las tablas en cadena
+
+  /* 
+  Paciente
+    Creación del cónyuge 
+    Creación del paciente (requiere que exista el cónyuge)
+    Creación de un tipo de diabetes (depende que exista un paciente)
+    Creación de sus ant personales (depende que exista un paciente y un tipo de diabetes)
+    Creación de sus ant familiares de defectos (depende que exista un paciente)
+    Creación de sus ant obstétricos (depende que exista un paciente)
+    Creación de su embarazo actual (depende que exista un paciente)  
+  */
   return (
     <div className="patient-form-container">
       <h4>Datos generales del paciente</h4>
@@ -133,6 +150,18 @@ const AllDataForms = () => {
               pacienteId={pacienteData?.id}
               diabetesId={diabetesData?.id}
               onSubmit={handleAntecedentespersonalesForm}
+              initialValues={antecedentesPersonales}
+            />
+          </div>
+        </div>
+        <div className="group-form">
+          <div className="header">
+            <strong>Antecedentes Personales</strong>
+          </div>
+          <div className="body">
+            <EmbarazoActual
+              pacienteId={pacienteData?.id}
+              onSubmit={handleEmbarazoActualForm}
               initialValues={antecedentesPersonales}
             />
           </div>

@@ -101,7 +101,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
     if (isFormValid) {
       formik.submitForm();
     }
-  }, 300); // Ajusta el tiempo de espera según sea necesario
+  }, 300); 
 
   useEffect(() => {
     handleDebounceSubmit();
