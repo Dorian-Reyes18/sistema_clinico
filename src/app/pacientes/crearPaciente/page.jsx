@@ -3,12 +3,18 @@
 import { useAuth } from "../../hooks/authContext";
 import Layout from "../../components/layout";
 import { Spin } from "antd";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import HeaderUser from "../../components/headerUser";
 import AllDataForms from "@/app/components/Pacientes/AllDataForms";
+
 const CrearPaciente = () => {
   const currentPath = usePathname();
+  const searchParams = useSearchParams();
   const { user, loading, error } = useAuth();
+
+  // Extrae los parámetros de búsqueda
+  const mode = searchParams.get("mode");
+  const id = searchParams.get("id");
 
   if (loading) {
     return (
@@ -48,7 +54,7 @@ const CrearPaciente = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
-      <AllDataForms />
+      <AllDataForms mode={mode} id={id} />
     </Layout>
   );
 };

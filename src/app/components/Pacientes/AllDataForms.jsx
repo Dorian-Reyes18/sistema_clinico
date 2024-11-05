@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ConyugeForm from "./formsData/ConyugeForm";
 import PacienteForm from "./formsData/PacienteForm";
 import DiabetesForm from "./formsData/DiabetesForm";
@@ -6,15 +7,22 @@ import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm";
 import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
+import { useAuth } from "@/app/hooks/authContext";
+import { Spin } from "antd"; // Indicador de carga
 
-const AllDataForms = () => {
-  const [conyugeData, setConyugeData] = useState(null);
-  const [pacienteData, setPacienteData] = useState(null);
-  const [diabetesData, setDiabetesData] = useState(null);
-  const [antecedentesData, setAntecedentesData] = useState({
-    opcion: false,
-    descripcion: "",
+const AllDataForms = ({ mode, id }) => {
+  const router = useRouter();
+  const { patients } = useAuth();
+
+  // Inicializa el modo según el valor de la prop `mode`
+  const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
+  const [recordId, setRecordId] = useState(id || null);
+  const [patientData, setPacienteData] = useState(() => {
+    // Cargar los datos del paciente si están disponibles
+    return patients.find((p) => p.id === parseInt(id)) || null;
   });
+
+  // Estados para cada formulario
   const [antObstetricos, setAntObstetricos] = useState({
     pacienteId: 0,
     gesta: "0",
@@ -23,10 +31,19 @@ const AllDataForms = () => {
     cesarea: "0",
     legrado: "0",
   });
-  const [antecedentesPersonales, setAntecedentesPersonales] = useState();
 
+  // Cargar datos del paciente si estamos en modo de edición
+  useEffect(() => {
+    if (mode === "isEditMode" && id) {
+      const patient = patients.find((p) => p.id === parseInt(id));
+      if (patient) {
+        setPacienteData(patient);
+      }
+    }
+  }, [mode, id, patients]);
+
+  // Funciones de manejo para guardar cada formulario
   const handleConyugeFormSubmit = (data) => {
-    setConyugeData(data);
     console.log("Datos del cónyuge recibidos:", data);
   };
 
@@ -36,12 +53,10 @@ const AllDataForms = () => {
   };
 
   const handleDiabetesFormSubmit = (data) => {
-    setDiabetesData(data);
     console.log("Datos de diabetes recibidos:", data);
   };
 
   const handleAntecedentesSubmit = (data) => {
-    setAntecedentesData(data);
     console.log("Datos de antecedentes familiares:", data);
   };
 
@@ -51,24 +66,24 @@ const AllDataForms = () => {
   };
 
   const handleAntecedentespersonalesForm = (data) => {
+    setAntecedentesPersonales(data);
     console.log("Antecedentes personales recibidos", data);
   };
+
   const handleEmbarazoActualForm = (data) => {
     console.log("Embarazo actual recibido", data);
   };
 
-  //Anotaciones:  Si estamos en el modo de creación de registros debemos hacer una creación de datos en cadena es decir al accionar el boton guardar se crean las tablas en cadena
+  // Función para manejar la creación en cadena
+  const handleSave = async () => {
+    if (isCreateMode) {
+      // Implementar el flujo de creación en cadena
+      alert("Datos creados exitosamente.");
+    } else {
+      alert("Modo de edición aún no implementado.");
+    }
+  };
 
-  /* 
-  Paciente
-    Creación del cónyuge 
-    Creación del paciente (requiere que exista el cónyuge)
-    Creación de un tipo de diabetes (depende que exista un paciente)
-    Creación de sus ant personales (depende que exista un paciente y un tipo de diabetes)
-    Creación de sus ant familiares de defectos (depende que exista un paciente)
-    Creación de sus ant obstétricos (depende que exista un paciente)
-    Creación de su embarazo actual (depende que exista un paciente)  
-  */
   return (
     <div className="patient-form-container">
       <h4>Datos generales del paciente</h4>
@@ -82,8 +97,32 @@ const AllDataForms = () => {
           </div>
           <div className="body">
             <PacienteForm
-              conyugeId={conyugeData?.id}
               onSubmit={handlePacienteFormSubmit}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+            />
+          </div>
+        </div>
+
+        <div className="group-form">
+          <div className="header">
+            <strong>Embarazo actual</strong>
+          </div>
+          <div className="body">
+            <EmbarazoActual
+              onSubmit={handleEmbarazoActualForm}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+            />
+          </div>
+        </div>
+
+        <div className="group-form">
+          <div className="header">
+            <strong>Antecedentes Personales</strong>
+          </div>
+          <div className="body">
+            <AntecedentePersonalesForm
+              onSubmit={handleAntecedentespersonalesForm}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
             />
           </div>
         </div>
@@ -95,7 +134,24 @@ const AllDataForms = () => {
             </span>
           </div>
           <div className="body">
-            <ConyugeForm onSubmit={handleConyugeFormSubmit} />
+            <ConyugeForm
+              onSubmit={handleConyugeFormSubmit}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+            />
+          </div>
+        </div>
+
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Antecedentes Obstetricos</strong>
+            </span>
+          </div>
+          <div className="body">
+            <AntecedentesObstForm
+              onSubmit={handleAntecedentesObstetricosSubmit}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+            />
           </div>
         </div>
 
@@ -107,8 +163,8 @@ const AllDataForms = () => {
           </div>
           <div className="body">
             <DiabetesForm
-              pacienteId={pacienteData?.id}
               onSubmit={handleDiabetesFormSubmit}
+              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
             />
           </div>
         </div>
@@ -121,51 +177,24 @@ const AllDataForms = () => {
           </div>
           <div className="body">
             <AntecedentesFamiliaresForm
-              pacienteId={pacienteData?.id}
+              mode={mode}
               onSubmit={handleAntecedentesSubmit}
-              initialValues={antecedentesData}
+              initialValues={
+                isCreateMode
+                  ? {}
+                  : patientData?.antecedentesFamiliaresDefectos[0] || {
+                      opcion: false,
+                      descripcion: "", // Asegúrate de que siempre tengas estos campos
+                    }
+              }
             />
           </div>
         </div>
-        <div className="group-form">
-          <div className="header">
-            <span>
-              <strong>Antecedentes Obstetricos</strong>
-            </span>
-          </div>
-          <div className="body">
-            <AntecedentesObstForm
-              pacienteId={pacienteData?.id}
-              onSubmit={handleAntecedentesObstetricosSubmit}
-              initialValues={antObstetricos}
-            />
-          </div>
-        </div>
-        <div className="group-form">
-          <div className="header">
-            <strong>Antecedentes Personales</strong>
-          </div>
-          <div className="body">
-            <AntecedentePersonalesForm
-              pacienteId={pacienteData?.id}
-              diabetesId={diabetesData?.id}
-              onSubmit={handleAntecedentespersonalesForm}
-              initialValues={antecedentesPersonales}
-            />
-          </div>
-        </div>
-        <div className="group-form">
-          <div className="header">
-            <strong>Antecedentes Personales</strong>
-          </div>
-          <div className="body">
-            <EmbarazoActual
-              pacienteId={pacienteData?.id}
-              onSubmit={handleEmbarazoActualForm}
-              initialValues={antecedentesPersonales}
-            />
-          </div>
-        </div>
+
+        {/* Botón para guardar los datos */}
+        <button onClick={handleSave}>
+          {isCreateMode ? "Crear en Cadena" : "Guardar Cambios"}
+        </button>
       </div>
     </div>
   );

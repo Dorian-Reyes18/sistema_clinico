@@ -56,9 +56,15 @@
             gap: 3px;
           }
           .select {
-            min-width: 200px;
             width: fit-content;
             max-width: 300px;
+
+            @include media(desktop) {
+              min-width: 150px;
+            }
+            @include media(desktopXXL) {
+              min-width: 200px;
+            }
           }
           .tlf {
             min-width: 110px;

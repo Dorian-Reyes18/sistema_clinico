@@ -25,7 +25,7 @@ const AntecedentePersonalesForm = ({
       neoplasicas: false,
       cardiopatia: false,
       inmunologia: false,
-      ...initialValues, // Incluye los valores iniciales
+      ...initialValues,
     },
     validationSchema: Yup.object({
       sangreRh: Yup.number().required("*Requerido"),
@@ -59,7 +59,7 @@ const AntecedentePersonalesForm = ({
 
   const handleFieldBlur = (e) => {
     formik.handleBlur(e);
-    formik.submitForm(); // Envía el formulario automáticamente al perder el foco
+    formik.submitForm();
   };
 
   return (
@@ -69,7 +69,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.licor}
           onChange={(checked) => formik.setFieldValue("licor", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -77,7 +77,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.drogas}
           onChange={(checked) => formik.setFieldValue("drogas", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -85,7 +85,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.fuma}
           onChange={(checked) => formik.setFieldValue("fuma", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -93,7 +93,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.teratogenicos}
           onChange={(checked) => formik.setFieldValue("teratogenicos", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -101,7 +101,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.hipertension}
           onChange={(checked) => formik.setFieldValue("hipertension", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -109,7 +109,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.epilepsia}
           onChange={(checked) => formik.setFieldValue("epilepsia", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -117,7 +117,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.tiroidea}
           onChange={(checked) => formik.setFieldValue("tiroidea", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -125,7 +125,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.neoplasicas}
           onChange={(checked) => formik.setFieldValue("neoplasicas", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -133,7 +133,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.cardiopatia}
           onChange={(checked) => formik.setFieldValue("cardiopatia", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item-switch">
@@ -141,7 +141,7 @@ const AntecedentePersonalesForm = ({
         <Switch
           checked={formik.values.inmunologia}
           onChange={(checked) => formik.setFieldValue("inmunologia", checked)}
-          onBlur={handleFieldBlur} // Agregar onBlur aquí
+          onBlur={handleFieldBlur}
         />
       </div>
       <div className="item">
@@ -152,7 +152,7 @@ const AntecedentePersonalesForm = ({
           id="sangreRh"
           name="sangreRh"
           onChange={(value) => formik.setFieldValue("sangreRh", value)}
-          onBlur={handleBlurFinalField} // Se mantiene el comportamiento anterior
+          onBlur={handleBlurFinalField}
           value={formik.values.sangreRh}
         >
           {metadata.sangreRH.map((item) => (

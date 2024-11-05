@@ -28,7 +28,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
         .required("*Requerido")
         .min(1, "*Debe ser mayor que 0"),
       ultimaRegla: Yup.date().required("*Requerido"),
-      fechaInicioConsumo: Yup.date().nullable(), // Opcional, puede ser null
+      fechaInicioConsumo: Yup.date().nullable(),
     }),
     onSubmit: (values) => {
       const formData = {
@@ -51,7 +51,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
 
   const calcularIMC = () => {
     if (formik.values.pesoKg && formik.values.talla) {
-      const alturaMetros = formik.values.talla / 100; // Convertir a metros
+      const alturaMetros = formik.values.talla / 100;
       const imc = (
         formik.values.pesoKg /
         (alturaMetros * alturaMetros)
@@ -218,7 +218,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
         </div>
 
         <div className="item">
-          <label htmlFor="imc">IMC:</label>
+          <label htmlFor="imc">IMC</label>
           <Input
             className="value"
             id="imc"
@@ -234,7 +234,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
           />
         </div>
         <div className="item">
-          <label htmlFor="edadGestacional">Edad Gestacional (sem):</label>
+          <label htmlFor="edadGestacional">Edad Gesta(sem):</label>
           <Input
             className="value"
             id="edadGestacional"
