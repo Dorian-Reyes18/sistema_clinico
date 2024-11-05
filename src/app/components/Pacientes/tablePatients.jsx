@@ -1,11 +1,13 @@
 import { useAuth } from "@/app/hooks/authContext";
 import { Popover, Pagination } from "antd";
 import { useEffect, useState, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation"; // Asegúrate de importar useRouter
 import SearchBar from "./Search";
 import CreatePatientButton from "./CreatePatientBtn";
 
 const TablePatients = () => {
   const { patients } = useAuth();
+  const router = useRouter(); // Inicializa el hook useRouter
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [patientsPerPage] = useState(50);
@@ -120,11 +122,15 @@ const TablePatients = () => {
       <td className="center">
         {paciente.conyuge ? `${paciente.conyuge.edad} años` : "No"}
       </td>
-      <td>
-        <span className="btnedit center">
-          <div>Ed</div>
-          <div>El</div>
-        </span>
+      <td className="place">
+        <div
+          className="btn-edit "
+          onClick={() => {
+            router.push(
+              `/pacientes/crearPaciente?mode=isEditMode&id=${paciente.id}`
+            );
+          }}
+        ></div>
       </td>
     </tr>
   );

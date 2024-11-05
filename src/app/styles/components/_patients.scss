@@ -153,15 +153,27 @@
     .center {
       text-align: center;
     }
-    .btnedit {
+    .place {
+      display: revert-layer;
+      place-items: center;
+      place-content: center;
+    }
+    .btn-edit {
       display: flex;
       justify-content: center;
-
-      @include media(desktop) {
-        font-size: 13px;
-      }
-      @include media(desktopXXL) {
-        font-size: 16px;
+      cursor: pointer;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.52939 9.70598H7.35293C6.72889 9.70598 6.13042 9.95388 5.68916 10.3951C5.2479 10.8364 5 11.4349 5 12.0589V22.6471C5 23.2711 5.2479 23.8696 5.68916 24.3108C6.13042 24.7521 6.72889 25 7.35293 25H17.9411C18.5651 25 19.1636 24.7521 19.6049 24.3108C20.0461 23.8696 20.294 23.2711 20.294 22.6471V21.4706M19.1176 7.35305L22.6469 10.8824M24.2764 9.21775C24.7397 8.7544 25 8.12597 25 7.4707C25 6.81543 24.7397 6.187 24.2764 5.72365C23.813 5.2603 23.1846 5 22.5293 5C21.874 5 21.2456 5.2603 20.7823 5.72365L10.8823 15.5883V19.1177H14.4117L24.2764 9.21775Z" stroke="%234B4B4B" stroke-width="2.35293" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+      background-size: 25px;
+      height: 25px;
+      width: 25px;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.5);
+        -webkit-transform: scale(1.5);
+        -moz-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+        -o-transform: scale(1.5);
       }
     }
   }

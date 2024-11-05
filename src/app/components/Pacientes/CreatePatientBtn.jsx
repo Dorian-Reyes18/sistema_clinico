@@ -4,7 +4,7 @@ const CreatePatientButton = () => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/pacientes/crearPaciente");
+    router.push("/pacientes/crearPaciente?mode=isCreateMode"); 
   };
 
   return (
