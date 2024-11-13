@@ -27,10 +27,11 @@ const useDebounce = (callback, delay) => {
 
 dayjs.locale("es");
 
-const PacienteForm = ({ conyugeId, onSubmit }) => {
+const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
+  const [departamentoItem, setDepartamentoItem] = useState({});
 
   const calcularEdad = (fechaNac) => {
     const hoy = new Date();
@@ -45,18 +46,24 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
 
   const formik = useFormik({
     initialValues: {
-      silaisId: null,
-      municipioId: null,
-      numeroExpediente: "",
-      primerNombre: "",
-      segundoNombre: "",
-      primerApellido: "",
-      segundoApellido: "",
-      edad: 0,
+      silaisId: mode === "isEditMode" ? initialValues.silais.id || null : null,
+      municipioId:
+        mode === "isEditMode" ? initialValues.municipio.id || "" : "",
+      numeroExpediente:
+        mode === "isEditMode" ? initialValues.numeroExpediente || "" : "",
+      primerNombre:
+        mode === "isEditMode" ? initialValues.primerNombre || "" : "",
+      segundoNombre:
+        mode === "isEditMode" ? initialValues.segundoNombre || "" : "",
+      primerApellido:
+        mode === "isEditMode" ? initialValues.primerApellido || "" : "",
+      segundoApellido:
+        mode === "isEditMode" ? initialValues.segundoApellido || "" : "",
+      edad: mode === "isEditMode" ? initialValues.edad || null : null,
       fechaNac: "",
-      telefono1: "",
-      telefono2: "",
-      domicilio: "",
+      telefono1: mode === "isEditMode" ? initialValues.telefono1 || "" : "",
+      telefono2: mode === "isEditMode" ? initialValues.telefono2 || "" : "",
+      domicilio: mode === "isEditMode" ? initialValues.domicilio || "" : "",
     },
     validationSchema: Yup.object({
       municipioId: Yup.number().required("*Requerido"),
@@ -101,7 +108,7 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
     if (isFormValid) {
       formik.submitForm();
     }
-  }, 300); 
+  }, 300);
 
   useEffect(() => {
     handleDebounceSubmit();
@@ -147,6 +154,13 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
       <div className="item">
         <label htmlFor="departamentoId">Departamento:</label>
         <Select
+          value={
+            mode === "isEditMode"
+              ? metadata.departamentos.find(
+                  (item) => item.id === initialValues.municipio.departamentoId
+                )?.id
+              : null
+          }
           className="select"
           placeholder="Seleccione..."
           id="departamentoId"
@@ -205,7 +219,11 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           </div>
         ) : null}
       </div>
-
+      {mode === "isCreateMode"
+        ? formik.values.municipioId
+        : metadata.municipios.find((item) => {
+            console.log(item.id === initialValues.municipio.id);
+          })}
       <div className="item">
         <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
@@ -233,7 +251,6 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           </div>
         ) : null}
       </div>
-
       <div className="item">
         <label htmlFor="edad">Edad:</label>
         <Input
@@ -243,10 +260,10 @@ const PacienteForm = ({ conyugeId, onSubmit }) => {
           disabled={true}
           value={formik.values.edad}
           style={{
-            color: "#4b4b4b", 
-            backgroundColor: "#fff", 
-            opacity: 1, 
-            cursor: "not-allowed", 
+            color: "#4b4b4b",
+            backgroundColor: "#fff",
+            opacity: 1,
+            cursor: "not-allowed",
           }}
         />
       </div>

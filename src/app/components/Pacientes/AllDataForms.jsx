@@ -97,8 +97,9 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <PacienteForm
+              mode={mode}
               onSubmit={handlePacienteFormSubmit}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData || {}} // Pasar datos iniciales si no es creación
             />
           </div>
         </div>
@@ -182,9 +183,9 @@ const AllDataForms = ({ mode, id }) => {
               initialValues={
                 isCreateMode
                   ? {}
-                  : patientData?.antecedentesFamiliaresDefectos[0] || {
+                  : patientData?.antecedentesFamiliaresDefectos?.[0] || {
                       opcion: false,
-                      descripcion: "", // Asegúrate de que siempre tengas estos campos
+                      descripcion: "",
                     }
               }
             />
