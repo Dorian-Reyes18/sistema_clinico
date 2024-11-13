@@ -8,11 +8,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import utc from "dayjs/plugin/utc";
+
+dayjs.locale("es");
+dayjs.extend(utc);
 
 const useDebounce = (callback, delay) => {
   const timerRef = React.useRef();
-
-  const debouncedCallback = useCallback(
+  return useCallback(
     (...args) => {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
@@ -21,50 +24,42 @@ const useDebounce = (callback, delay) => {
     },
     [callback, delay]
   );
-
-  return debouncedCallback;
 };
-
-dayjs.locale("es");
 
 const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
-  const [departamentoItem, setDepartamentoItem] = useState({});
 
   const calcularEdad = (fechaNac) => {
     const hoy = new Date();
     const fechaNacimiento = new Date(fechaNac);
     let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
     const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate()))
       edad--;
-    }
     return edad;
   };
 
+  const initialFormikValues = {
+    silaisId: initialValues.silais?.id || null,
+    municipioId: initialValues.municipio?.id || "",
+    numeroExpediente: initialValues.numeroExpediente || "",
+    primerNombre: initialValues.primerNombre || "",
+    segundoNombre: initialValues.segundoNombre || "",
+    primerApellido: initialValues.primerApellido || "",
+    segundoApellido: initialValues.segundoApellido || "",
+    edad: initialValues.edad || null,
+    fechaNac: initialValues.fechaNac
+      ? dayjs(initialValues.fechaNac).utc().format("YYYY-MM-DD")
+      : "",
+    telefono1: initialValues.telefono1 || "",
+    telefono2: initialValues.telefono2 || "",
+    domicilio: initialValues.domicilio || "",
+  };
+
   const formik = useFormik({
-    initialValues: {
-      silaisId: mode === "isEditMode" ? initialValues.silais.id || null : null,
-      municipioId:
-        mode === "isEditMode" ? initialValues.municipio.id || "" : "",
-      numeroExpediente:
-        mode === "isEditMode" ? initialValues.numeroExpediente || "" : "",
-      primerNombre:
-        mode === "isEditMode" ? initialValues.primerNombre || "" : "",
-      segundoNombre:
-        mode === "isEditMode" ? initialValues.segundoNombre || "" : "",
-      primerApellido:
-        mode === "isEditMode" ? initialValues.primerApellido || "" : "",
-      segundoApellido:
-        mode === "isEditMode" ? initialValues.segundoApellido || "" : "",
-      edad: mode === "isEditMode" ? initialValues.edad || null : null,
-      fechaNac: "",
-      telefono1: mode === "isEditMode" ? initialValues.telefono1 || "" : "",
-      telefono2: mode === "isEditMode" ? initialValues.telefono2 || "" : "",
-      domicilio: mode === "isEditMode" ? initialValues.domicilio || "" : "",
-    },
+    initialValues: initialFormikValues,
     validationSchema: Yup.object({
       municipioId: Yup.number().required("*Requerido"),
       numeroExpediente: Yup.string().required("*Requerido"),
@@ -76,7 +71,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     onSubmit: (values) => {
       const pacienteData = {
         ...values,
-        conyugeId: conyugeId,
+        conyugeId,
         edad: calcularEdad(values.fechaNac),
         fechaIngreso: new Date().toISOString(),
       };
@@ -85,29 +80,15 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   });
 
   useEffect(() => {
-    if (formik.values.fechaNac) {
+    if (formik.values.fechaNac)
       formik.setFieldValue("edad", calcularEdad(formik.values.fechaNac));
-    }
   }, [formik.values.fechaNac]);
 
   const handleDebounceSubmit = useDebounce(() => {
-    const isFormValid =
-      formik.values.municipioId &&
-      formik.values.numeroExpediente &&
-      formik.values.primerNombre &&
-      formik.values.primerApellido &&
-      formik.values.fechaNac &&
-      formik.values.telefono1 &&
-      !formik.errors.municipioId &&
-      !formik.errors.numeroExpediente &&
-      !formik.errors.primerNombre &&
-      !formik.errors.primerApellido &&
-      !formik.errors.fechaNac &&
-      !formik.errors.telefono1;
-
-    if (isFormValid) {
-      formik.submitForm();
-    }
+    const isFormValid = Object.keys(formik.values).every(
+      (key) => formik.values[key] && !formik.errors[key]
+    );
+    if (isFormValid) formik.submitForm();
   }, 300);
 
   useEffect(() => {
@@ -120,13 +101,39 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
       (m) => m.departamentoId === value
     );
     setMunicipiosFiltrados(municipios);
-    formik.setFieldValue("municipioId", null);
+    formik.setFieldValue("municipioId", null); // Limpiar municipioId al cambiar de departamento
   };
 
-  const handleChange = (e) => {
-    formik.handleChange(e);
-    handleDebounceSubmit();
-  };
+  // Use useEffect to update the municipio options if in "isEditMode"
+  useEffect(() => {
+    if (mode === "isEditMode" && initialValues.municipio?.departamentoId) {
+      setDepartamentoId(initialValues.municipio.departamentoId);
+      const municipios = metadata.municipios.filter(
+        (m) => m.departamentoId === initialValues.municipio.departamentoId
+      );
+      setMunicipiosFiltrados(municipios);
+    }
+  }, [mode, initialValues.municipio?.departamentoId, metadata.municipios]);
+
+  const renderField = (id, label, type = "text", disabled = false) => (
+    <div className="item">
+      <label htmlFor={id}>{label}:</label>
+      <Input
+        className={type === "text" ? "text" : "tlf"}
+        id={id}
+        name={id}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values[id]}
+        disabled={disabled}
+      />
+      {formik.touched[id] && formik.errors[id] && !initialValues[id] && (
+        <div className="requerido" style={{ color: "red" }}>
+          {formik.errors[id]}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -137,10 +144,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           placeholder="Seleccione..."
           id="silaisId"
           name="silaisId"
-          onChange={(value) => {
-            formik.setFieldValue("silaisId", value);
-            formik.submitForm();
-          }}
+          onChange={(value) => formik.setFieldValue("silaisId", value)}
           value={formik.values.silaisId}
         >
           {metadata.silais.map((item) => (
@@ -154,17 +158,10 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
       <div className="item">
         <label htmlFor="departamentoId">Departamento:</label>
         <Select
-          value={
-            mode === "isEditMode"
-              ? metadata.departamentos.find(
-                  (item) => item.id === initialValues.municipio.departamentoId
-                )?.id
-              : null
-          }
+          value={initialValues.municipio?.departamentoId || departamentoId}
           className="select"
           placeholder="Seleccione..."
           id="departamentoId"
-          name="departamentoId"
           onChange={handleDepartamentoChange}
         >
           {metadata.departamentos.map((item) => (
@@ -182,13 +179,10 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           placeholder="Seleccione..."
           id="municipioId"
           name="municipioId"
-          onChange={(value) => {
-            formik.setFieldValue("municipioId", value);
-            formik.submitForm();
-          }}
+          onChange={(value) => formik.setFieldValue("municipioId", value)}
           onBlur={formik.handleBlur}
-          value={formik.values.municipioId}
-          disabled={!departamentoId}
+          value={formik.values.municipioId || initialValues.municipio?.id}
+          disabled={!departamentoId && mode !== "isEditMode"} // Se mantiene habilitado en el modo edición
         >
           {municipiosFiltrados.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -196,34 +190,22 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             </Select.Option>
           ))}
         </Select>
-        {formik.touched.municipioId && formik.errors.municipioId ? (
+        {formik.touched.municipioId && formik.errors.municipioId && (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.municipioId}
           </div>
-        ) : null}
+        )}
       </div>
 
-      <div className="item">
-        <label htmlFor="numeroExpediente">N° de Expediente:</label>
-        <Input
-          className="text"
-          id="numeroExpediente"
-          name="numeroExpediente"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.numeroExpediente}
-        />
-        {formik.touched.numeroExpediente && formik.errors.numeroExpediente ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.numeroExpediente}
-          </div>
-        ) : null}
-      </div>
-      {mode === "isCreateMode"
-        ? formik.values.municipioId
-        : metadata.municipios.find((item) => {
-            console.log(item.id === initialValues.municipio.id);
-          })}
+      {renderField("numeroExpediente", "N° de Expediente")}
+      {renderField("primerNombre", "Primer Nombre")}
+      {renderField("segundoNombre", "Segundo Nombre")}
+      {renderField("primerApellido", "Primer Apellido")}
+      {renderField("segundoApellido", "Segundo Apellido")}
+      {renderField("telefono1", "Teléfono 1")}
+      {renderField("telefono2", "Teléfono 2")}
+      {renderField("domicilio", "Domicilio", "textarea")}
+
       <div className="item">
         <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
@@ -234,153 +216,14 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             value={
               formik.values.fechaNac ? dayjs(formik.values.fechaNac) : null
             }
-            onChange={(date) => {
-              formik.setFieldValue(
-                "fechaNac",
-                date ? date.toISOString() : null
-              );
-              formik.submitForm();
-            }}
-            onBlur={formik.handleBlur}
-            renderInput={(params) => <Input {...params} />}
+            onChange={(date) => formik.setFieldValue("fechaNac", date)}
           />
         </LocalizationProvider>
-        {formik.touched.fechaNac && formik.errors.fechaNac ? (
+        {formik.touched.fechaNac && formik.errors.fechaNac && !initialValues.fechaNac && (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.fechaNac}
           </div>
-        ) : null}
-      </div>
-      <div className="item">
-        <label htmlFor="edad">Edad:</label>
-        <Input
-          className="value"
-          id="edad"
-          name="edad"
-          disabled={true}
-          value={formik.values.edad}
-          style={{
-            color: "#4b4b4b",
-            backgroundColor: "#fff",
-            opacity: 1,
-            cursor: "not-allowed",
-          }}
-        />
-      </div>
-
-      <div className="item">
-        <label htmlFor="telefono1">Teléfono 1:</label>
-        <Input
-          className="tlf"
-          id="telefono1"
-          name="telefono1"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.telefono1}
-        />
-        {formik.touched.telefono1 && formik.errors.telefono1 ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.telefono1}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="telefono2">Teléfono 2:</label>
-        <Input
-          className="tlf"
-          id="telefono2"
-          name="telefono2"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.telefono2}
-        />
-        {formik.touched.telefono2 && formik.errors.telefono2 ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.telefono2}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="primerNombre">Primer Nombre:</label>
-        <Input
-          className="text"
-          id="primerNombre"
-          name="primerNombre"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.primerNombre}
-        />
-        {formik.touched.primerNombre && formik.errors.primerNombre ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.primerNombre}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="segundoNombre">Segundo Nombre:</label>
-        <Input
-          className="text"
-          id="segundoNombre"
-          name="segundoNombre"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.segundoNombre}
-        />
-        {formik.touched.segundoNombre && formik.errors.segundoNombre ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.segundoNombre}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="primerApellido">Primer Apellido:</label>
-        <Input
-          className="text"
-          id="primerApellido"
-          name="primerApellido"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.primerApellido}
-        />
-        {formik.touched.primerApellido && formik.errors.primerApellido ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.primerApellido}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="segundoApellido">Segundo Apellido:</label>
-        <Input
-          className="text"
-          id="segundoApellido"
-          name="segundoApellido"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.segundoApellido}
-        />
-        {formik.touched.segundoApellido && formik.errors.segundoApellido ? (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.segundoApellido}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="item">
-        <label htmlFor="domicilio">Domicilio:</label>
-        <Input.TextArea
-          className="textarea"
-          id="domicilio"
-          name="domicilio"
-          onChange={handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.domicilio}
-          rows={1}
-        />
+        )}
       </div>
     </form>
   );
