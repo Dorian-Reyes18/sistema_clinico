@@ -32,6 +32,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
 
   const calcularEdad = (fechaNac) => {
+    if (!fechaNac) return null;
     const hoy = new Date();
     const fechaNacimiento = new Date(fechaNac);
     let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
@@ -80,9 +81,13 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   });
 
   useEffect(() => {
-    if (formik.values.fechaNac)
+    if (mode === "isEditMode" && initialValues.fechaNac) {
+      formik.setFieldValue("edad", initialValues.edad);
+    }
+    if (mode === "isCreateMode" && formik.values.fechaNac) {
       formik.setFieldValue("edad", calcularEdad(formik.values.fechaNac));
-  }, [formik.values.fechaNac]);
+    }
+  }, [formik.values.fechaNac, mode, initialValues]);
 
   const handleDebounceSubmit = useDebounce(() => {
     const isFormValid = Object.keys(formik.values).every(
@@ -101,10 +106,9 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
       (m) => m.departamentoId === value
     );
     setMunicipiosFiltrados(municipios);
-    formik.setFieldValue("municipioId", null); // Limpiar municipioId al cambiar de departamento
+    formik.setFieldValue("municipioId", null);
   };
 
-  // Use useEffect to update the municipio options if in "isEditMode"
   useEffect(() => {
     if (mode === "isEditMode" && initialValues.municipio?.departamentoId) {
       setDepartamentoId(initialValues.municipio.departamentoId);
@@ -181,8 +185,8 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           name="municipioId"
           onChange={(value) => formik.setFieldValue("municipioId", value)}
           onBlur={formik.handleBlur}
-          value={formik.values.municipioId || initialValues.municipio?.id}
-          disabled={!departamentoId && mode !== "isEditMode"} // Se mantiene habilitado en el modo edición
+          value={formik.values.municipioId || ""}
+          disabled={!departamentoId && mode !== "isEditMode"}
         >
           {municipiosFiltrados.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -219,11 +223,33 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             onChange={(date) => formik.setFieldValue("fechaNac", date)}
           />
         </LocalizationProvider>
-        {formik.touched.fechaNac && formik.errors.fechaNac && !initialValues.fechaNac && (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.fechaNac}
-          </div>
-        )}
+        {formik.touched.fechaNac &&
+          formik.errors.fechaNac &&
+          !initialValues.fechaNac && (
+            <div className="requerido" style={{ color: "red" }}>
+              {formik.errors.fechaNac}
+            </div>
+          )}
+      </div>
+      <div className="item">
+        <label htmlFor="edad">Edad:</label>
+        <Input
+          className="value"
+          id="edad"
+          name="edad"
+          disabled={true}
+          value={
+            mode === "isCreateMode"
+              ? calcularEdad(formik.values.fechaNac) || ""
+              : formik.values.edad
+          }
+          style={{
+            color: "#4b4b4b",
+            backgroundColor: "#fff",
+            opacity: 1,
+            cursor: "not-allowed",
+          }}
+        />
       </div>
     </form>
   );
