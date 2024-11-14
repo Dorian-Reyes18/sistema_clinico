@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
@@ -12,19 +12,6 @@ import utc from "dayjs/plugin/utc";
 
 dayjs.locale("es");
 dayjs.extend(utc);
-
-const useDebounce = (callback, delay) => {
-  const timerRef = React.useRef();
-  return useCallback(
-    (...args) => {
-      clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    },
-    [callback, delay]
-  );
-};
 
 const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
@@ -89,15 +76,13 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [formik.values.fechaNac, mode, initialValues]);
 
-  const handleDebounceSubmit = useDebounce(() => {
-    const isFormValid = Object.keys(formik.values).every(
-      (key) => formik.values[key] && !formik.errors[key]
-    );
-    if (isFormValid) formik.submitForm();
-  }, 300);
-
   useEffect(() => {
-    handleDebounceSubmit();
+    // Verificar si el formulario es válido y enviarlo si es así
+    const isFormValid =
+      Object.keys(formik.errors).length === 0 && formik.isValid;
+    if (isFormValid) {
+      formik.submitForm();
+    }
   }, [formik.values, formik.errors]);
 
   const handleDepartamentoChange = (value) => {
