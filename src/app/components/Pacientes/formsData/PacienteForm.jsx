@@ -76,17 +76,19 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [formik.values.fechaNac, mode, initialValues]);
 
-  useEffect(() => {
-    // Verificar si el formulario es válido y enviarlo si es así
-    const isFormValid =
-      Object.keys(formik.errors).length === 0 && formik.isValid;
-    if (isFormValid) {
-      formik.submitForm();
-    }
-  }, [formik.values, formik.errors]);
+  // useEffect(() => {
+  //   // Verificar si el formulario es válido y enviarlo si es así
+  //   const isFormValid =
+  //     Object.keys(formik.errors).length === 0 && formik.isValid;
+
+  //   if (isFormValid) {
+  //     formik.submitForm();
+  //   }
+  // }, [formik.values, formik.errors]);
 
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
+
     const municipios = metadata.municipios.filter(
       (m) => m.departamentoId === value
     );
@@ -104,18 +106,43 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [mode, initialValues.municipio?.departamentoId, metadata.municipios]);
 
-  const renderField = (id, label, type = "text", disabled = false) => (
-    <div className="item">
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e); // Mantiene el comportamiento normal de Blur
+    // Solo llamar submitForm en Blur, no en Change
+    formik.submitForm();
+  };
+
+  const renderField = (
+    id,
+    label,
+    type = "text",
+    clase = "item",
+    disabled = false
+  ) => (
+    <div className={clase}>
       <label htmlFor={id}>{label}:</label>
-      <Input
-        className={type === "text" ? "text" : "tlf"}
-        id={id}
-        name={id}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values[id]}
-        disabled={disabled}
-      />
+      {type === "textarea" ? (
+        <Input.TextArea
+          rows={1}
+          className={clase}
+          id={id}
+          name={id}
+          onChange={(e) => formik.setFieldValue(id, e.target.value)} 
+          value={formik.values[id]}
+          disabled={disabled}
+        />
+      ) : (
+        <Input
+          className={clase}
+          id={id}
+          type={type}
+          name={id}
+          onChange={(e) => formik.setFieldValue(id, e.target.value)} 
+          onBlur={handleFieldBlur} 
+          value={formik.values[id]}
+          disabled={disabled}
+        />
+      )}
       {formik.touched[id] && formik.errors[id] && !initialValues[id] && (
         <div className="requerido" style={{ color: "red" }}>
           {formik.errors[id]}
@@ -135,6 +162,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           name="silaisId"
           onChange={(value) => formik.setFieldValue("silaisId", value)}
           value={formik.values.silaisId}
+          onBlur={handleFieldBlur}
         >
           {metadata.silais.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -152,6 +180,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           placeholder="Seleccione..."
           id="departamentoId"
           onChange={handleDepartamentoChange}
+          onBlur={handleFieldBlur}
         >
           {metadata.departamentos.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -169,7 +198,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           id="municipioId"
           name="municipioId"
           onChange={(value) => formik.setFieldValue("municipioId", value)}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
           value={formik.values.municipioId || ""}
           disabled={!departamentoId && mode !== "isEditMode"}
         >
@@ -186,14 +215,13 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
         )}
       </div>
 
-      {renderField("numeroExpediente", "N° de Expediente")}
+      {renderField("numeroExpediente", "N° de Expediente", "number", "text")}
       {renderField("primerNombre", "Primer Nombre")}
       {renderField("segundoNombre", "Segundo Nombre")}
       {renderField("primerApellido", "Primer Apellido")}
       {renderField("segundoApellido", "Segundo Apellido")}
-      {renderField("telefono1", "Teléfono 1")}
-      {renderField("telefono2", "Teléfono 2")}
-      {renderField("domicilio", "Domicilio", "textarea")}
+      {renderField("telefono1", "Teléfono 1", "number", "tlf")}
+      {renderField("telefono2", "Teléfono 2", "number", "tlf")}
 
       <div className="item">
         <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
@@ -236,6 +264,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           }}
         />
       </div>
+      {renderField("domicilio", "Domicilio", "textarea", "textarea")}
     </form>
   );
 };
