@@ -17,6 +17,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
+  const [isFirstSubmitDone, setIsFirstSubmitDone] = useState(false); // Para controlar el primer envío
 
   const calcularEdad = (fechaNac) => {
     if (!fechaNac) return null;
@@ -58,7 +59,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             segundoNombre: "",
             primerApellido: "",
             segundoApellido: "",
-            edad: null, 
+            edad: null,
             fechaNac: null,
             telefono1: null,
             telefono2: null,
@@ -92,6 +93,16 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [formik.values.fechaNac, mode, initialValues]);
 
+  useEffect(() => {
+    if (formik.values.fechaNac) {
+      // Cada vez que se cambia la fecha, forzamos el envío del formulario
+      if (!isFirstSubmitDone) {
+        formik.submitForm();
+        setIsFirstSubmitDone(true);
+      }
+    }
+  }, [formik.values.fechaNac, isFirstSubmitDone, formik]);
+
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
@@ -114,7 +125,19 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
 
   const handleFieldBlur = (e) => {
     formik.handleBlur(e);
-    formik.submitForm();
+    if (mode === "isCreateMode") {
+      if (
+        Object.values(formik.values).every((value) => value !== "") && // Comprobamos si todos los campos requeridos están completos
+        !isFirstSubmitDone
+      ) {
+        formik.submitForm();
+        setIsFirstSubmitDone(true); // Marca que el primer envío se ha hecho
+      } else {
+        formik.submitForm(); // Para cada cambio posterior, solo se enviará si hay un cambio
+      }
+    } else {
+      formik.submitForm();
+    }
   };
 
   const renderField = (
@@ -135,6 +158,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
           value={formik.values[id]}
           disabled={disabled}
+          onBlur={handleFieldBlur}
         />
       ) : (
         <Input
@@ -238,7 +262,10 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             value={
               formik.values.fechaNac ? dayjs(formik.values.fechaNac) : null
             }
-            onChange={(date) => formik.setFieldValue("fechaNac", date)}
+            onChange={(date) => {
+              formik.setFieldValue("fechaNac", date);
+              formik.submitForm(); 
+            }}
             onBlur={handleFieldBlur}
           />
         </LocalizationProvider>
@@ -257,6 +284,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           id="edad"
           name="edad"
           disabled={true}
+          onBlur={handleFieldBlur}
           value={
             mode === "isCreateMode"
               ? calcularEdad(formik.values.fechaNac) || ""
