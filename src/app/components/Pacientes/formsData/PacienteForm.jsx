@@ -47,7 +47,23 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   };
 
   const formik = useFormik({
-    initialValues: initialFormikValues,
+    initialValues:
+      mode === "isEditMode"
+        ? initialFormikValues
+        : {
+            silaisId: null,
+            municipioId: null,
+            numeroExpediente: null,
+            primerNombre: "",
+            segundoNombre: "",
+            primerApellido: "",
+            segundoApellido: "",
+            edad: null, 
+            fechaNac: null,
+            telefono1: null,
+            telefono2: null,
+            domicilio: "",
+          },
     validationSchema: Yup.object({
       municipioId: Yup.number().required("*Requerido"),
       numeroExpediente: Yup.string().required("*Requerido"),
@@ -76,16 +92,6 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [formik.values.fechaNac, mode, initialValues]);
 
-  // useEffect(() => {
-  //   // Verificar si el formulario es válido y enviarlo si es así
-  //   const isFormValid =
-  //     Object.keys(formik.errors).length === 0 && formik.isValid;
-
-  //   if (isFormValid) {
-  //     formik.submitForm();
-  //   }
-  // }, [formik.values, formik.errors]);
-
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
@@ -107,8 +113,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   }, [mode, initialValues.municipio?.departamentoId, metadata.municipios]);
 
   const handleFieldBlur = (e) => {
-    formik.handleBlur(e); // Mantiene el comportamiento normal de Blur
-    // Solo llamar submitForm en Blur, no en Change
+    formik.handleBlur(e);
     formik.submitForm();
   };
 
@@ -127,7 +132,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           className={clase}
           id={id}
           name={id}
-          onChange={(e) => formik.setFieldValue(id, e.target.value)} 
+          onChange={(e) => formik.setFieldValue(id, e.target.value)}
           value={formik.values[id]}
           disabled={disabled}
         />
@@ -137,8 +142,8 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
           id={id}
           type={type}
           name={id}
-          onChange={(e) => formik.setFieldValue(id, e.target.value)} 
-          onBlur={handleFieldBlur} 
+          onChange={(e) => formik.setFieldValue(id, e.target.value)}
+          onBlur={handleFieldBlur}
           value={formik.values[id]}
           disabled={disabled}
         />
@@ -234,6 +239,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
               formik.values.fechaNac ? dayjs(formik.values.fechaNac) : null
             }
             onChange={(date) => formik.setFieldValue("fechaNac", date)}
+            onBlur={handleFieldBlur}
           />
         </LocalizationProvider>
         {formik.touched.fechaNac &&
