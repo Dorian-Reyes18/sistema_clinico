@@ -51,36 +51,47 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
       fechaInicioConsumo: Yup.date().nullable(),
     }),
     onSubmit: (values) => {
+      calcularEdadGestacional();
       const formData = {
         pacienteId: pacienteId,
         ...values,
       };
-
       onSubmit(formData);
     },
   });
+
   useEffect(() => {
     const { pesoKg, talla } = formik.values;
 
     if (pesoKg > 0 && talla > 0) {
       calcularIMC(pesoKg, talla);
     }
-  }, [formik.values.pesoKg, formik.values.talla]); // Dependencias: solo se activa cuando cambia alguno de estos dos campos
+  }, [formik.values.pesoKg, formik.values.talla]);
 
   const calcularEdadGestacional = () => {
-    if (formik.values.fechaEmbarazo && formik.values.ultimaRegla) {
-      const fechaEmbarazo = dayjs(formik.values.fechaEmbarazo);
-      const ultimaRegla = dayjs(formik.values.ultimaRegla);
+    const { fechaEmbarazo, ultimaRegla } = formik.values;
 
-      if (fechaEmbarazo.isAfter(ultimaRegla)) {
-        const diferencia = fechaEmbarazo.diff(ultimaRegla, "week");
-        formik.setFieldValue("edadGestacional", diferencia);
+    if (fechaEmbarazo && ultimaRegla) {
+      const fechaEmbarazoParsed = dayjs(fechaEmbarazo);
+      const ultimaReglaParsed = dayjs(ultimaRegla);
+
+      if (fechaEmbarazoParsed.isAfter(ultimaReglaParsed)) {
+        const diferenciaEnDias = fechaEmbarazoParsed.diff(
+          ultimaReglaParsed,
+          "days"
+        );
+
+        const semanasDeDiferencia = Math.floor(diferenciaEnDias / 7);
+
+        formik.setFieldValue("edadGestacional", semanasDeDiferencia);
       } else {
         formik.setFieldValue("edadGestacional", 0);
         console.warn(
-          "La fecha de embarazo no puede ser anterior a la última regla. Verifique los datos ingresados."
+          "La fecha de embarazo no puede ser anterior a la última regla."
         );
       }
+    } else {
+      formik.setFieldValue("edadGestacional", 0);
     }
   };
 
@@ -271,7 +282,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
           ) : null}
         </div>
         <div className="item">
-          <label htmlFor="edadGestacional">Edad Gesta(sem):</label>
+          <label htmlFor="edadGestacional">Gesta(sem):</label>
           <Input
             className="value"
             id="edadGestacional"
