@@ -23,6 +23,7 @@ const PacienteForm = ({
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const calcularEdad = (fechaNac) => {
     if (!fechaNac) return null;
@@ -86,17 +87,15 @@ const PacienteForm = ({
         fechaIngreso: new Date().toISOString(),
       };
       onSubmit(pacienteData);
+      setHasSubmitted(true);
     },
   });
 
   useEffect(() => {
-    if (mode === "isEditMode" && initialValues.fechaNac) {
-      formik.setFieldValue("edad", initialValues.edad);
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm();
     }
-    if (mode === "isCreateMode" && formik.values.fechaNac) {
-      formik.setFieldValue("edad", calcularEdad(formik.values.fechaNac));
-    }
-  }, [formik.values.fechaNac, mode, initialValues]);
+  }, [confirmButton, hasSubmitted]);
 
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
@@ -120,7 +119,6 @@ const PacienteForm = ({
 
   const handleFieldBlur = (e) => {
     formik.handleBlur(e);
-    formik.submitForm();
   };
 
   const renderField = (
@@ -174,7 +172,7 @@ const PacienteForm = ({
           name="silaisId"
           onChange={(value) => formik.setFieldValue("silaisId", value)}
           value={formik.values.silaisId}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
         >
           {metadata.silais.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -183,7 +181,6 @@ const PacienteForm = ({
           ))}
         </Select>
       </div>
-
       <div className="item">
         <label htmlFor="departamentoId">Departamento:</label>
         <Select
@@ -192,7 +189,7 @@ const PacienteForm = ({
           placeholder="Seleccione..."
           id="departamentoId"
           onChange={handleDepartamentoChange}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
         >
           {metadata.departamentos.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -201,7 +198,7 @@ const PacienteForm = ({
           ))}
         </Select>
       </div>
-
+      |
       <div className="item">
         <label htmlFor="municipioId">Municipio:</label>
         <Select
@@ -210,7 +207,7 @@ const PacienteForm = ({
           id="municipioId"
           name="municipioId"
           onChange={(value) => formik.setFieldValue("municipioId", value)}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
           value={formik.values.municipioId || ""}
           disabled={!departamentoId && mode !== "isEditMode"}
         >
@@ -226,7 +223,6 @@ const PacienteForm = ({
           </div>
         )}
       </div>
-
       {renderField("numeroExpediente", "N° de Expediente", "number", "text")}
       {renderField("primerNombre", "Primer Nombre", "text", "text")}
       {renderField("segundoNombre", "Segundo Nombre", "text", "text")}
@@ -234,7 +230,6 @@ const PacienteForm = ({
       {renderField("segundoApellido", "Segundo Apellido", "text", "text")}
       {renderField("telefono1", "Teléfono 1", "number", "tlf")}
       {renderField("telefono2", "Teléfono 2", "number", "tlf")}
-
       <div className="item">
         <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
@@ -248,7 +243,7 @@ const PacienteForm = ({
             onChange={(date) => {
               formik.setFieldValue("fechaNac", date);
             }}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
         </LocalizationProvider>
         {formik.touched.fechaNac &&
@@ -266,7 +261,7 @@ const PacienteForm = ({
           id="edad"
           name="edad"
           disabled={true}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
           value={
             mode === "isCreateMode"
               ? calcularEdad(formik.values.fechaNac) || ""
