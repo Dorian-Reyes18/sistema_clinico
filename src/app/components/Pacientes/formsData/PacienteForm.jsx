@@ -13,7 +13,13 @@ import utc from "dayjs/plugin/utc";
 dayjs.locale("es");
 dayjs.extend(utc);
 
-const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
+const PacienteForm = ({
+  conyugeId,
+  onSubmit,
+  mode,
+  initialValues = {},
+  confirmButton,
+}) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);

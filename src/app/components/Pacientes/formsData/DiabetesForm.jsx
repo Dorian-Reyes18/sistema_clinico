@@ -10,7 +10,7 @@ const DiabetesForm = ({
   initialValues,
   confirmButton,
 }) => {
-  const [hasSubmitted, setHasSubmitted] = useState(false); 
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteid,
@@ -54,30 +54,27 @@ const DiabetesForm = ({
         ...values,
       };
       onSubmit(formData);
-      setHasSubmitted(true);
+      setHasSubmitted(true); // Solo marcar como enviado si se ejecuta onSubmit
     },
   });
 
   // Enviar el formulario solo cuando confirmButton es true y no se ha enviado antes
   useEffect(() => {
     if (confirmButton && !hasSubmitted) {
-      formik.submitForm(); 
+      formik.submitForm();
     }
-  }, [confirmButton, hasSubmitted, formik]);
+    // Dependencia controlada: usamos una referencia estable para evitar múltiples ejecuciones
+  }, [confirmButton, hasSubmitted]);
 
   const handleSwitchChange = (field, checked) => {
     if (field === "ninguna" && checked) {
-      formik.setFieldValue("mellitusTipo1", false);
-      formik.setFieldValue("mellitusTipo2", false);
-      formik.setFieldValue("mellitusGestacional", false);
+      formik.setFieldValue("mellitusTipo1", false, false);
+      formik.setFieldValue("mellitusTipo2", false, false);
+      formik.setFieldValue("mellitusGestacional", false, false);
     } else if (field !== "ninguna" && checked) {
-      formik.setFieldValue("ninguna", false);
+      formik.setFieldValue("ninguna", false, false);
     }
-    formik.setFieldValue(field, checked);
-  };
-
-  const handleSwitchBlur = () => {
-    formik.submitForm();
+    formik.setFieldValue(field, checked, false);
   };
 
   return (
@@ -95,7 +92,6 @@ const DiabetesForm = ({
           <Switch
             checked={formik.values.mellitusTipo2}
             onChange={(checked) => handleSwitchChange("mellitusTipo2", checked)}
-            onBlur={handleSwitchBlur}
           />
         </div>
         <div className="item-switch">
@@ -105,7 +101,6 @@ const DiabetesForm = ({
             onChange={(checked) =>
               handleSwitchChange("mellitusGestacional", checked)
             }
-            onBlur={handleSwitchBlur}
           />
         </div>
         <div className="item-switch">
@@ -113,7 +108,6 @@ const DiabetesForm = ({
           <Switch
             checked={formik.values.ninguna}
             onChange={(checked) => handleSwitchChange("ninguna", checked)}
-            onBlur={handleSwitchBlur}
           />
         </div>
       </form>
