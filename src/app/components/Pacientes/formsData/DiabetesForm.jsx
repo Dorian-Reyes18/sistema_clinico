@@ -1,9 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Switch } from "antd";
 
-const DiabetesForm = ({ pacienteId, onSubmit, mode, initialValues }) => {
+const DiabetesForm = ({
+  pacienteId,
+  onSubmit,
+  mode,
+  initialValues,
+  confirmButton,
+}) => {
+  const [hasSubmitted, setHasSubmitted] = useState(false); 
+
   const formikInitialValues = {
     pacienteId: initialValues.pacienteid,
     mellitusTipo1: initialValues.mellitusTipo1 || false,
@@ -46,19 +54,16 @@ const DiabetesForm = ({ pacienteId, onSubmit, mode, initialValues }) => {
         ...values,
       };
       onSubmit(formData);
+      setHasSubmitted(true);
     },
   });
 
+  // Enviar el formulario solo cuando confirmButton es true y no se ha enviado antes
   useEffect(() => {
-    const { mellitusTipo1, mellitusTipo2, mellitusGestacional, ninguna } =
-      formik.values;
-
-    if (mellitusTipo1 || mellitusTipo2 || mellitusGestacional || ninguna) {
-      if (mode === "isCreateMode") {
-        formik.submitForm();
-      }
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm(); 
     }
-  }, [formik.values]);
+  }, [confirmButton, hasSubmitted, formik]);
 
   const handleSwitchChange = (field, checked) => {
     if (field === "ninguna" && checked) {
@@ -71,7 +76,7 @@ const DiabetesForm = ({ pacienteId, onSubmit, mode, initialValues }) => {
     formik.setFieldValue(field, checked);
   };
 
-  const handleSwitchBlur = (e) => {
+  const handleSwitchBlur = () => {
     formik.submitForm();
   };
 

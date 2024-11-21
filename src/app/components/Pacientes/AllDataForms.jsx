@@ -8,7 +8,7 @@ import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
 import { useAuth } from "@/app/hooks/authContext";
-import { Spin } from "antd";
+import { Spin, Modal } from "antd";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
@@ -19,6 +19,8 @@ const AllDataForms = ({ mode, id }) => {
   const [patientData, setPacienteData] = useState(() => {
     return patients.find((p) => p.id === parseInt(id)) || null;
   });
+
+  const [confirmButton, setconfirmButton] = useState(false);
 
   useEffect(() => {
     if (mode === "isEditMode" && id) {
@@ -85,44 +87,67 @@ const AllDataForms = ({ mode, id }) => {
       name: "DiabetesForm",
       label: "Datos de Diabetes",
       formComponent: DiabetesForm,
-      initialValues: isCreateMode
-        ? {}
-        : patientData?.tipoDiabetes?.[0] || {},
+      initialValues: isCreateMode ? {} : patientData?.tipoDiabetes?.[0] || {},
     },
   ];
 
   // Función para manejar la creación en cadena
   const handleSave = async () => {
-    if (isCreateMode) {
-      // Implementar el flujo de creación en cadena
-      alert("Datos creados exitosamente.");
-    } else {
-      alert("Modo de edición aún no implementado.");
-    }
+    const modalTitle = isCreateMode
+      ? "¿Está seguro de crear el paciente?"
+      : "¿Está seguro de guardar los cambios?";
+    const modalContent = isCreateMode
+      ? "Los datos se guardarán y se creará un nuevo paciente."
+      : "Los cambios serán guardados y no podrás deshacerlos.";
+
+    Modal.confirm({
+      title: modalTitle,
+      content: modalContent,
+      okText: "Sí",
+      cancelText: "No",
+      centered: true,
+      onOk() {
+        setconfirmButton(true);
+        if (isCreateMode) {
+          alert("Datos creados exitosamente.");
+        } else {
+          alert("Cambios guardados exitosamente.");
+        }
+      },
+      onCancel() {
+        console.log("Acción cancelada.");
+      },
+    });
   };
 
   return (
     <div className="patient-form-container">
-      <h4 className="titleForm">Datos generales del paciente</h4>
+      <h4 className="titleForm">
+        {mode === "isEditMode"
+          ? "Editar - Datos generales del paciente"
+          : "Crear - Datos generales del paciente"}
+      </h4>
 
       <div className="forms-container">
-        {formConfig.map(({ name, label, formComponent: FormComponent, initialValues }) => (
-          <div className="group-form" key={name}>
-            <div className="header">
-              <strong>{label}</strong>
+        {formConfig.map(
+          ({ name, label, formComponent: FormComponent, initialValues }) => (
+            <div className="group-form" key={name}>
+              <div className="header">
+                <strong>{label}</strong>
+              </div>
+              <div className="body">
+                <FormComponent
+                  mode={mode}
+                  onSubmit={handleFormSubmit(name)}
+                  initialValues={initialValues}
+                  confirmButton={confirmButton}
+                />
+              </div>
             </div>
-            <div className="body">
-              <FormComponent
-                mode={mode}
-                onSubmit={handleFormSubmit(name)}
-                initialValues={initialValues}
-              />
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
 
-      {/* Botón para guardar los datos */}
       <button onClick={handleSave}>
         {isCreateMode ? "Crear paciente" : "Guardar Cambios"}
       </button>
