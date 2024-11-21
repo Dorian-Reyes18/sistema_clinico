@@ -17,7 +17,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
-  const [isFirstSubmitDone, setIsFirstSubmitDone] = useState(false); // Para controlar el primer envío
+  const [isFirstSubmitDone, setIsFirstSubmitDone] = useState(false); 
 
   const calcularEdad = (fechaNac) => {
     if (!fechaNac) return null;
@@ -95,7 +95,6 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
 
   useEffect(() => {
     if (formik.values.fechaNac) {
-      // Cada vez que se cambia la fecha, forzamos el envío del formulario
       if (!isFirstSubmitDone) {
         formik.submitForm();
         setIsFirstSubmitDone(true);
@@ -127,13 +126,13 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     formik.handleBlur(e);
     if (mode === "isCreateMode") {
       if (
-        Object.values(formik.values).every((value) => value !== "") && // Comprobamos si todos los campos requeridos están completos
+        Object.values(formik.values).every((value) => value !== "") &&
         !isFirstSubmitDone
       ) {
         formik.submitForm();
-        setIsFirstSubmitDone(true); // Marca que el primer envío se ha hecho
+        setIsFirstSubmitDone(true);
       } else {
-        formik.submitForm(); // Para cada cambio posterior, solo se enviará si hay un cambio
+        formik.submitForm(); 
       }
     } else {
       formik.submitForm();
@@ -147,12 +146,12 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     clase = "item",
     disabled = false
   ) => (
-    <div className={clase}>
+    <div className="item">
       <label htmlFor={id}>{label}:</label>
       {type === "textarea" ? (
         <Input.TextArea
           rows={1}
-          className={clase}
+          className={clase || "textarea"}
           id={id}
           name={id}
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
@@ -162,7 +161,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
         />
       ) : (
         <Input
-          className={clase}
+          className={clase || "text"}
           id={id}
           type={type}
           name={id}
@@ -245,10 +244,10 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
       </div>
 
       {renderField("numeroExpediente", "N° de Expediente", "number", "text")}
-      {renderField("primerNombre", "Primer Nombre")}
-      {renderField("segundoNombre", "Segundo Nombre")}
-      {renderField("primerApellido", "Primer Apellido")}
-      {renderField("segundoApellido", "Segundo Apellido")}
+      {renderField("primerNombre", "Primer Nombre", "text","text")}
+      {renderField("segundoNombre", "Segundo Nombre", "text", "text")}
+      {renderField("primerApellido", "Primer Apellido", "text", "text")}
+      {renderField("segundoApellido", "Segundo Apellido", "text", "text")}
       {renderField("telefono1", "Teléfono 1", "number", "tlf")}
       {renderField("telefono2", "Teléfono 2", "number", "tlf")}
 
