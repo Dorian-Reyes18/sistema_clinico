@@ -3,6 +3,14 @@
   gap: 30px;
   padding: 30px;
   flex-direction: column;
+  align-items: center;
+
+  .titleForm {
+    width: 100%;
+    @include media(desktopXXL) {
+      width: 76%;
+    }
+  }
 
   .forms-container {
     gap: 30px;
@@ -10,6 +18,10 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+
+    @include media(desktopXXL) {
+      width: 76%;
+    }
 
     .group-form {
       background-color: $color-blanco;
@@ -69,11 +81,11 @@
           .tlf {
             min-width: 110px;
             width: fit-content;
-            max-width: 120px;
+            max-width: 125px;
           }
           .value {
             width: fit-content;
-            max-width: 70px;
+            max-width: 76px;
           }
           .text {
             width: 150px;
@@ -82,7 +94,12 @@
             font-size: 14px;
           }
           .textarea {
-            width: 370px;
+            min-width: 280px;
+            width: fit-content;
+
+            @include media(desktopXXL) {
+              width: 530px;
+            }
           }
           .calendar {
             width: 187px;
@@ -106,7 +123,8 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            width: 225px;
+            min-width: 255px;
+            width: fit-content;
           }
         }
       }

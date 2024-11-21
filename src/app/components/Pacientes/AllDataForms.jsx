@@ -87,7 +87,7 @@ const AllDataForms = ({ mode, id }) => {
 
   return (
     <div className="patient-form-container">
-      <h4>Datos generales del paciente</h4>
+      <h4 className="titleForm">Datos generales del paciente</h4>
 
       <div className="forms-container">
         <div className="group-form">
@@ -146,49 +146,6 @@ const AllDataForms = ({ mode, id }) => {
         <div className="group-form">
           <div className="header">
             <span>
-              <strong>Datos del Cónyuge</strong>
-            </span>
-          </div>
-          <div className="body">
-            <ConyugeForm
-              mode={mode}
-              onSubmit={handleConyugeFormSubmit}
-              initialValues={isCreateMode ? {} : patientData || {}}
-            />
-          </div>
-        </div>
-
-        <div className="group-form">
-          <div className="header">
-            <span>
-              <strong>Antecedentes Obstetricos</strong>
-            </span>
-          </div>
-          <div className="body">
-            <AntecedentesObstForm
-              onSubmit={handleAntecedentesObstetricosSubmit}
-              initialValues={isCreateMode ? {} : patientData}
-            />
-          </div>
-        </div>
-
-        <div className="group-form">
-          <div className="header">
-            <span>
-              <strong>Datos de Diabetes</strong>
-            </span>
-          </div>
-          <div className="body">
-            <DiabetesForm
-              onSubmit={handleDiabetesFormSubmit}
-              initialValues={isCreateMode ? {} : patientData?.conyuge || null}
-            />
-          </div>
-        </div>
-
-        <div className="group-form">
-          <div className="header">
-            <span>
               <strong>Antecedentes familiares de defectos</strong>
             </span>
           </div>
@@ -208,11 +165,52 @@ const AllDataForms = ({ mode, id }) => {
           </div>
         </div>
 
-        {/* Botón para guardar los datos */}
-        <button onClick={handleSave}>
-          {isCreateMode ? "Crear en Cadena" : "Guardar Cambios"}
-        </button>
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Antecedentes Obstetricos</strong>
+            </span>
+          </div>
+          <div className="body">
+            <AntecedentesObstForm
+              onSubmit={handleAntecedentesObstetricosSubmit}
+              initialValues={isCreateMode ? {} : patientData}
+            />
+          </div>
+        </div>
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Datos del Cónyuge</strong>
+            </span>
+          </div>
+          <div className="body">
+            <ConyugeForm
+              mode={mode}
+              onSubmit={handleConyugeFormSubmit}
+              initialValues={isCreateMode ? {} : patientData || {}}
+            />
+          </div>
+        </div>
+
+        <div className="group-form">
+          <div className="header">
+            <span>
+              <strong>Datos de Diabetes</strong>
+            </span>
+          </div>
+          <div className="body">
+            <DiabetesForm
+              onSubmit={handleDiabetesFormSubmit}
+              initialValues={isCreateMode ? {} : patientData?.conyuge || null}
+            />
+          </div>
+        </div>
       </div>
+      {/* Botón para guardar los datos */}
+      <button onClick={handleSave}>
+        {isCreateMode ? "Crear en Cadena" : "Guardar Cambios"}
+      </button>
     </div>
   );
 };

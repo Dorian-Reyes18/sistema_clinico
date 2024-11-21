@@ -35,9 +35,6 @@ const ConyugeForm = ({ onSubmit, mode, conyugeRhId, initialValues = {} }) => {
     },
   });
 
-  useEffect(() => {
-    console.log(valuesProp, null, 2);
-  }, []);
 
   const handleBlurFinalField = (e) => {
     formik.handleBlur(e);

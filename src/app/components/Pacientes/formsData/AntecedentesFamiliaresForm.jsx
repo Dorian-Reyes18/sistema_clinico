@@ -23,20 +23,15 @@ const AntecedentesFamiliaresForm = ({
   });
 
   const handleSwitchChange = (checked) => {
-    formik.setFieldValue("opcion", checked);
+    formik.setFieldValue("opcion", checked, true); 
     if (!checked) {
-      formik.setFieldValue("descripcion", "");
+      formik.setFieldValue("descripcion", "", true);
     }
+    formik.submitForm();
   };
 
   const handleBlur = () => {
-    const { opcion, descripcion } = formik.values;
-
-    if (opcion && descripcion) {
-      formik.submitForm();
-    } else if (!opcion) {
-      formik.submitForm();
-    }
+    formik.submitForm();
   };
 
   return (
@@ -49,6 +44,7 @@ const AntecedentesFamiliaresForm = ({
       <div className="item-textarea">
         <label>Descripción:</label>
         <Input.TextArea
+          className="textarea"
           rows={1}
           name="descripcion"
           value={formik.values.descripcion}
