@@ -6,19 +6,39 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { useEffect } from "react";
 
-const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
+const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
+  const formikInitialValues = {
+    fechaEmbarazo: initialValues.fechaEmbarazo,
+    pesoKg: initialValues.pesoKg,
+    talla: initialValues.talla,
+    ultimaRegla: initialValues.ultimaRegla,
+    edadGestacional: initialValues.edadGestacional,
+    imc: initialValues.imc,
+    consumoAF: initialValues.consumoAF,
+    fechaInicioConsumo: initialValues.fechaInicioConsumo,
+  };
+
+  useEffect(() => {
+    console.log(`Datos inciales recibidos en embarazoactual`);
+    console.log(JSON.stringify(initialValues, null, 2));
+  }, []);
+
   const formik = useFormik({
-    initialValues: {
-      fechaEmbarazo: null,
-      pesoKg: 0,
-      talla: 0,
-      ultimaRegla: null,
-      edadGestacional: 0,
-      imc: 0,
-      consumoAF: false,
-      fechaInicioConsumo: null,
-    },
+    initialValues:
+      mode === "isEditMode"
+        ? formikInitialValues
+        : {
+            fechaEmbarazo: null,
+            pesoKg: 0,
+            talla: 0,
+            ultimaRegla: null,
+            edadGestacional: 0,
+            imc: 0,
+            consumoAF: false,
+            fechaInicioConsumo: null,
+          },
     validationSchema: Yup.object({
       fechaEmbarazo: Yup.date().required("*Requerido"),
       pesoKg: Yup.number()
@@ -39,25 +59,48 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
       onSubmit(formData);
     },
   });
+  useEffect(() => {
+    const { pesoKg, talla } = formik.values;
+
+    if (pesoKg > 0 && talla > 0) {
+      calcularIMC(pesoKg, talla);
+    }
+  }, [formik.values.pesoKg, formik.values.talla]); // Dependencias: solo se activa cuando cambia alguno de estos dos campos
 
   const calcularEdadGestacional = () => {
     if (formik.values.fechaEmbarazo && formik.values.ultimaRegla) {
       const fechaEmbarazo = dayjs(formik.values.fechaEmbarazo);
       const ultimaRegla = dayjs(formik.values.ultimaRegla);
-      const diferencia = fechaEmbarazo.diff(ultimaRegla, "week");
-      formik.setFieldValue("edadGestacional", diferencia);
+
+      if (fechaEmbarazo.isAfter(ultimaRegla)) {
+        const diferencia = fechaEmbarazo.diff(ultimaRegla, "week");
+        formik.setFieldValue("edadGestacional", diferencia);
+      } else {
+        formik.setFieldValue("edadGestacional", 0);
+        console.warn(
+          "La fecha de embarazo no puede ser anterior a la última regla. Verifique los datos ingresados."
+        );
+      }
     }
   };
 
-  const calcularIMC = () => {
-    if (formik.values.pesoKg && formik.values.talla) {
-      const alturaMetros = formik.values.talla / 100;
-      const imc = (
-        formik.values.pesoKg /
-        (alturaMetros * alturaMetros)
-      ).toFixed(1);
-      formik.setFieldValue("imc", imc);
+  const calcularIMC = (pesoKg, talla) => {
+    if (pesoKg > 0 && talla > 0) {
+      const imc = (pesoKg / (talla * talla)).toFixed(1);
+
+      if (isFinite(imc) && imc > 0) {
+        formik.setFieldValue("imc", imc);
+      } else {
+        formik.setFieldValue("imc", 0);
+      }
+    } else {
+      formik.setFieldValue("imc", 0);
     }
+  };
+
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e);
+    formik.submitForm();
   };
 
   return (
@@ -71,9 +114,72 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
             checked={formik.values.consumoAF}
             onChange={(checked) => {
               formik.setFieldValue("consumoAF", checked);
-              formik.setFieldValue("fechaInicioConsumo", null); 
+              formik.setFieldValue("fechaInicioConsumo", null);
               formik.submitForm();
             }}
+            onBlur={handleFieldBlur}
+          />
+        </div>
+
+        <div className="item">
+          <label htmlFor="talla">Talla (m)</label>
+          <Input
+            placeholder="valor en metros"
+            className="value"
+            id="talla"
+            type="number"
+            name="talla"
+            onChange={(data) => {
+              const value = Math.max(Number(data.target.value), 0);
+              formik.setFieldValue("talla", value); // Ahora talla está en metros directamente
+            }}
+            value={formik.values.talla}
+            onBlur={handleFieldBlur}
+          />
+          {formik.touched.talla && formik.errors.talla ? (
+            <div className="requerido" style={{ color: "red" }}>
+              {formik.errors.talla}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="item">
+          <label htmlFor="pesoKg">Peso (kg)</label>
+          <Input
+            placeholder="valor"
+            className="value"
+            id="pesoKg"
+            type="number"
+            name="pesoKg"
+            onChange={(data) => {
+              const value = Math.max(Number(data.target.value), 0);
+              formik.setFieldValue("pesoKg", value);
+            }}
+            value={formik.values.pesoKg}
+            onBlur={handleFieldBlur}
+          />
+          {formik.touched.pesoKg && formik.errors.pesoKg ? (
+            <div className="requerido" style={{ color: "red" }}>
+              {formik.errors.pesoKg}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="item">
+          <label htmlFor="imc">IMC</label>
+          <Input
+            className="value"
+            id="imc"
+            name="imc"
+            disabled={true}
+            value={formik.values.imc}
+            style={{
+              color: "#4b4b4b",
+              backgroundColor: "#fff",
+              opacity: 1,
+              cursor: "not-allowed",
+            }}
+            onBlur={handleFieldBlur}
           />
         </div>
 
@@ -97,41 +203,10 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
                 );
                 formik.submitForm();
               }}
-              onBlur={formik.handleBlur}
+              onBlur={handleFieldBlur}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
-        </div>
-
-        <div className="item">
-          <label htmlFor="fechaEmb">Fecha embarazo</label>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <DatePicker
-              id="fechaEmb"
-              name="fechaEmbarazo"
-              className="calendar"
-              value={
-                formik.values.fechaEmbarazo
-                  ? dayjs(formik.values.fechaEmbarazo)
-                  : null
-              }
-              onChange={(date) => {
-                formik.setFieldValue(
-                  "fechaEmbarazo",
-                  date ? date.toISOString() : null
-                );
-                calcularEdadGestacional();
-                formik.submitForm();
-              }}
-              onBlur={formik.handleBlur}
-              renderInput={(params) => <Input {...params} />}
-            />
-          </LocalizationProvider>
-          {formik.touched.fechaEmbarazo && formik.errors.fechaEmbarazo ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.fechaEmbarazo}
-            </div>
-          ) : null}
         </div>
 
         <div className="item">
@@ -154,7 +229,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
                 calcularEdadGestacional();
                 formik.submitForm();
               }}
-              onBlur={formik.handleBlur}
+              onBlur={handleFieldBlur}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
@@ -166,72 +241,34 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
         </div>
 
         <div className="item">
-          <label htmlFor="pesoKg">Peso (kg)</label>
-          <Input
-            placeholder="valor"
-            className="value"
-            id="pesoKg"
-            type="number"
-            name="pesoKg"
-            onChange={(data) => {
-              const value = data.target.value ? Number(data.target.value) : 0;
-              formik.setFieldValue("pesoKg", value);
-              calcularIMC();
-              if (value > 0) {
-                formik.submitForm();
+          <label htmlFor="fechaEmb">Fecha embarazo</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <DatePicker
+              id="fechaEmb"
+              name="fechaEmbarazo"
+              className="calendar"
+              value={
+                formik.values.fechaEmbarazo
+                  ? dayjs(formik.values.fechaEmbarazo)
+                  : null
               }
-            }}
-            value={formik.values.pesoKg}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.pesoKg && formik.errors.pesoKg ? (
+              onChange={(date) => {
+                formik.setFieldValue(
+                  "fechaEmbarazo",
+                  date ? date.toISOString() : null
+                );
+                calcularEdadGestacional();
+                formik.submitForm();
+              }}
+              onBlur={handleFieldBlur}
+              renderInput={(params) => <Input {...params} />}
+            />
+          </LocalizationProvider>
+          {formik.touched.fechaEmbarazo && formik.errors.fechaEmbarazo ? (
             <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.pesoKg}
+              {formik.errors.fechaEmbarazo}
             </div>
           ) : null}
-        </div>
-
-        <div className="item">
-          <label htmlFor="talla">Talla (cm)</label>
-          <Input
-            placeholder="valor"
-            className="value"
-            id="talla"
-            type="number"
-            name="talla"
-            onChange={(data) => {
-              const value = data.target.value ? Number(data.target.value) : 0;
-              formik.setFieldValue("talla", value);
-              calcularIMC();
-              if (value > 0) {
-                formik.submitForm();
-              }
-            }}
-            value={formik.values.talla}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.talla && formik.errors.talla ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.talla}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="item">
-          <label htmlFor="imc">IMC</label>
-          <Input
-            className="value"
-            id="imc"
-            name="imc"
-            disabled={true}
-            value={formik.values.imc}
-            style={{
-              color: "#4b4b4b",
-              backgroundColor: "#fff",
-              opacity: 1,
-              cursor: "not-allowed",
-            }}
-          />
         </div>
         <div className="item">
           <label htmlFor="edadGestacional">Edad Gesta(sem):</label>
@@ -247,6 +284,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit }) => {
               opacity: 1,
               cursor: "not-allowed",
             }}
+            onBlur={handleFieldBlur}
           />
         </div>
       </form>

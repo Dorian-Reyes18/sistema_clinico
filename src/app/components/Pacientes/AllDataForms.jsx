@@ -14,11 +14,10 @@ const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
   const { patients } = useAuth();
 
-  // Inicializa el modo según el valor de la prop `mode`
+
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
   const [recordId, setRecordId] = useState(id || null);
   const [patientData, setPacienteData] = useState(() => {
-    // Cargar los datos del paciente si están disponibles
     return patients.find((p) => p.id === parseInt(id)) || null;
   });
 
@@ -99,7 +98,7 @@ const AllDataForms = ({ mode, id }) => {
             <PacienteForm
               mode={mode}
               onSubmit={handlePacienteFormSubmit}
-              initialValues={isCreateMode ? {} : patientData || {}} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData || {}}
             />
           </div>
         </div>
@@ -110,8 +109,15 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <EmbarazoActual
+              mode={mode}
               onSubmit={handleEmbarazoActualForm}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={
+                isCreateMode
+                  ? {}
+                  : patientData?.embarazoActual?.length > 0
+                  ? patientData.embarazoActual[0]
+                  : {}
+              }
             />
           </div>
         </div>
@@ -123,7 +129,7 @@ const AllDataForms = ({ mode, id }) => {
           <div className="body">
             <AntecedentePersonalesForm
               onSubmit={handleAntecedentespersonalesForm}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData}
             />
           </div>
         </div>
@@ -137,7 +143,7 @@ const AllDataForms = ({ mode, id }) => {
           <div className="body">
             <ConyugeForm
               onSubmit={handleConyugeFormSubmit}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData}
             />
           </div>
         </div>
@@ -151,7 +157,7 @@ const AllDataForms = ({ mode, id }) => {
           <div className="body">
             <AntecedentesObstForm
               onSubmit={handleAntecedentesObstetricosSubmit}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData}
             />
           </div>
         </div>
@@ -165,7 +171,7 @@ const AllDataForms = ({ mode, id }) => {
           <div className="body">
             <DiabetesForm
               onSubmit={handleDiabetesFormSubmit}
-              initialValues={isCreateMode ? {} : patientData} // Pasar datos iniciales si no es creación
+              initialValues={isCreateMode ? {} : patientData}
             />
           </div>
         </div>

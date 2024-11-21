@@ -28,7 +28,7 @@ const HeaderUser = ({ currentPath }) => {
       };
     } else if (path === "/pacientes/crearPaciente") {
       return {
-        label: "Pacientes / Crear paciente",
+        label: "Gestión de Pacientes",
         imageSrc: "/images/home/PacientesIcon.png",
       };
     } else if (path === "/usuarios") {

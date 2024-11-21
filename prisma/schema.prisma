@@ -139,9 +139,9 @@ model EmbarazoActual {
   pacienteId               Int
   fechaEmbarazo            DateTime?
   pesoKg                   Float?
-  talla                    Int?
+  talla                    Float?
   ultimaRegla              DateTime?
-  edadGestacional          Int?
+  edadGestacional          Float?
   imc                      Float?
   consumoAF                Boolean?
   fechaInicioConsumo       DateTime?
