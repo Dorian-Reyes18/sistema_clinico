@@ -20,11 +20,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
     fechaInicioConsumo: initialValues.fechaInicioConsumo,
   };
 
-  useEffect(() => {
-    console.log(`Datos inciales recibidos en embarazoactual`);
-    console.log(JSON.stringify(initialValues, null, 2));
-  }, []);
-
   const formik = useFormik({
     initialValues:
       mode === "isEditMode"

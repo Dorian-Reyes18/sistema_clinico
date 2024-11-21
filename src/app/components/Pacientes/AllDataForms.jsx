@@ -14,7 +14,6 @@ const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
   const { patients } = useAuth();
 
-
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
   const [recordId, setRecordId] = useState(id || null);
   const [patientData, setPacienteData] = useState(() => {
@@ -30,6 +29,9 @@ const AllDataForms = ({ mode, id }) => {
     cesarea: "0",
     legrado: "0",
   });
+
+  // Estado para antecedentes personales (añadido)
+  const [antecedentesPersonales, setAntecedentesPersonales] = useState({});
 
   // Cargar datos del paciente si estamos en modo de edición
   useEffect(() => {
@@ -128,8 +130,15 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <AntecedentePersonalesForm
+              mode={mode}
               onSubmit={handleAntecedentespersonalesForm}
-              initialValues={isCreateMode ? {} : patientData}
+              initialValues={
+                isCreateMode
+                  ? {}
+                  : patientData?.antecedentesPersonales?.length > 0
+                  ? patientData.antecedentesPersonales[0]
+                  : {}
+              }
             />
           </div>
         </div>
