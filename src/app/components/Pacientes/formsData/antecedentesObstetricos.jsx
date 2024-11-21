@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "antd";
 
-const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
+const AntecedentesObstForm = ({
+  pacienteId,
+  onSubmit,
+  mode,
+  initialValues,
+}) => {
+  const formikInitialValues = {
+    pacienteId: initialValues.pacienteId,
+    gesta: initialValues.gesta,
+    parto: initialValues.parto,
+    aborto: initialValues.aborto,
+    cesarea: initialValues.cesarea,
+    legrado: initialValues.legrado,
+  };
   const formik = useFormik({
-    initialValues: {
-      gesta: "",
-      parto: "",
-      aborto: "",
-      cesarea: "",
-      legrado: "",
-      opcionMarcada: false,
-    },
+    initialValues:
+      mode === "isEditMode"
+        ? formikInitialValues
+        : {
+            gesta: "",
+            parto: "",
+            aborto: "",
+            cesarea: "",
+            legrado: "",
+          },
     validationSchema: Yup.object({
       gesta: Yup.string().required("*Requerido"),
       parto: Yup.string().required("*Requerido"),
@@ -22,8 +37,16 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
     }),
     onSubmit: (values) => {
       const formData = {
-        pacienteId: pacienteId,
-        ...values,
+        pacienteId:
+          mode === "isEditMode"
+            ? formik.values.pacienteId || pacienteId
+            : pacienteId,
+        ...Object.fromEntries(
+          Object.entries(values).map(([key, value]) => [
+            key,
+            key === "pacienteId" ? value : String(value),
+          ])
+        ),
       };
       onSubmit(formData);
     },
@@ -53,7 +76,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
           className="value"
           id="gesta"
           name="gesta"
-          type="text"
+          type="number"
           onChange={formik.handleChange}
           onBlur={handleBlurFinalField}
           value={formik.values.gesta}
@@ -66,7 +89,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
           className="value"
           id="parto"
           name="parto"
-          type="text"
+          type="number"
           onChange={formik.handleChange}
           onBlur={handleBlurFinalField}
           value={formik.values.parto}
@@ -79,7 +102,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
           className="value"
           id="aborto"
           name="aborto"
-          type="text"
+          type="number"
           onChange={formik.handleChange}
           onBlur={handleBlurFinalField}
           value={formik.values.aborto}
@@ -92,7 +115,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
           className="value"
           id="cesarea"
           name="cesarea"
-          type="text"
+          type="number"
           onChange={formik.handleChange}
           onBlur={handleBlurFinalField}
           value={formik.values.cesarea}
@@ -105,7 +128,7 @@ const AntecedentesObstForm = ({ pacienteId, onSubmit }) => {
           className="value"
           id="legrado"
           name="legrado"
-          type="text"
+          type="number"
           onChange={formik.handleChange}
           onBlur={handleBlurFinalField}
           value={formik.values.legrado}

@@ -21,11 +21,9 @@ const DiabetesForm = ({ pacienteId, onSubmit }) => {
         function () {
           const { mellitusTipo1, mellitusTipo2, mellitusGestacional, ninguna } =
             this.parent;
-          // Si 'ninguna' es true, los otros deben ser false
           if (ninguna) {
             return !(mellitusTipo1 || mellitusTipo2 || mellitusGestacional);
           }
-          // Si alguno de los otros es true, 'ninguna' debe ser false
           return true;
         }
       ),
@@ -48,7 +46,6 @@ const DiabetesForm = ({ pacienteId, onSubmit }) => {
     }
   }, [formik.values]);
 
-  // Manejo de cambios para asegurarse de que 'ninguna' se desactive si hay otra opción seleccionada
   const handleSwitchChange = (field, checked) => {
     if (field === "ninguna" && checked) {
       formik.setFieldValue("mellitusTipo1", false);

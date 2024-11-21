@@ -173,8 +173,15 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <AntecedentesObstForm
+              mode={mode}
               onSubmit={handleAntecedentesObstetricosSubmit}
-              initialValues={isCreateMode ? {} : patientData}
+              initialValues={
+                isCreateMode
+                  ? {}
+                  : patientData?.antecedentesObstetricos?.length > 0
+                  ? patientData?.antecedentesObstetricos?.[0]
+                  : {}
+              }
             />
           </div>
         </div>
