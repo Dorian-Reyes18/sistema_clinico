@@ -6,9 +6,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
+const EmbarazoActual = ({
+  mode,
+  pacienteId,
+  onSubmit,
+  initialValues,
+  confirmButton,
+}) => {
+  const [hasSubmitted, setHasSubmitted] = useState(false); // Estado para controlar si ya se envió
+
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
     fechaEmbarazo: initialValues.fechaEmbarazo,
@@ -54,6 +62,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
         ...values,
       };
       onSubmit(formData);
+      setHasSubmitted(true); // Marcar como enviado
     },
   });
 
@@ -64,6 +73,17 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
       calcularIMC(pesoKg, talla);
     }
   }, [formik.values.pesoKg, formik.values.talla]);
+
+  useEffect(() => {
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm(); // Solo enviamos cuando confirmButton es true
+      setHasSubmitted(true);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
+
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e);
+  };
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
@@ -94,8 +114,8 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
 
   const calcularIMC = (pesoKg, talla) => {
     if (pesoKg > 0 && talla > 0) {
-      const imc = (pesoKg / (talla * talla)).toFixed(1);
-
+      let imc = pesoKg / (talla * talla);
+      imc = parseFloat(imc.toFixed(2));
       if (isFinite(imc) && imc > 0) {
         formik.setFieldValue("imc", imc);
       } else {
@@ -104,11 +124,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
     } else {
       formik.setFieldValue("imc", 0);
     }
-  };
-
-  const handleFieldBlur = (e) => {
-    formik.handleBlur(e);
-    formik.submitForm();
   };
 
   return (
@@ -123,7 +138,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
             onChange={(checked) => {
               formik.setFieldValue("consumoAF", checked);
               formik.setFieldValue("fechaInicioConsumo", null);
-              formik.submitForm();
             }}
             onBlur={handleFieldBlur}
           />
@@ -139,7 +153,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
             name="talla"
             onChange={(data) => {
               const value = Math.max(Number(data.target.value), 0);
-              formik.setFieldValue("talla", value); // Ahora talla está en metros directamente
+              formik.setFieldValue("talla", value);
             }}
             value={formik.values.talla}
             onBlur={handleFieldBlur}
@@ -209,7 +223,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
                   "fechaInicioConsumo",
                   date ? date.toISOString() : null
                 );
-                formik.submitForm();
               }}
               onBlur={handleFieldBlur}
               renderInput={(params) => <Input {...params} />}
@@ -235,7 +248,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
                   date ? date.toISOString() : null
                 );
                 calcularEdadGestacional();
-                formik.submitForm();
               }}
               onBlur={handleFieldBlur}
               renderInput={(params) => <Input {...params} />}
@@ -249,10 +261,10 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
         </div>
 
         <div className="item">
-          <label htmlFor="fechaEmb">Fecha embarazo</label>
+          <label htmlFor="fechaEmbarazo">Fecha de embarazo</label>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <DatePicker
-              id="fechaEmb"
+              id="fechaEmbarazo"
               name="fechaEmbarazo"
               className="calendar"
               value={
@@ -266,7 +278,6 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
                   date ? date.toISOString() : null
                 );
                 calcularEdadGestacional();
-                formik.submitForm();
               }}
               onBlur={handleFieldBlur}
               renderInput={(params) => <Input {...params} />}
@@ -278,6 +289,7 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
             </div>
           ) : null}
         </div>
+
         <div className="item">
           <label htmlFor="edadGestacional">Gesta(sem):</label>
           <Input
