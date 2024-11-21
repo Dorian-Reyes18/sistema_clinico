@@ -198,7 +198,7 @@ const PacienteForm = ({
           ))}
         </Select>
       </div>
-      |
+
       <div className="item">
         <label htmlFor="municipioId">Municipio:</label>
         <Select

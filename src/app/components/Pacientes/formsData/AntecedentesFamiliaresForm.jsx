@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { Switch, Input } from "antd";
 
@@ -7,7 +7,10 @@ const AntecedentesFamiliaresForm = ({
   pacienteId,
   onSubmit,
   initialValues = {},
+  confirmButton,
 }) => {
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       pacienteId:
@@ -21,19 +24,21 @@ const AntecedentesFamiliaresForm = ({
         ...values,
       };
       onSubmit(formData);
+      setHasSubmitted(true);
     },
   });
+
+  useEffect(() => {
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm();
+    }
+  }, [confirmButton, hasSubmitted]);
 
   const handleSwitchChange = (checked) => {
     formik.setFieldValue("opcion", checked, true);
     if (!checked) {
       formik.setFieldValue("descripcion", "", true);
     }
-    formik.submitForm();
-  };
-
-  const handleBlur = () => {
-    formik.submitForm();
   };
 
   return (
@@ -51,7 +56,6 @@ const AntecedentesFamiliaresForm = ({
           name="descripcion"
           value={formik.values.descripcion}
           onChange={formik.handleChange}
-          onBlur={handleBlur}
           disabled={!formik.values.opcion}
         />
       </div>
