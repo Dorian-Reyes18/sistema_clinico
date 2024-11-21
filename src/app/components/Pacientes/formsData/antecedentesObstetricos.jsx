@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "antd";
@@ -8,7 +8,10 @@ const AntecedentesObstForm = ({
   onSubmit,
   mode,
   initialValues,
+  confirmButton,
 }) => {
+  const [hasSubmitted, setHasSubmitted] = useState(false); // Controla si ya se ha enviado el formulario
+
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
     gesta: initialValues.gesta,
@@ -17,6 +20,7 @@ const AntecedentesObstForm = ({
     cesarea: initialValues.cesarea,
     legrado: initialValues.legrado,
   };
+
   const formik = useFormik({
     initialValues:
       mode === "isEditMode"
@@ -49,26 +53,21 @@ const AntecedentesObstForm = ({
         ),
       };
       onSubmit(formData);
+      setHasSubmitted(true); // Marca el formulario como enviado
     },
   });
 
-  const handleBlurFinalField = (e) => {
-    formik.handleBlur(e);
-
-    const hasValues =
-      formik.values.gesta !== "0" ||
-      formik.values.parto !== "0" ||
-      formik.values.aborto !== "0" ||
-      formik.values.cesarea !== "0" ||
-      formik.values.legrado !== "0";
-
-    if (hasValues) {
-      formik.submitForm();
+  // Este effect se ejecuta cuando confirmButton cambia y el formulario no ha sido enviado
+  useEffect(() => {
+    // Verificamos que confirmButton sea true y que no se haya enviado previamente
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm(); // Envía el formulario si confirmButton es verdadero y no se ha enviado
+      setHasSubmitted(true); // Marca el formulario como enviado
     }
-  };
+  }, [confirmButton, hasSubmitted, formik]);
 
   return (
-    <form>
+    <form onSubmit={formik.handleSubmit}>
       <div className="item">
         <label htmlFor="gesta">Gesta:</label>
         <Input
@@ -78,7 +77,6 @@ const AntecedentesObstForm = ({
           name="gesta"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.gesta}
         />
       </div>
@@ -91,7 +89,6 @@ const AntecedentesObstForm = ({
           name="parto"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.parto}
         />
       </div>
@@ -104,7 +101,6 @@ const AntecedentesObstForm = ({
           name="aborto"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.aborto}
         />
       </div>
@@ -117,7 +113,6 @@ const AntecedentesObstForm = ({
           name="cesarea"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.cesarea}
         />
       </div>
@@ -130,7 +125,6 @@ const AntecedentesObstForm = ({
           name="legrado"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.legrado}
         />
       </div>
