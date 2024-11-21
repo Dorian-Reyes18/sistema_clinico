@@ -1,17 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "@/app/hooks/authContext";
 import { Select, Input } from "antd";
 
-const ConyugeForm = ({ onSubmit, mode, conyugeRhId, initialValues = {} }) => {
+const ConyugeForm = ({
+  onSubmit,
+  mode,
+  conyugeRhId,
+  initialValues = {},
+  confirmButton,
+}) => {
   const { metadata } = useAuth();
   const valuesProp = initialValues?.conyuge;
 
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const formikInitialValues = {
     sangreRhId: valuesProp?.sangreRhId || null,
-    telefono: valuesProp?.telefono || null,
-    edad: valuesProp?.edad || null,
+    telefono: valuesProp?.telefono || "",
+    edad: valuesProp?.edad || "",
   };
 
   const formik = useFormik({
@@ -32,9 +40,16 @@ const ConyugeForm = ({ onSubmit, mode, conyugeRhId, initialValues = {} }) => {
     }),
     onSubmit: (values) => {
       onSubmit(values);
+      setHasSubmitted(true);
     },
   });
 
+  useEffect(() => {
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(true);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
 
   const handleBlurFinalField = (e) => {
     formik.handleBlur(e);
@@ -48,6 +63,7 @@ const ConyugeForm = ({ onSubmit, mode, conyugeRhId, initialValues = {} }) => {
       formik.submitForm();
     }
   };
+
   const handleFieldBlur = (e) => {
     formik.handleBlur(e);
     formik.submitForm();
