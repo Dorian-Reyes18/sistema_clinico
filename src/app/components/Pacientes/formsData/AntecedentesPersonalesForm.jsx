@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Switch, Select } from "antd";
@@ -10,8 +10,10 @@ const AntecedentePersonalesForm = ({
   onSubmit,
   diabetesId,
   initialValues,
+  confirmButton,
 }) => {
   const { metadata } = useAuth();
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
@@ -67,8 +69,16 @@ const AntecedentePersonalesForm = ({
         ...values,
       };
       onSubmit(formData);
+      setHasSubmitted(true);
     },
   });
+
+  useEffect(() => {
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(true);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
 
   const handleBlurFinalField = (e) => {
     formik.handleBlur(e);
