@@ -10,6 +10,7 @@ import { useEffect } from "react";
 
 const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
   const formikInitialValues = {
+    pacienteId: initialValues.pacienteId,
     fechaEmbarazo: initialValues.fechaEmbarazo,
     pesoKg: initialValues.pesoKg,
     talla: initialValues.talla,
@@ -48,7 +49,8 @@ const EmbarazoActual = ({ mode, pacienteId, onSubmit, initialValues }) => {
     onSubmit: (values) => {
       calcularEdadGestacional();
       const formData = {
-        pacienteId: pacienteId,
+        pacienteId:
+          mode === "isEditMode" ? formik.values.pacienteId : pacienteId,
         ...values,
       };
       onSubmit(formData);

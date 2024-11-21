@@ -10,12 +10,14 @@ const AntecedentesFamiliaresForm = ({
 }) => {
   const formik = useFormik({
     initialValues: {
+      pacienteId:
+        mode === "isEditMode" ? initialValues.pacienteId || null : pacienteId,
       opcion: mode === "isEditMode" ? initialValues.opcion || false : false,
       descripcion: mode === "isEditMode" ? initialValues.descripcion || "" : "",
     },
     onSubmit: (values) => {
       const formData = {
-        pacienteId,
+        pacienteId: formik.values.pacienteId || pacienteId,
         ...values,
       };
       onSubmit(formData);
@@ -23,7 +25,7 @@ const AntecedentesFamiliaresForm = ({
   });
 
   const handleSwitchChange = (checked) => {
-    formik.setFieldValue("opcion", checked, true); 
+    formik.setFieldValue("opcion", checked, true);
     if (!checked) {
       formik.setFieldValue("descripcion", "", true);
     }

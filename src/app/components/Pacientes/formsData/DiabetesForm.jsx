@@ -3,21 +3,32 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Switch } from "antd";
 
-const DiabetesForm = ({ pacienteId, onSubmit }) => {
+const DiabetesForm = ({ pacienteId, onSubmit, mode, initialValues }) => {
+  const formikInitialValues = {
+    pacienteId: initialValues.pacienteid,
+    mellitusTipo1: initialValues.mellitusTipo1 || false,
+    mellitusTipo2: initialValues.mellitusTipo2 || false,
+    ninguna: initialValues.ninguna || false,
+    mellitusGestacional: initialValues.mellitusGestacional || false,
+  };
+
   const formik = useFormik({
-    initialValues: {
-      mellitusTipo1: false,
-      mellitusTipo2: false,
-      mellitusGestacional: false,
-      ninguna: false,
-    },
+    initialValues:
+      mode === "isEditMode"
+        ? formikInitialValues
+        : {
+            mellitusTipo1: false,
+            mellitusTipo2: false,
+            ninguna: false,
+            mellitusGestacional: false,
+          },
     validationSchema: Yup.object({
       mellitusTipo1: Yup.boolean(),
       mellitusTipo2: Yup.boolean(),
       mellitusGestacional: Yup.boolean(),
       ninguna: Yup.boolean().test(
         "onlyOneSelected",
-        "Si seleccionas 'Ninguna', los otros no pueden estar seleccionados.",
+        "Si seleccionas 'Ninguna', los otras opciones no pueden estar seleccionadas o viceversa.",
         function () {
           const { mellitusTipo1, mellitusTipo2, mellitusGestacional, ninguna } =
             this.parent;
@@ -30,7 +41,8 @@ const DiabetesForm = ({ pacienteId, onSubmit }) => {
     }),
     onSubmit: (values) => {
       const formData = {
-        pacienteid: pacienteId,
+        pacienteId:
+          mode === "isEditMode" ? initialValues.pacienteid : pacienteId,
         ...values,
       };
       onSubmit(formData);
@@ -42,7 +54,9 @@ const DiabetesForm = ({ pacienteId, onSubmit }) => {
       formik.values;
 
     if (mellitusTipo1 || mellitusTipo2 || mellitusGestacional || ninguna) {
-      formik.submitForm();
+      if (mode === "isCreateMode") {
+        formik.submitForm();
+      }
     }
   }, [formik.values]);
 
@@ -57,43 +71,52 @@ const DiabetesForm = ({ pacienteId, onSubmit }) => {
     formik.setFieldValue(field, checked);
   };
 
-  return (
-    <form>
-      <div className="item-switch">
-        <label>Tipo 1</label>
-        <Switch
-          checked={formik.values.mellitusTipo1}
-          onChange={(checked) => handleSwitchChange("mellitusTipo1", checked)}
-        />
-      </div>
-      <div className="item-switch">
-        <label>Tipo 2</label>
-        <Switch
-          checked={formik.values.mellitusTipo2}
-          onChange={(checked) => handleSwitchChange("mellitusTipo2", checked)}
-        />
-      </div>
-      <div className="item-switch">
-        <label>Gestacional</label>
-        <Switch
-          checked={formik.values.mellitusGestacional}
-          onChange={(checked) =>
-            handleSwitchChange("mellitusGestacional", checked)
-          }
-        />
-      </div>
-      <div className="item-switch">
-        <label>Ninguna</label>
-        <Switch
-          checked={formik.values.ninguna}
-          onChange={(checked) => handleSwitchChange("ninguna", checked)}
-        />
-      </div>
+  const handleSwitchBlur = (e) => {
+    formik.submitForm();
+  };
 
-      {formik.errors.ninguna ? (
-        <div style={{ color: "red" }}>{formik.errors.ninguna}</div>
-      ) : null}
-    </form>
+  return (
+    <div>
+      <form>
+        <div className="item-switch">
+          <label>Tipo 1</label>
+          <Switch
+            checked={formik.values.mellitusTipo1}
+            onChange={(checked) => handleSwitchChange("mellitusTipo1", checked)}
+          />
+        </div>
+        <div className="item-switch">
+          <label>Tipo 2</label>
+          <Switch
+            checked={formik.values.mellitusTipo2}
+            onChange={(checked) => handleSwitchChange("mellitusTipo2", checked)}
+            onBlur={handleSwitchBlur}
+          />
+        </div>
+        <div className="item-switch">
+          <label>Gestacional</label>
+          <Switch
+            checked={formik.values.mellitusGestacional}
+            onChange={(checked) =>
+              handleSwitchChange("mellitusGestacional", checked)
+            }
+            onBlur={handleSwitchBlur}
+          />
+        </div>
+        <div className="item-switch">
+          <label>Ninguna</label>
+          <Switch
+            checked={formik.values.ninguna}
+            onChange={(checked) => handleSwitchChange("ninguna", checked)}
+            onBlur={handleSwitchBlur}
+          />
+        </div>
+      </form>
+
+      <div style={{ color: "red", fontSize: 13.5, width: 358, marginTop: 10 }}>
+        {formik.errors.ninguna ? formik.errors.ninguna : null}
+      </div>
+    </div>
   );
 };
 

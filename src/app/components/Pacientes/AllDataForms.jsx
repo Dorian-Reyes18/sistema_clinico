@@ -208,8 +208,15 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <DiabetesForm
+              mode={mode}
               onSubmit={handleDiabetesFormSubmit}
-              initialValues={isCreateMode ? {} : patientData?.conyuge || null}
+              initialValues={
+                isCreateMode
+                  ? {}
+                  : patientData?.tipoDiabetes?.length > 0
+                  ? patientData?.tipoDiabetes?.[0]
+                  : {}
+              }
             />
           </div>
         </div>

@@ -17,7 +17,6 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
   const [municipiosFiltrados, setMunicipiosFiltrados] = useState([]);
-  const [isFirstSubmitDone, setIsFirstSubmitDone] = useState(false); 
 
   const calcularEdad = (fechaNac) => {
     if (!fechaNac) return null;
@@ -93,15 +92,6 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
     }
   }, [formik.values.fechaNac, mode, initialValues]);
 
-  useEffect(() => {
-    if (formik.values.fechaNac) {
-      if (!isFirstSubmitDone) {
-        formik.submitForm();
-        setIsFirstSubmitDone(true);
-      }
-    }
-  }, [formik.values.fechaNac, isFirstSubmitDone, formik]);
-
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
@@ -124,19 +114,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
 
   const handleFieldBlur = (e) => {
     formik.handleBlur(e);
-    if (mode === "isCreateMode") {
-      if (
-        Object.values(formik.values).every((value) => value !== "") &&
-        !isFirstSubmitDone
-      ) {
-        formik.submitForm();
-        setIsFirstSubmitDone(true);
-      } else {
-        formik.submitForm(); 
-      }
-    } else {
-      formik.submitForm();
-    }
+    formik.submitForm();
   };
 
   const renderField = (
@@ -244,7 +222,7 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
       </div>
 
       {renderField("numeroExpediente", "N° de Expediente", "number", "text")}
-      {renderField("primerNombre", "Primer Nombre", "text","text")}
+      {renderField("primerNombre", "Primer Nombre", "text", "text")}
       {renderField("segundoNombre", "Segundo Nombre", "text", "text")}
       {renderField("primerApellido", "Primer Apellido", "text", "text")}
       {renderField("segundoApellido", "Segundo Apellido", "text", "text")}
@@ -263,7 +241,6 @@ const PacienteForm = ({ conyugeId, onSubmit, mode, initialValues = {} }) => {
             }
             onChange={(date) => {
               formik.setFieldValue("fechaNac", date);
-              formik.submitForm(); 
             }}
             onBlur={handleFieldBlur}
           />
