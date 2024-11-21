@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null); // Almacena el token aquí
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
+          setToken(token); // Guardamos el token aquí
           loadData(decodedToken.id, token);
         } else {
           handleInvalidSession();
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleInvalidSession = () => {
     setUser(null);
+    setToken(null); // Limpiamos el token si la sesión es inválida
     setLoading(false);
   };
 
@@ -124,6 +127,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         error,
+        token,
         recentSurgeries,
         surgeriesPost,
         patients,

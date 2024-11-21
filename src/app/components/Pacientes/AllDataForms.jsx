@@ -10,9 +10,12 @@ import EmbarazoActual from "./formsData/EmbarazoActual";
 import { useAuth } from "@/app/hooks/authContext";
 import { Spin, Modal } from "antd";
 
+// Post consultas
+import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
+
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
-  const { patients } = useAuth();
+  const { patients, token } = useAuth();
 
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
   const [recordId, setRecordId] = useState(id || null);
@@ -21,6 +24,7 @@ const AllDataForms = ({ mode, id }) => {
   });
 
   const [confirmButton, setconfirmButton] = useState(false);
+  const [allFormDataReceive, setAllFormDataReceive] = useState([]);
 
   useEffect(() => {
     if (mode === "isEditMode" && id) {
@@ -33,11 +37,27 @@ const AllDataForms = ({ mode, id }) => {
 
   // Funciones de manejo para cada formulario
   const handleFormSubmit = (formName) => (data) => {
-    console.log(`Datos del formulario ${formName} recibidos:`, data);
+    setAllFormDataReceive((prevData) => [...prevData, { formName, data }]);
     if (formName === "PacienteForm") {
       setPacienteData(data);
     }
   };
+
+  // Aqui chatgpt
+  useEffect(() => {
+    // Si hay datos significa que recibimos correctamente los datos de cada formulario
+    if (allFormDataReceive && allFormDataReceive.length > 5) {
+      const conyugeData = JSON.stringify(allFormDataReceive[5].data, null, 2);
+      console.log(conyugeData);
+
+      // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
+      if (isCreateMode) {
+        // Crear un post en un servicio externo que debemos importar y llamar aquí
+        // y guardar lo que nos dé para crear el cónyuge y esperar la respuesta del backend
+        // y guardar lo que recibamos
+      }
+    }
+  }, [allFormDataReceive]);
 
   // Datos para inicializar los formularios
   const formConfig = [
