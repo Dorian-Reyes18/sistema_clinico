@@ -62,7 +62,7 @@ const EmbarazoActual = ({
         ...values,
       };
       onSubmit(formData);
-      setHasSubmitted(true); // Marcar como enviado
+      setHasSubmitted(true);
     },
   });
 
@@ -76,7 +76,7 @@ const EmbarazoActual = ({
 
   useEffect(() => {
     if (confirmButton && !hasSubmitted) {
-      formik.submitForm(); // Solo enviamos cuando confirmButton es true
+      formik.submitForm();
       setHasSubmitted(true);
     }
   }, [confirmButton, hasSubmitted, formik]);
@@ -129,20 +129,6 @@ const EmbarazoActual = ({
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <div className="item-switch">
-          <label htmlFor="consumoAF">Consumo AF</label>
-          <Switch
-            id="consumoAF"
-            name="consumoAF"
-            checked={formik.values.consumoAF}
-            onChange={(checked) => {
-              formik.setFieldValue("consumoAF", checked);
-              formik.setFieldValue("fechaInicioConsumo", null);
-            }}
-            onBlur={handleFieldBlur}
-          />
-        </div>
-
         <div className="item">
           <label htmlFor="talla">Talla (m)</label>
           <Input
@@ -204,7 +190,19 @@ const EmbarazoActual = ({
             onBlur={handleFieldBlur}
           />
         </div>
-
+        <div className="item-switch">
+          <label htmlFor="consumoAF">Consumo AF</label>
+          <Switch
+            id="consumoAF"
+            name="consumoAF"
+            checked={formik.values.consumoAF}
+            onChange={(checked) => {
+              formik.setFieldValue("consumoAF", checked);
+              formik.setFieldValue("fechaInicioConsumo", null);
+            }}
+            onBlur={handleFieldBlur}
+          />
+        </div>
         <div className="item">
           <label htmlFor="fechaInicioConsumo">Fecha Inicio Consumo</label>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
