@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "@/app/hooks/authContext";
 import { Select, Input } from "antd";
 
-const ConyugeForm = ({ onSubmit }) => {
+const ConyugeForm = ({ onSubmit, mode, conyugeRhId, initialValues = {} }) => {
   const { metadata } = useAuth();
+  const valuesProp = initialValues?.conyuge;
+
+  const formikInitialValues = {
+    sangreRhId: valuesProp?.sangreRhId || null,
+    telefono: valuesProp?.telefono || null,
+    edad: valuesProp?.edad || null,
+  };
 
   const formik = useFormik({
-    initialValues: {
-      sangreRhId: null,
-      telefono: "",
-      edad: "",
-    },
+    initialValues:
+      mode === "isEditMode"
+        ? formikInitialValues
+        : {
+            sangreRhId: null,
+            telefono: "",
+            edad: "",
+          },
     validationSchema: Yup.object({
       sangreRhId: Yup.number().required("*Requerido"),
       telefono: Yup.string()
@@ -24,6 +34,10 @@ const ConyugeForm = ({ onSubmit }) => {
       onSubmit(values);
     },
   });
+
+  useEffect(() => {
+    console.log(valuesProp, null, 2);
+  }, []);
 
   const handleBlurFinalField = (e) => {
     formik.handleBlur(e);
@@ -37,6 +51,10 @@ const ConyugeForm = ({ onSubmit }) => {
       formik.submitForm();
     }
   };
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e);
+    formik.submitForm();
+  };
 
   return (
     <form>
@@ -48,7 +66,7 @@ const ConyugeForm = ({ onSubmit }) => {
           id="sangreRhId"
           name="sangreRhId"
           onChange={(value) => formik.setFieldValue("sangreRhId", value)}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
           value={formik.values.sangreRhId}
         >
           {metadata.sangreRH.map((item) => (
@@ -72,7 +90,7 @@ const ConyugeForm = ({ onSubmit }) => {
           name="telefono"
           type="text"
           onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
           value={formik.values.telefono}
         />
         {formik.touched.telefono && formik.errors.telefono ? (

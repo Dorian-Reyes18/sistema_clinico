@@ -151,8 +151,9 @@ const AllDataForms = ({ mode, id }) => {
           </div>
           <div className="body">
             <ConyugeForm
+              mode={mode}
               onSubmit={handleConyugeFormSubmit}
-              initialValues={isCreateMode ? {} : patientData}
+              initialValues={isCreateMode ? {} : patientData || {}}
             />
           </div>
         </div>
@@ -180,7 +181,7 @@ const AllDataForms = ({ mode, id }) => {
           <div className="body">
             <DiabetesForm
               onSubmit={handleDiabetesFormSubmit}
-              initialValues={isCreateMode ? {} : patientData}
+              initialValues={isCreateMode ? {} : patientData?.conyuge || null}
             />
           </div>
         </div>

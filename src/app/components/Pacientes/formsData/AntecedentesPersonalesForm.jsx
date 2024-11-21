@@ -70,10 +70,6 @@ const AntecedentePersonalesForm = ({
     },
   });
 
-  useEffect(() => {
-    console.log(JSON.stringify(initialValues, null, 2));
-  }, [initialValues, diabetesId]);
-
   const handleBlurFinalField = (e) => {
     formik.handleBlur(e);
     if (formik.values.sangreRh && !formik.errors.sangreRh) {
