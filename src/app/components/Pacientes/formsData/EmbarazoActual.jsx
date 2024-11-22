@@ -14,6 +14,7 @@ const EmbarazoActual = ({
   onSubmit,
   initialValues,
   confirmButton,
+  setValidateForms,
 }) => {
   const [hasSubmitted, setHasSubmitted] = useState(false); // Estado para controlar si ya se envió
 
@@ -82,11 +83,43 @@ const EmbarazoActual = ({
     formik.setTouched({
       fechaEmbarazo: true,
       ultimaRegla: true,
-      fechaInicioConsumo: true,
       pesoKg: true,
       talla: true,
     });
   }, []);
+
+  useEffect(() => {
+    if (mode === "isCreateMode") {
+      const validateOnBlur = () => {
+        formik.validateForm().then((errors) => {
+          const isFormValid =
+            !Object.keys(errors).length &&
+            formik.touched.fechaEmbarazo &&
+            formik.touched.ultimaRegla &&
+            formik.touched.talla &&
+            formik.touched.pesoKg &&
+            !formik.errors.fechaEmbarazo &&
+            !formik.errors.ultimaRegla &&
+            !formik.errors.talla &&
+            !formik.errors.pesoKg;
+
+          setValidateForms((prev) => ({
+            ...prev,
+            embarazoActual: isFormValid,
+          }));
+        });
+      };
+      
+      if (
+        formik.touched.fechaEmbarazo ||
+        formik.touched.ultimaRegla ||
+        formik.touched.talla ||
+        formik.touched.pesoKg
+      ) {
+        validateOnBlur();
+      }
+    }
+  }, [formik.values, formik.touched, formik.errors, setValidateForms]);
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
@@ -275,12 +308,11 @@ const EmbarazoActual = ({
                   date ? date.toISOString() : null
                 );
                 calcularEdadGestacional();
-                formik.validateField("fechaEmbarazo"); 
+                formik.validateField("fechaEmbarazo");
               }}
               onBlur={() => {
                 formik.setFieldTouched("fechaEmbarazo", true);
               }}
-              
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
