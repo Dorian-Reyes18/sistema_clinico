@@ -11,7 +11,7 @@ const AntecedentePersonalesForm = ({
   diabetesId,
   initialValues,
   confirmButton,
-  setValidateForms, // Recibimos la función para actualizar el estado de validación
+  setValidateForms, 
 }) => {
   const { metadata } = useAuth();
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -75,27 +75,22 @@ const AntecedentePersonalesForm = ({
   });
 
   useEffect(() => {
-    if (confirmButton && confirmButton !== hasSubmitted) {
-      formik.submitForm();
-      setHasSubmitted(confirmButton);
-    }
-  }, [confirmButton, hasSubmitted, formik]);
-
-  useEffect(() => {
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
-        formik.validateForm().then((errors) => {
-          const isFormValid =
-            !Object.keys(errors).length &&
-            formik.touched.sangreRh &&
-            !formik.errors.sangreRh &&
-            Object.keys(formik.touched).length > 0;
+        if (formik.touched.sangreRh && !formik.errors.sangreRh) {
+          formik.validateForm().then((errors) => {
+            const isFormValid =
+              !Object.keys(errors).length &&
+              formik.touched.sangreRh &&
+              !formik.errors.sangreRh &&
+              Object.keys(formik.touched).length > 0;
 
-          setValidateForms((prev) => ({
-            ...prev,
-            antPersonales: isFormValid,
-          }));
-        });
+            setValidateForms((prev) => ({
+              ...prev,
+              antPersonales: isFormValid,
+            }));
+          });
+        }
       };
 
       if (formik.touched.sangreRh) {
@@ -103,20 +98,24 @@ const AntecedentePersonalesForm = ({
       }
     }
   }, [
-    formik.values,
+    formik.values.sangreRh,
     formik.touched.sangreRh,
-    formik.errors,
+    formik.errors.sangreRh,
     setValidateForms,
     mode,
-  ]); // Asegúrate de observar solo lo necesario
+  ]);
 
-  // Función para renderizar los switches
   const renderSwitchField = (label, name) => (
     <div className="item-switch">
       <label htmlFor={name}>{label}</label>
       <Switch
         checked={formik.values[name]}
-        onChange={(checked) => formik.setFieldValue(name, checked)}
+        onChange={(checked) => {
+          formik.setFieldValue(name, checked);
+          if (name === "sangreRh") {
+            formik.setFieldTouched(name, true);
+          }
+        }}
       />
     </div>
   );
