@@ -88,7 +88,6 @@ const AntecedentesObstForm = ({
         }));
       };
 
-      // Validar solo cuando se haya tocado y completado todos los campos requeridos
       if (
         formik.touched.aborto &&
         formik.touched.cesarea &&
@@ -101,7 +100,6 @@ const AntecedentesObstForm = ({
     }
   }, [formik.values, formik.touched, formik.errors, mode, setValidateForms]);
 
-  // Esta es la parte para disparar el submit solo cuando haya sido confirmado el formulario.
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
