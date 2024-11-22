@@ -115,12 +115,11 @@ const PacienteForm = ({
       setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
+
   useEffect(() => {
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
         formik.validateForm().then((errors) => {
-          console.log(errors);
-
           const isFormValid =
             Object.keys(errors).length === 0 &&
             formik.touched.silaisId &&
@@ -130,8 +129,6 @@ const PacienteForm = ({
             formik.touched.primerApellido &&
             formik.touched.telefono1;
 
-          console.log("Formulario válido:", isFormValid);
-
           setValidateForms((prev) => ({
             ...prev,
             dataPaciente: isFormValid,
@@ -139,7 +136,7 @@ const PacienteForm = ({
         });
       };
 
-      // Solo ejecutar la validación si alguno de los campos relevantes ha sido tocado
+      // Ejecutar validación si algún campo relevante fue tocado
       if (
         formik.touched.silaisId ||
         formik.touched.municipioId ||
@@ -151,7 +148,16 @@ const PacienteForm = ({
         validateOnBlur();
       }
     }
-  }, [formik.values, formik.touched, formik.errors, setValidateForms, mode]);
+  }, [
+    mode,
+    formik.touched.silaisId,
+    formik.touched.municipioId,
+    formik.touched.numeroExpediente,
+    formik.touched.primerNombre,
+    formik.touched.primerApellido,
+    formik.touched.telefono1,
+    setValidateForms,
+  ]);
 
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
