@@ -91,10 +91,10 @@ const PacienteForm = ({
       segundoNombre: Yup.string().optional(),
       primerApellido: Yup.string().required("*Requerido"),
       segundoApellido: Yup.string().optional(),
-      fechaNac: Yup.string().required("*Requerido"),
+      fechaNac: Yup.string().optional().notRequired(),
       telefono1: Yup.string().required("*Requerido"),
-      telefono2: Yup.string().optional(),
-      domicilio: Yup.string().optional(), 
+      telefono2: Yup.string().optional().notRequired(),
+      domicilio: Yup.string().optional(),
     }),
 
     onSubmit: (values) => {
@@ -115,25 +115,22 @@ const PacienteForm = ({
       setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
-
   useEffect(() => {
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
         formik.validateForm().then((errors) => {
+          console.log(errors);
+
           const isFormValid =
-            !Object.keys(errors).length &&
+            Object.keys(errors).length === 0 &&
+            formik.touched.silaisId &&
             formik.touched.municipioId &&
             formik.touched.numeroExpediente &&
             formik.touched.primerNombre &&
             formik.touched.primerApellido &&
-            formik.touched.fechaNac &&
-            formik.touched.telefono1 &&
-            !formik.errors.municipioId &&
-            !formik.errors.numeroExpediente &&
-            !formik.errors.primerNombre &&
-            !formik.errors.primerApellido &&
-            !formik.errors.fechaNac &&
-            !formik.errors.telefono1;
+            formik.touched.telefono1;
+
+          console.log("Formulario válido:", isFormValid);
 
           setValidateForms((prev) => ({
             ...prev,
@@ -142,12 +139,13 @@ const PacienteForm = ({
         });
       };
 
+      // Solo ejecutar la validación si alguno de los campos relevantes ha sido tocado
       if (
+        formik.touched.silaisId ||
         formik.touched.municipioId ||
         formik.touched.numeroExpediente ||
         formik.touched.primerNombre ||
         formik.touched.primerApellido ||
-        formik.touched.fechaNac ||
         formik.touched.telefono1
       ) {
         validateOnBlur();
