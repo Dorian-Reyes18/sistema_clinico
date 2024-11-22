@@ -126,10 +126,14 @@ const PacienteForm = ({
     label,
     type = "text",
     clase = "item",
-    disabled = false
+    disabled = false,
+    isRequired = false
   ) => (
     <div className="item">
-      <label htmlFor={id}>{label}:</label>
+      <label htmlFor={id}>
+        {label}
+        {isRequired && <span style={{ color: "red" }}> *</span>}{" "}
+      </label>
       {type === "textarea" ? (
         <Input.TextArea
           rows={1}
@@ -164,7 +168,10 @@ const PacienteForm = ({
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="item">
-        <label htmlFor="silaisId">Silais:</label>
+        <label htmlFor="silaisId">
+          Silais: <span style={{ color: "red" }}> *</span>
+        </label>
+
         <Select
           className="select"
           placeholder="Seleccione..."
@@ -200,7 +207,10 @@ const PacienteForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="municipioId">Municipio:</label>
+        <label htmlFor="municipioId">
+          Municipio:
+          <span style={{ color: "red" }}> *</span>
+        </label>
         <Select
           className="select"
           placeholder="Seleccione..."
@@ -223,15 +233,46 @@ const PacienteForm = ({
           </div>
         )}
       </div>
-      {renderField("numeroExpediente", "N° de Expediente", "number", "text")}
-      {renderField("primerNombre", "Primer Nombre", "text", "text")}
-      {renderField("segundoNombre", "Segundo Nombre", "text", "text")}
-      {renderField("primerApellido", "Primer Apellido", "text", "text")}
+      {renderField(
+        "numeroExpediente",
+        "N° de Expediente",
+        "number",
+        "text",
+        false,
+        true
+      )}
+      {renderField(
+        "primerNombre",
+        "Primer Nombre",
+        "text",
+        "text",
+        false,
+        true
+      )}
+      {renderField(
+        "segundoNombre",
+        "Segundo Nombre",
+        "text",
+        "text",
+        false,
+        false
+      )}
+      {renderField(
+        "primerApellido",
+        "Primer Apellido",
+        "text",
+        "text",
+        false,
+        true
+      )}
       {renderField("segundoApellido", "Segundo Apellido", "text", "text")}
-      {renderField("telefono1", "Teléfono 1", "number", "tlf")}
+      {renderField("telefono1", "Teléfono 1", "number", "tlf", false, true)}
       {renderField("telefono2", "Teléfono 2", "number", "tlf")}
       <div className="item">
-        <label htmlFor="fechaNac">Fecha de Nacimiento:</label>
+        <label htmlFor="fechaNac">
+          Fecha de Nacimiento:
+          <span style={{ color: "red" }}> *</span>
+        </label>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
           <DatePicker
             id="fechaNac"

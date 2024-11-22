@@ -92,7 +92,6 @@ const EmbarazoActual = ({
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
         formik.validateForm().then((errors) => {
-          // Verifica si no hay errores en los campos requeridos
           const isFormValid =
             !Object.keys(errors).length &&
             formik.touched.fechaEmbarazo &&
@@ -111,7 +110,6 @@ const EmbarazoActual = ({
         });
       };
 
-      // Solo ejecutamos la validación si alguno de los campos ha sido tocado
       if (
         formik.touched.fechaEmbarazo ||
         formik.touched.ultimaRegla ||
@@ -282,6 +280,7 @@ const EmbarazoActual = ({
                   date ? date.toISOString() : null
                 );
                 calcularEdadGestacional();
+                formik.validateField("ultimaRegla");
               }}
               onBlur={() => formik.setFieldTouched("ultimaRegla", true)}
               renderInput={(params) => <Input {...params} />}
