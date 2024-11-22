@@ -80,15 +80,6 @@ const EmbarazoActual = ({
   }, [confirmButton, hasSubmitted, formik]);
 
   useEffect(() => {
-    formik.setTouched({
-      fechaEmbarazo: true,
-      ultimaRegla: true,
-      pesoKg: true,
-      talla: true,
-    });
-  }, []);
-
-  useEffect(() => {
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
         formik.validateForm().then((errors) => {
@@ -166,7 +157,9 @@ const EmbarazoActual = ({
     <div>
       <form onSubmit={formik.handleSubmit}>
         <div className="item">
-          <label htmlFor="talla">Talla (m)</label>
+          <label htmlFor="talla">
+            Talla (m) <span className="señal-req"> *</span>
+          </label>
           <Input
             placeholder="valor en metros"
             className="value"
@@ -187,7 +180,9 @@ const EmbarazoActual = ({
         </div>
 
         <div className="item">
-          <label htmlFor="pesoKg">Peso (kg)</label>
+          <label htmlFor="pesoKg">
+            Peso (kg) <span className="señal-req"> *</span>
+          </label>
           <Input
             placeholder="valor"
             className="value"
@@ -263,7 +258,9 @@ const EmbarazoActual = ({
         </div>
 
         <div className="item">
-          <label htmlFor="ultmaRegla">Última regla</label>
+          <label htmlFor="ultmaRegla">
+            Última regla <span className="señal-req"> *</span>
+          </label>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <DatePicker
               id="ultmaRegla"
@@ -292,7 +289,9 @@ const EmbarazoActual = ({
         </div>
 
         <div className="item">
-          <label htmlFor="fechaEmbarazo">Fecha de embarazo</label>
+          <label htmlFor="fechaEmbarazo">
+            Fecha de embarazo <span className="señal-req"> *</span>
+          </label>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <DatePicker
               id="fechaEmbarazo"

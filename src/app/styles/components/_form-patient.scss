@@ -11,6 +11,14 @@
       width: 76%;
     }
   }
+  .aviso {
+    font-size: 14px;
+    text-align: left;
+    width: 100%;
+    @include media(desktopXXL) {
+      width: 76%;
+    }
+  }
 
   .forms-container {
     gap: 30px;
@@ -92,6 +100,15 @@
           }
           .requerido {
             font-size: 14px;
+          }
+          .señal-req {
+            color: red;
+            font-size: 18px;
+            margin: 0;
+            display: contents;
+            padding: 0;
+            height: fit-content;
+            width: fit-content;
           }
           .textarea {
             min-width: 275px;

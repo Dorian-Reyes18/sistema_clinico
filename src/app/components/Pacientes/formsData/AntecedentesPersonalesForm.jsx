@@ -129,7 +129,10 @@ const AntecedentePersonalesForm = ({
       {renderSwitchField("Inmunología", "inmunologia")}
 
       <div className="item">
-        <label htmlFor="sangreRh">Sangre y Rh</label>
+        <label htmlFor="sangreRh">
+          Sangre y Rh
+          <span className="señal-req"> *</span>
+        </label>
         <Select
           className="switch"
           placeholder="seleccione..."

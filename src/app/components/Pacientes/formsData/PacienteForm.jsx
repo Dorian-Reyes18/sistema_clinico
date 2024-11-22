@@ -132,7 +132,7 @@ const PacienteForm = ({
     <div className="item">
       <label htmlFor={id}>
         {label}
-        {isRequired && <span style={{ color: "red" }}> *</span>}{" "}
+        {isRequired && <span className="señal-req"> *</span>}{" "}
       </label>
       {type === "textarea" ? (
         <Input.TextArea
@@ -169,7 +169,7 @@ const PacienteForm = ({
     <form onSubmit={formik.handleSubmit}>
       <div className="item">
         <label htmlFor="silaisId">
-          Silais: <span style={{ color: "red" }}> *</span>
+          Silais: <span className="señal-req"> *</span>
         </label>
 
         <Select
@@ -209,7 +209,7 @@ const PacienteForm = ({
       <div className="item">
         <label htmlFor="municipioId">
           Municipio:
-          <span style={{ color: "red" }}> *</span>
+          <span className="señal-req"> *</span>
         </label>
         <Select
           className="select"
@@ -271,7 +271,7 @@ const PacienteForm = ({
       <div className="item">
         <label htmlFor="fechaNac">
           Fecha de Nacimiento:
-          <span style={{ color: "red" }}> *</span>
+          <span className="señal-req"> *</span>
         </label>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
           <DatePicker

@@ -78,7 +78,9 @@ const ConyugeForm = ({
   return (
     <form>
       <div className="item">
-        <label htmlFor="sangreRhId">Sangre y Rh:</label>
+        <label htmlFor="sangreRhId">
+          Sangre y Rh: <span className="señal-req"> *</span>
+        </label>
         <Select
           className="select"
           placeholder="Seleccione..."
@@ -102,7 +104,9 @@ const ConyugeForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="telefono">Teléfono:</label>
+        <label htmlFor="telefono">
+          Teléfono: <span className="señal-req"> *</span>
+        </label>
         <Input
           className="tlf"
           id="telefono"

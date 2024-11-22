@@ -160,11 +160,15 @@ const AllDataForms = ({ mode, id }) => {
 
   return (
     <div className="patient-form-container">
-      <h4 className="titleForm">
-        {mode === "isEditMode"
-          ? "Editar - Datos generales del paciente"
-          : "Crear - Datos generales del paciente"}
-      </h4>
+      <div className="titleForm">
+        <h4>
+          {mode === "isEditMode"
+            ? "Editar - Datos generales del paciente"
+            : "Crear - Datos generales del paciente"}
+        </h4>
+
+        <p className="aviso">Los campos con un asterisco son obligatorios</p>
+      </div>
 
       <div className="forms-container">
         {formConfig.map(

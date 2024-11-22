@@ -100,7 +100,9 @@ const AntecedentesObstForm = ({
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="item">
-        <label htmlFor="gesta">Gesta:</label>
+        <label htmlFor="gesta">
+          Gesta: <span className="señal-req"> *</span>
+        </label>
         <Input
           placeholder="valor..."
           className="value"
@@ -117,7 +119,9 @@ const AntecedentesObstForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="parto">Parto:</label>
+        <label htmlFor="parto">
+          Parto: <span className="señal-req"> *</span>
+        </label>
         <Input
           placeholder="valor..."
           className="value"
@@ -134,7 +138,9 @@ const AntecedentesObstForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="aborto">Aborto:</label>
+        <label htmlFor="aborto">
+          Aborto: <span className="señal-req"> *</span>
+        </label>
         <Input
           placeholder="valor..."
           className="value"
@@ -151,7 +157,9 @@ const AntecedentesObstForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="cesarea">Cesárea:</label>
+        <label htmlFor="cesarea">
+          Cesárea: <span className="señal-req"> *</span>
+        </label>
         <Input
           placeholder="valor..."
           className="value"
@@ -168,7 +176,9 @@ const AntecedentesObstForm = ({
       </div>
 
       <div className="item">
-        <label htmlFor="legrado">Legrado:</label>
+        <label htmlFor="legrado">
+          Legrado: <span className="señal-req"> *</span>
+        </label>
         <Input
           placeholder="valor..."
           className="value"
