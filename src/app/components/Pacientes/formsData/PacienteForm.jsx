@@ -27,13 +27,25 @@ const PacienteForm = ({
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const calcularEdad = (fechaNac) => {
-    if (!fechaNac) return null;
-    const hoy = new Date();
-    const fechaNacimiento = new Date(fechaNac);
-    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate()))
+    if (!fechaNac) return 0;
+
+    const hoy = dayjs();
+    const fechaNacimiento = dayjs(fechaNac);
+
+    if (hoy.year() === fechaNacimiento.year()) {
+      return 0;
+    }
+
+    let edad = hoy.year() - fechaNacimiento.year();
+
+    if (
+      hoy.month() < fechaNacimiento.month() ||
+      (hoy.month() === fechaNacimiento.month() &&
+        hoy.date() < fechaNacimiento.date())
+    ) {
       edad--;
+    }
+
     return edad;
   };
 
@@ -45,7 +57,7 @@ const PacienteForm = ({
     segundoNombre: initialValues.segundoNombre || "",
     primerApellido: initialValues.primerApellido || "",
     segundoApellido: initialValues.segundoApellido || "",
-    edad: initialValues.edad || null,
+    edad: initialValues.edad || 0,
     fechaNac: initialValues.fechaNac
       ? dayjs(initialValues.fechaNac).utc().format("YYYY-MM-DD")
       : "",
@@ -66,7 +78,7 @@ const PacienteForm = ({
             segundoNombre: "",
             primerApellido: "",
             segundoApellido: "",
-            edad: null,
+            edad: 0,
             fechaNac: null,
             telefono1: null,
             telefono2: null,
@@ -76,10 +88,13 @@ const PacienteForm = ({
       municipioId: Yup.number().required("*Requerido"),
       numeroExpediente: Yup.string().required("*Requerido"),
       primerNombre: Yup.string().required("*Requerido"),
+      segundoNombre: Yup.string().optional(),
       primerApellido: Yup.string().required("*Requerido"),
+      segundoApellido: Yup.string().optional(),
       fechaNac: Yup.string().required("*Requerido"),
       telefono1: Yup.string().required("*Requerido"),
     }),
+
     onSubmit: (values) => {
       const pacienteData = {
         ...values,
@@ -180,7 +195,10 @@ const PacienteForm = ({
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
           value={formik.values[id]}
           disabled={disabled}
-          onBlur={formik.handleBlur}
+          onBlur={(e) => {
+            handleFieldBlur(e);
+            formik.validateField(id);
+          }}
         />
       ) : (
         <Input
@@ -189,7 +207,10 @@ const PacienteForm = ({
           type={type}
           name={id}
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
-          onBlur={formik.handleBlur}
+          onBlur={(e) => {
+            handleFieldBlur(e);
+            formik.validateField(id);
+          }}
           value={formik.values[id]}
           disabled={disabled}
         />
@@ -201,6 +222,10 @@ const PacienteForm = ({
       )}
     </div>
   );
+
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e);
+  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -216,7 +241,7 @@ const PacienteForm = ({
           name="silaisId"
           onChange={(value) => formik.setFieldValue("silaisId", value)}
           value={formik.values.silaisId}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
         >
           {metadata.silais.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -233,7 +258,7 @@ const PacienteForm = ({
           placeholder="Seleccione..."
           id="departamentoId"
           onChange={handleDepartamentoChange}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
         >
           {metadata.departamentos.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -254,7 +279,7 @@ const PacienteForm = ({
           id="municipioId"
           name="municipioId"
           onChange={(value) => formik.setFieldValue("municipioId", value)}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
           value={formik.values.municipioId || ""}
           disabled={!departamentoId && mode !== "isEditMode"}
         >
@@ -321,7 +346,7 @@ const PacienteForm = ({
             onChange={(date) => {
               formik.setFieldValue("fechaNac", date);
             }}
-            onBlur={formik.handleBlur}
+            onBlur={handleFieldBlur}
           />
         </LocalizationProvider>
         {formik.touched.fechaNac &&
@@ -339,11 +364,11 @@ const PacienteForm = ({
           id="edad"
           name="edad"
           disabled={true}
-          onBlur={formik.handleBlur}
+          onBlur={handleFieldBlur}
           value={
             mode === "isCreateMode"
-              ? calcularEdad(formik.values.fechaNac) || ""
-              : formik.values.edad
+              ? calcularEdad(formik.values.fechaNac) || "0"
+              : formik.values.edad || "0"
           }
           style={{
             color: "#4b4b4b",
@@ -353,6 +378,7 @@ const PacienteForm = ({
           }}
         />
       </div>
+
       {renderField("domicilio", "Domicilio", "textarea", "textarea")}
     </form>
   );
