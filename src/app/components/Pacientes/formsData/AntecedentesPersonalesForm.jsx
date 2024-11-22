@@ -69,28 +69,17 @@ const AntecedentePersonalesForm = ({
         ...values,
       };
       onSubmit(formData);
-      setHasSubmitted(true);
+      setHasSubmitted(true); // Evita múltiples envíos innecesarios
     },
   });
 
   useEffect(() => {
+    // Enviar solo cuando confirmButton sea true y el formulario no haya sido enviado aún
     if (confirmButton && !hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(true);
+      setHasSubmitted(true); // Evita múltiples envíos
     }
   }, [confirmButton, hasSubmitted, formik]);
-
-  const handleBlurFinalField = (e) => {
-    formik.handleBlur(e);
-    if (formik.values.sangreRh && !formik.errors.sangreRh) {
-      formik.submitForm();
-    }
-  };
-
-  const handleFieldBlur = (e) => {
-    formik.handleBlur(e);
-    formik.submitForm();
-  };
 
   // Función para renderizar los switches
   const renderSwitchField = (label, name) => (
@@ -98,8 +87,8 @@ const AntecedentePersonalesForm = ({
       <label htmlFor={name}>{label}</label>
       <Switch
         checked={formik.values[name]}
-        onChange={(checked) => formik.setFieldValue(name, checked)}
-        onBlur={handleFieldBlur}
+        onChange={(checked) => formik.setFieldValue(name, checked)} // Solo actualizamos el valor, no el formulario
+        // Elimino el onBlur para evitar el envío accidental al cambiar de switch
       />
     </div>
   );
@@ -124,8 +113,8 @@ const AntecedentePersonalesForm = ({
           placeholder="seleccione..."
           id="sangreRh"
           name="sangreRh"
-          onChange={(value) => formik.setFieldValue("sangreRh", value)}
-          onBlur={handleBlurFinalField}
+          onChange={(value) => formik.setFieldValue("sangreRh", value)} // Sin submit automático
+          // No se necesita onBlur aquí
           value={formik.values.sangreRh}
         >
           {metadata.sangreRH.map((item) => (

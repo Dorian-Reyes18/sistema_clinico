@@ -11,6 +11,7 @@ const AntecedentesFamiliaresForm = ({
 }) => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
+  // Inicializamos formik con los valores correctos para cada modo
   const formik = useFormik({
     initialValues: {
       pacienteId:
@@ -18,6 +19,7 @@ const AntecedentesFamiliaresForm = ({
       opcion: mode === "isEditMode" ? initialValues.opcion || false : false,
       descripcion: mode === "isEditMode" ? initialValues.descripcion || "" : "",
     },
+    enableReinitialize: true, // Esto es clave para actualizar initialValues
     onSubmit: (values) => {
       const formData = {
         pacienteId: formik.values.pacienteId || pacienteId,
@@ -28,14 +30,16 @@ const AntecedentesFamiliaresForm = ({
     },
   });
 
+  // Usamos un useEffect para manejar el confirmButton
   useEffect(() => {
-    if (confirmButton && !hasSubmitted) {
+    if (confirmButton && formik.dirty && !hasSubmitted) {
       formik.submitForm();
     }
-  }, [confirmButton, hasSubmitted]);
+  }, [confirmButton, formik.dirty, hasSubmitted]);
 
+  // Manejo de cambio en el switch
   const handleSwitchChange = (checked) => {
-    formik.setFieldValue("opcion", checked, true);
+    formik.setFieldValue("opcion", checked);
     if (!checked) {
       formik.setFieldValue("descripcion", "", true);
     }

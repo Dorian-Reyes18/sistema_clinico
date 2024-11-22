@@ -51,24 +51,6 @@ const ConyugeForm = ({
     }
   }, [confirmButton, hasSubmitted, formik]);
 
-  const handleBlurFinalField = (e) => {
-    formik.handleBlur(e);
-
-    if (
-      formik.values.sangreRhId &&
-      formik.values.telefono &&
-      !formik.errors.sangreRhId &&
-      !formik.errors.telefono
-    ) {
-      formik.submitForm();
-    }
-  };
-
-  const handleFieldBlur = (e) => {
-    formik.handleBlur(e);
-    formik.submitForm();
-  };
-
   return (
     <form>
       <div className="item">
@@ -79,7 +61,6 @@ const ConyugeForm = ({
           id="sangreRhId"
           name="sangreRhId"
           onChange={(value) => formik.setFieldValue("sangreRhId", value)}
-          onBlur={handleFieldBlur}
           value={formik.values.sangreRhId}
         >
           {metadata.sangreRH.map((item) => (
@@ -103,7 +84,6 @@ const ConyugeForm = ({
           name="telefono"
           type="text"
           onChange={formik.handleChange}
-          onBlur={handleFieldBlur}
           value={formik.values.telefono}
         />
         {formik.touched.telefono && formik.errors.telefono ? (
@@ -122,9 +102,13 @@ const ConyugeForm = ({
           name="edad"
           type="number"
           onChange={formik.handleChange}
-          onBlur={handleBlurFinalField}
           value={formik.values.edad}
         />
+        {formik.touched.edad && formik.errors.edad ? (
+          <div className="requerido" style={{ color: "red" }}>
+            {formik.errors.edad}
+          </div>
+        ) : null}
       </div>
     </form>
   );
