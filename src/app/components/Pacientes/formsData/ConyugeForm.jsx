@@ -69,9 +69,9 @@ const ConyugeForm = ({
   }, [formik.values, formik.touched, formik.errors, setValidateForms]);
 
   useEffect(() => {
-    if (confirmButton && !hasSubmitted) {
+    if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(true);
+      setHasSubmitted(confirmButton); 
     }
   }, [confirmButton, hasSubmitted, formik]);
 

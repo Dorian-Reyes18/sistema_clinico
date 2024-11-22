@@ -29,12 +29,14 @@ const AntecedentesFamiliaresForm = ({
     },
   });
 
-  // Usamos un useEffect para manejar el confirmButton
+
   useEffect(() => {
-    if (confirmButton && !hasSubmitted) {
+    if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
+      setHasSubmitted(confirmButton); 
     }
-  }, [confirmButton, hasSubmitted]);
+  }, [confirmButton, hasSubmitted, formik]);
+  
 
   // Manejo de cambio en el switch
   const handleSwitchChange = (checked) => {

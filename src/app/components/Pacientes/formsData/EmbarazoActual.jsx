@@ -73,9 +73,9 @@ const EmbarazoActual = ({
   }, [formik.values.pesoKg, formik.values.talla]);
 
   useEffect(() => {
-    if (confirmButton && !hasSubmitted) {
+    if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(true);
+      setHasSubmitted(confirmButton); 
     }
   }, [confirmButton, hasSubmitted, formik]);
 

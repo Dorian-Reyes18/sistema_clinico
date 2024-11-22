@@ -24,7 +24,7 @@ const AllDataForms = ({ mode, id }) => {
     return patients.find((p) => p.id === parseInt(id)) || null;
   });
 
-  const [confirmButton, setconfirmButton] = useState(false);
+  const [confirmButton, setconfirmButton] = useState(0);
   const [allFormDataReceive, setAllFormDataReceive] = useState([]);
   const [validateForms, setValidateForms] = useState({
     antObstetricos: false,
@@ -54,19 +54,28 @@ const AllDataForms = ({ mode, id }) => {
     }
   }, [mode, id, patients]);
 
-  // Funciones de manejo para cada formulario
   const handleFormSubmit = (formName) => (data) => {
-    setAllFormDataReceive((prevData) => [...prevData, { formName, data }]);
-    if (formName === "PacienteForm") {
-      setPacienteData(data);
-    }
+    setAllFormDataReceive((prevData) => {
+      const existingIndex = prevData.findIndex(
+        (entry) => entry.formName === formName
+      );
+      if (existingIndex > -1) {
+        const updatedData = [...prevData];
+        updatedData[existingIndex] = { formName, data };
+        return updatedData;
+      }
+      return [...prevData, { formName, data }];
+    });
   };
 
   // Aqui chatgpt
   useEffect(() => {
-    // Si hay datos significa que recibimos correctamente los datos de cada formulario
+    // Si hay datos significa que recibimos correctamente los datos de cada formulario hijo
     if (allFormDataReceive.length > 0) {
       console.log(allFormDataReceive);
+      if (confirmButton) {
+        setconfirmButton(false);
+      }
     }
 
     // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
@@ -131,6 +140,23 @@ const AllDataForms = ({ mode, id }) => {
 
   // Función para manejar la creación en cadena
   const handleSave = async () => {
+    const areAllFormsValid = Object.values(validateForms).every(
+      (isValid) => isValid
+    );
+
+    if (isCreateMode) {
+      if (!areAllFormsValid) {
+        Modal.error({
+          title: "Formulario incompleto",
+          content:
+            "Por favor, complete todos los campos requeridos antes de continuar.",
+          centered: true,
+          okText: "Entendido",
+        });
+        return;
+      }
+    }
+
     const modalTitle = isCreateMode
       ? "¿Está seguro de crear el paciente?"
       : "¿Está seguro de guardar los cambios?";
@@ -145,12 +171,7 @@ const AllDataForms = ({ mode, id }) => {
       cancelText: "No",
       centered: true,
       onOk() {
-        setconfirmButton(true);
-        if (isCreateMode) {
-          alert("Datos creados exitosamente.");
-        } else {
-          alert("Cambios guardados exitosamente.");
-        }
+        setconfirmButton((prev) => prev + 1);
       },
       onCancel() {
         console.log("Acción cancelada.");

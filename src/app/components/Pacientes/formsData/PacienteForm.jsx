@@ -93,10 +93,11 @@ const PacienteForm = ({
   });
 
   useEffect(() => {
-    if (confirmButton && !hasSubmitted) {
+    if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
+      setHasSubmitted(confirmButton);
     }
-  }, [confirmButton, hasSubmitted]);
+  }, [confirmButton, hasSubmitted, formik]);
 
   useEffect(() => {
     if (mode === "isCreateMode") {
