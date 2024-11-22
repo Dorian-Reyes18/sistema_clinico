@@ -58,6 +58,13 @@ const AntecedentesObstForm = ({
     },
   });
 
+  useEffect(() => {
+    if (confirmButton && !hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(true);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
+
   // Validar el formulario solo cuando los campos pierden el foco (onBlur)
 
   useEffect(() => {

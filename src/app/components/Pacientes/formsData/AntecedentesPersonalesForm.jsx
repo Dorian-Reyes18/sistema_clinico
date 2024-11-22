@@ -149,7 +149,7 @@ const AntecedentePersonalesForm = ({
           ))}
         </Select>
         {formik.touched.sangreRh && formik.errors.sangreRh ? (
-          <div className="reuqerido-msj" style={{ color: "red" }}>
+          <div className="requerido-msj" style={{ color: "red" }}>
             {formik.errors.sangreRh}
           </div>
         ) : null}
