@@ -93,6 +93,8 @@ const PacienteForm = ({
       segundoApellido: Yup.string().optional(),
       fechaNac: Yup.string().required("*Requerido"),
       telefono1: Yup.string().required("*Requerido"),
+      telefono2: Yup.string().optional(),
+      domicilio: Yup.string().optional(), 
     }),
 
     onSubmit: (values) => {
@@ -156,11 +158,12 @@ const PacienteForm = ({
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
-    const municipios = metadata.municipios.filter(
-      (m) => m.departamentoId === value
-    );
-    setMunicipiosFiltrados(municipios);
-    formik.setFieldValue("municipioId", null);
+    setMunicipiosFiltrados((prevMunicipios) => {
+      const municipios = metadata.municipios.filter(
+        (m) => m.departamentoId === value
+      );
+      return municipios;
+    });
   };
 
   useEffect(() => {
