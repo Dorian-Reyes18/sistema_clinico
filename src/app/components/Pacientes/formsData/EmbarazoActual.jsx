@@ -19,14 +19,14 @@ const EmbarazoActual = ({
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
-    fechaEmbarazo: initialValues.fechaEmbarazo,
-    pesoKg: initialValues.pesoKg,
-    talla: initialValues.talla,
-    ultimaRegla: initialValues.ultimaRegla,
-    edadGestacional: initialValues.edadGestacional,
-    imc: initialValues.imc,
-    consumoAF: initialValues.consumoAF,
-    fechaInicioConsumo: initialValues.fechaInicioConsumo,
+    fechaEmbarazo: initialValues.fechaEmbarazo || null,
+    pesoKg: initialValues.pesoKg || 0,
+    talla: initialValues.talla || 0,
+    ultimaRegla: initialValues.ultimaRegla || null,
+    edadGestacional: initialValues.edadGestacional || 0,
+    imc: initialValues.imc || 0,
+    consumoAF: initialValues.consumoAF || false,
+    fechaInicioConsumo: initialValues.fechaInicioConsumo || null,
   };
 
   const formik = useFormik({
@@ -44,12 +44,13 @@ const EmbarazoActual = ({
             fechaInicioConsumo: null,
           },
     validationSchema: Yup.object({
-      fechaEmbarazo: Yup.date().required("*Requerido"),
-      pesoKg: Yup.number().required("*Requerido").min(1, "*Cero o mas"),
-      talla: Yup.number().required("*Requerido").min(1, "*Cero o mas"),
-      ultimaRegla: Yup.date().required("*Requerido"),
+      fechaEmbarazo: Yup.date().nullable().required("*Requerido"),
+      ultimaRegla: Yup.date().nullable().required("*Requerido"),
+      pesoKg: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
+      talla: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
       fechaInicioConsumo: Yup.date().nullable(),
     }),
+
     onSubmit: (values) => {
       calcularEdadGestacional();
       const formData = {
@@ -76,6 +77,16 @@ const EmbarazoActual = ({
       setHasSubmitted(true);
     }
   }, [confirmButton, hasSubmitted, formik]);
+
+  useEffect(() => {
+    formik.setTouched({
+      fechaEmbarazo: true,
+      ultimaRegla: true,
+      fechaInicioConsumo: true,
+      pesoKg: true,
+      talla: true,
+    });
+  }, []);
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
@@ -237,7 +248,7 @@ const EmbarazoActual = ({
                 );
                 calcularEdadGestacional();
               }}
-              onBlur={formik.handleBlur}
+              onBlur={() => formik.setFieldTouched("ultimaRegla", true)}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
@@ -264,8 +275,12 @@ const EmbarazoActual = ({
                   date ? date.toISOString() : null
                 );
                 calcularEdadGestacional();
+                formik.validateField("fechaEmbarazo"); 
               }}
-              onBlur={formik.handleBlur}
+              onBlur={() => {
+                formik.setFieldTouched("fechaEmbarazo", true);
+              }}
+              
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
