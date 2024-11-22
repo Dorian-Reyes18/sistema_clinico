@@ -46,32 +46,29 @@ const ConyugeForm = ({
 
   useEffect(() => {
     if (mode === "isCreateMode") {
-      const validateOnBlur = () => {
-        formik.validateForm().then((errors) => {
-          const isFormValid =
-            !Object.keys(errors).length &&
-            formik.touched.sangreRhId &&
-            formik.touched.telefono &&
-            !formik.errors.sangreRhId &&
-            !formik.errors.telefono;
+      const validateOnSubmit = () => {
+        const isFormValid =
+          formik.touched.sangreRhId &&
+          formik.touched.telefono &&
+          !formik.errors.sangreRhId &&
+          !formik.errors.telefono;
 
-          setValidateForms((prev) => ({
-            ...prev,
-            dataConyuge: isFormValid,
-          }));
-        });
+        setValidateForms((prev) => ({
+          ...prev,
+          dataConyuge: isFormValid,
+        }));
       };
 
-      if (formik.touched.sangreRhId || formik.touched.telefono) {
-        validateOnBlur();
+      if (formik.touched.sangreRhId && formik.touched.telefono) {
+        validateOnSubmit();
       }
     }
-  }, [formik.values, formik.touched, formik.errors, setValidateForms]);
+  }, [formik.touched, formik.errors, mode, setValidateForms]);
 
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(confirmButton); 
+      setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
 

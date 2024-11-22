@@ -61,48 +61,53 @@ const AntecedentesObstForm = ({
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(confirmButton); 
+      setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
 
-  // Validar el formulario solo cuando los campos pierden el foco (onBlur)
-
   useEffect(() => {
     if (mode === "isCreateMode") {
-      const validateOnBlur = () => {
-        formik.validateForm().then((errors) => {
-          const isFormValid =
-            !Object.keys(errors).length &&
-            formik.touched.aborto &&
-            formik.touched.cesarea &&
-            formik.touched.gesta &&
-            formik.touched.legrado &&
-            formik.touched.parto &&
-            !formik.errors.aborto &&
-            !formik.errors.cesarea &&
-            !formik.errors.gesta &&
-            !formik.errors.legrado &&
-            !formik.errors.parto;
+      // Solo validamos si todos los campos están completos
+      const validateOnSubmit = () => {
+        // Verificamos si los campos requeridos están llenos y si no hay errores
+        const isFormValid =
+          formik.touched.aborto &&
+          formik.touched.cesarea &&
+          formik.touched.gesta &&
+          formik.touched.legrado &&
+          formik.touched.parto &&
+          !formik.errors.aborto &&
+          !formik.errors.cesarea &&
+          !formik.errors.gesta &&
+          !formik.errors.legrado &&
+          !formik.errors.parto;
 
-          setValidateForms((prev) => ({
-            ...prev,
-            antObstetricos: isFormValid,
-          }));
-        });
+        setValidateForms((prev) => ({
+          ...prev,
+          antObstetricos: isFormValid,
+        }));
       };
 
-      // Llamamos a la función de validación cuando se toquen los campos
+      // Validar solo cuando se haya tocado y completado todos los campos requeridos
       if (
-        formik.touched.aborto ||
-        formik.touched.cesarea ||
-        formik.touched.gesta ||
-        formik.touched.legrado ||
+        formik.touched.aborto &&
+        formik.touched.cesarea &&
+        formik.touched.gesta &&
+        formik.touched.legrado &&
         formik.touched.parto
       ) {
-        validateOnBlur();
+        validateOnSubmit();
       }
     }
   }, [formik.values, formik.touched, formik.errors, mode, setValidateForms]);
+
+  // Esta es la parte para disparar el submit solo cuando haya sido confirmado el formulario.
+  useEffect(() => {
+    if (confirmButton && confirmButton !== hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(confirmButton);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
 
   return (
     <form onSubmit={formik.handleSubmit}>

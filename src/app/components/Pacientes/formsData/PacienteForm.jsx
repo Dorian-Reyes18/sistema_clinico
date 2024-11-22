@@ -118,34 +118,39 @@ const PacienteForm = ({
 
   useEffect(() => {
     if (mode === "isCreateMode") {
-      const validateOnBlur = () => {
-        formik.validateForm().then((errors) => {
-          const isFormValid =
-            Object.keys(errors).length === 0 &&
-            formik.touched.silaisId &&
-            formik.touched.municipioId &&
-            formik.touched.numeroExpediente &&
-            formik.touched.primerNombre &&
-            formik.touched.primerApellido &&
-            formik.touched.telefono1;
+      const validateOnSubmit = () => {
+        // Verificamos si todos los campos requeridos están tocados y sin errores
+        const isFormValid =
+          formik.touched.silaisId &&
+          formik.touched.municipioId &&
+          formik.touched.numeroExpediente &&
+          formik.touched.primerNombre &&
+          formik.touched.primerApellido &&
+          formik.touched.telefono1 &&
+          !formik.errors.silaisId &&
+          !formik.errors.municipioId &&
+          !formik.errors.numeroExpediente &&
+          !formik.errors.primerNombre &&
+          !formik.errors.primerApellido &&
+          !formik.errors.telefono1;
 
-          setValidateForms((prev) => ({
-            ...prev,
-            dataPaciente: isFormValid,
-          }));
-        });
+        // Actualizamos el estado solo si el formulario es válido
+        setValidateForms((prev) => ({
+          ...prev,
+          dataPaciente: isFormValid,
+        }));
       };
 
-      // Ejecutar validación si algún campo relevante fue tocado
+      // Validar solo cuando se haya tocado y completado todos los campos requeridos
       if (
-        formik.touched.silaisId ||
-        formik.touched.municipioId ||
-        formik.touched.numeroExpediente ||
-        formik.touched.primerNombre ||
-        formik.touched.primerApellido ||
+        formik.touched.silaisId &&
+        formik.touched.municipioId &&
+        formik.touched.numeroExpediente &&
+        formik.touched.primerNombre &&
+        formik.touched.primerApellido &&
         formik.touched.telefono1
       ) {
-        validateOnBlur();
+        validateOnSubmit();
       }
     }
   }, [
@@ -156,6 +161,12 @@ const PacienteForm = ({
     formik.touched.primerNombre,
     formik.touched.primerApellido,
     formik.touched.telefono1,
+    formik.errors.silaisId,
+    formik.errors.municipioId,
+    formik.errors.numeroExpediente,
+    formik.errors.primerNombre,
+    formik.errors.primerApellido,
+    formik.errors.telefono1,
     setValidateForms,
   ]);
 

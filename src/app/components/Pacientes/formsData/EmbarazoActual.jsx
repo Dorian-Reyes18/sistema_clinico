@@ -45,11 +45,10 @@ const EmbarazoActual = ({
             fechaInicioConsumo: null,
           },
     validationSchema: Yup.object({
-      fechaEmbarazo: Yup.date().nullable().required("*Requerido"),
-      ultimaRegla: Yup.date().nullable().required("*Requerido"),
       pesoKg: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
       talla: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
-      fechaInicioConsumo: Yup.date().nullable(),
+      fechaEmbarazo: Yup.date().nullable().notRequired(), 
+      ultimaRegla: Yup.date().nullable().notRequired(), 
     }),
 
     onSubmit: (values) => {
@@ -75,42 +74,29 @@ const EmbarazoActual = ({
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(confirmButton); 
+      setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
-
   useEffect(() => {
     if (mode === "isCreateMode") {
-      const validateOnBlur = () => {
-        formik.validateForm().then((errors) => {
-          const isFormValid =
-            !Object.keys(errors).length &&
-            formik.touched.fechaEmbarazo &&
-            formik.touched.ultimaRegla &&
-            formik.touched.pesoKg &&
-            formik.touched.talla &&
-            !formik.errors.fechaEmbarazo &&
-            !formik.errors.ultimaRegla &&
-            !formik.errors.pesoKg &&
-            !formik.errors.talla;
+      const validateOnSubmit = () => {
+        const isFormValid =
+          formik.touched.pesoKg &&
+          formik.touched.talla &&
+          !formik.errors.pesoKg &&
+          !formik.errors.talla;
 
-          setValidateForms((prev) => ({
-            ...prev,
-            embarazoActual: isFormValid,
-          }));
-        });
+        setValidateForms((prev) => ({
+          ...prev,
+          embarazoActual: isFormValid,
+        }));
       };
 
-      if (
-        formik.touched.fechaEmbarazo ||
-        formik.touched.ultimaRegla ||
-        formik.touched.pesoKg ||
-        formik.touched.talla
-      ) {
-        validateOnBlur();
+      if (formik.touched.pesoKg && formik.touched.talla) {
+        validateOnSubmit();
       }
     }
-  }, [formik.values, formik.touched, formik.errors, mode, setValidateForms]);
+  }, [formik.touched, formik.errors, mode, setValidateForms]);
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;

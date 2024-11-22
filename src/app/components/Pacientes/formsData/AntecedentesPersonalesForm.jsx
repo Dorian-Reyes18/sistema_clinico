@@ -102,7 +102,13 @@ const AntecedentePersonalesForm = ({
         validateOnBlur();
       }
     }
-  }, [formik.values, formik.touched, formik.errors, setValidateForms, mode]);
+  }, [
+    formik.values,
+    formik.touched.sangreRh,
+    formik.errors,
+    setValidateForms,
+    mode,
+  ]); // Asegúrate de observar solo lo necesario
 
   // Función para renderizar los switches
   const renderSwitchField = (label, name) => (

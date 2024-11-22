@@ -27,11 +27,11 @@ const AllDataForms = ({ mode, id }) => {
   const [confirmButton, setconfirmButton] = useState(0);
   const [allFormDataReceive, setAllFormDataReceive] = useState([]);
   const [validateForms, setValidateForms] = useState({
-    antObstetricos: false,
-    antPersonales: false,
-    dataConyuge: false,
-    embarazoActual: false,
     dataPaciente: false,
+    embarazoActual: false,
+    antPersonales: false,
+    antObstetricos: false,
+    dataConyuge: false,
   });
 
   // Detectar que formulario hijo ha cambiado
