@@ -19,6 +19,7 @@ const PacienteForm = ({
   mode,
   initialValues = {},
   confirmButton,
+  setValidateForms,
 }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
@@ -97,6 +98,45 @@ const PacienteForm = ({
     }
   }, [confirmButton, hasSubmitted]);
 
+  useEffect(() => {
+    if (mode === "isCreateMode") {
+      const validateOnBlur = () => {
+        formik.validateForm().then((errors) => {
+          const isFormValid =
+            !Object.keys(errors).length &&
+            formik.touched.municipioId &&
+            formik.touched.numeroExpediente &&
+            formik.touched.primerNombre &&
+            formik.touched.primerApellido &&
+            formik.touched.fechaNac &&
+            formik.touched.telefono1 &&
+            !formik.errors.municipioId &&
+            !formik.errors.numeroExpediente &&
+            !formik.errors.primerNombre &&
+            !formik.errors.primerApellido &&
+            !formik.errors.fechaNac &&
+            !formik.errors.telefono1;
+
+          setValidateForms((prev) => ({
+            ...prev,
+            dataPaciente: isFormValid,
+          }));
+        });
+      };
+
+      if (
+        formik.touched.municipioId ||
+        formik.touched.numeroExpediente ||
+        formik.touched.primerNombre ||
+        formik.touched.primerApellido ||
+        formik.touched.fechaNac ||
+        formik.touched.telefono1
+      ) {
+        validateOnBlur();
+      }
+    }
+  }, [formik.values, formik.touched, formik.errors, setValidateForms, mode]);
+
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
@@ -116,10 +156,6 @@ const PacienteForm = ({
       setMunicipiosFiltrados(municipios);
     }
   }, [mode, initialValues.municipio?.departamentoId, metadata.municipios]);
-
-  const handleFieldBlur = (e) => {
-    formik.handleBlur(e);
-  };
 
   const renderField = (
     id,
@@ -143,7 +179,7 @@ const PacienteForm = ({
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
           value={formik.values[id]}
           disabled={disabled}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
         />
       ) : (
         <Input
@@ -152,7 +188,7 @@ const PacienteForm = ({
           type={type}
           name={id}
           onChange={(e) => formik.setFieldValue(id, e.target.value)}
-          onBlur={handleFieldBlur}
+          onBlur={formik.handleBlur}
           value={formik.values[id]}
           disabled={disabled}
         />
