@@ -9,8 +9,9 @@ const AntecedentesObstForm = ({
   mode,
   initialValues,
   confirmButton,
+  setValidateForms,
 }) => {
-  const [hasSubmitted, setHasSubmitted] = useState(false); // Controla si ya se ha enviado el formulario
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
@@ -53,18 +54,48 @@ const AntecedentesObstForm = ({
         ),
       };
       onSubmit(formData);
-      setHasSubmitted(true); // Marca el formulario como enviado
+      setHasSubmitted(true);
     },
   });
 
-  // Este effect se ejecuta cuando confirmButton cambia y el formulario no ha sido enviado
+  // Validar el formulario solo cuando los campos pierden el foco (onBlur)
+
   useEffect(() => {
-    // Verificamos que confirmButton sea true y que no se haya enviado previamente
-    if (confirmButton && !hasSubmitted) {
-      formik.submitForm(); // Envía el formulario si confirmButton es verdadero y no se ha enviado
-      setHasSubmitted(true); // Marca el formulario como enviado
+    if (mode === "isCreateMode") {
+      const validateOnBlur = () => {
+        formik.validateForm().then((errors) => {
+          const isFormValid =
+            !Object.keys(errors).length &&
+            formik.touched.aborto &&
+            formik.touched.cesarea &&
+            formik.touched.gesta &&
+            formik.touched.legrado &&
+            formik.touched.parto &&
+            !formik.errors.aborto &&
+            !formik.errors.cesarea &&
+            !formik.errors.gesta &&
+            !formik.errors.legrado &&
+            !formik.errors.parto;
+
+          setValidateForms((prev) => ({
+            ...prev,
+            antObstetricos: isFormValid,
+          }));
+        });
+      };
+
+      // Verificamos si algún campo ha sido tocado y luego realizamos la validación
+      if (
+        formik.touched.aborto ||
+        formik.touched.cesarea ||
+        formik.touched.gesta ||
+        formik.touched.legrado ||
+        formik.touched.parto
+      ) {
+        validateOnBlur();
+      }
     }
-  }, [confirmButton, hasSubmitted, formik]);
+  }, [formik.values, formik.touched, formik.errors, mode, setValidateForms]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -78,8 +109,13 @@ const AntecedentesObstForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.gesta}
+          onBlur={formik.handleBlur}
         />
+        {formik.touched.gesta && formik.errors.gesta ? (
+          <div className="requerido-msj">{formik.errors.gesta}</div>
+        ) : null}
       </div>
+
       <div className="item">
         <label htmlFor="parto">Parto:</label>
         <Input
@@ -90,8 +126,13 @@ const AntecedentesObstForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.parto}
+          onBlur={formik.handleBlur}
         />
+        {formik.touched.parto && formik.errors.parto ? (
+          <div className="requerido-msj">{formik.errors.parto}</div>
+        ) : null}
       </div>
+
       <div className="item">
         <label htmlFor="aborto">Aborto:</label>
         <Input
@@ -102,8 +143,13 @@ const AntecedentesObstForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.aborto}
+          onBlur={formik.handleBlur}
         />
+        {formik.touched.aborto && formik.errors.aborto ? (
+          <div className="requerido-msj">{formik.errors.aborto}</div>
+        ) : null}
       </div>
+
       <div className="item">
         <label htmlFor="cesarea">Cesárea:</label>
         <Input
@@ -114,8 +160,13 @@ const AntecedentesObstForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.cesarea}
+          onBlur={formik.handleBlur}
         />
+        {formik.touched.cesarea && formik.errors.cesarea ? (
+          <div className="requerido-msj">{formik.errors.cesarea}</div>
+        ) : null}
       </div>
+
       <div className="item">
         <label htmlFor="legrado">Legrado:</label>
         <Input
@@ -126,7 +177,11 @@ const AntecedentesObstForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.legrado}
+          onBlur={formik.handleBlur}
         />
+        {formik.touched.legrado && formik.errors.legrado ? (
+          <div className="requerido-msj">{formik.errors.legrado}</div>
+        ) : null}
       </div>
     </form>
   );

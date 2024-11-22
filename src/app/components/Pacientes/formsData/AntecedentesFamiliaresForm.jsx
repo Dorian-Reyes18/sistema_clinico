@@ -11,7 +11,6 @@ const AntecedentesFamiliaresForm = ({
 }) => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  // Inicializamos formik con los valores correctos para cada modo
   const formik = useFormik({
     initialValues: {
       pacienteId:
@@ -19,7 +18,7 @@ const AntecedentesFamiliaresForm = ({
       opcion: mode === "isEditMode" ? initialValues.opcion || false : false,
       descripcion: mode === "isEditMode" ? initialValues.descripcion || "" : "",
     },
-    enableReinitialize: true, // Esto es clave para actualizar initialValues
+    enableReinitialize: true,
     onSubmit: (values) => {
       const formData = {
         pacienteId: formik.values.pacienteId || pacienteId,

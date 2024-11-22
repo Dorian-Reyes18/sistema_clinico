@@ -11,6 +11,7 @@ const AntecedentePersonalesForm = ({
   diabetesId,
   initialValues,
   confirmButton,
+  setValidateForms, // Recibimos la función para actualizar el estado de validación
 }) => {
   const { metadata } = useAuth();
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -50,7 +51,7 @@ const AntecedentePersonalesForm = ({
             ...initialValues,
           },
     validationSchema: Yup.object({
-      sangreRh: Yup.number().required("*Requerido"),
+      sangreRh: Yup.number().nullable().required("*Requerido"),
       licor: Yup.boolean(),
       drogas: Yup.boolean(),
       fuma: Yup.boolean(),
@@ -69,17 +70,39 @@ const AntecedentePersonalesForm = ({
         ...values,
       };
       onSubmit(formData);
-      setHasSubmitted(true); // Evita múltiples envíos innecesarios
+      setHasSubmitted(true);
     },
   });
 
   useEffect(() => {
-    // Enviar solo cuando confirmButton sea true y el formulario no haya sido enviado aún
     if (confirmButton && !hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(true); // Evita múltiples envíos
+      setHasSubmitted(true);
     }
   }, [confirmButton, hasSubmitted, formik]);
+
+  useEffect(() => {
+    if (mode === "isCreateMode") {
+      const validateOnBlur = () => {
+        formik.validateForm().then((errors) => {
+          const isFormValid =
+            !Object.keys(errors).length &&
+            formik.touched.sangreRh &&
+            !formik.errors.sangreRh &&
+            Object.keys(formik.touched).length > 0;
+
+          setValidateForms((prev) => ({
+            ...prev,
+            antPersonales: isFormValid,
+          }));
+        });
+      };
+
+      if (formik.touched.sangreRh) {
+        validateOnBlur();
+      }
+    }
+  }, [formik.values, formik.touched, formik.errors, setValidateForms, mode]);
 
   // Función para renderizar los switches
   const renderSwitchField = (label, name) => (
@@ -87,8 +110,7 @@ const AntecedentePersonalesForm = ({
       <label htmlFor={name}>{label}</label>
       <Switch
         checked={formik.values[name]}
-        onChange={(checked) => formik.setFieldValue(name, checked)} // Solo actualizamos el valor, no el formulario
-        // Elimino el onBlur para evitar el envío accidental al cambiar de switch
+        onChange={(checked) => formik.setFieldValue(name, checked)}
       />
     </div>
   );
@@ -113,9 +135,9 @@ const AntecedentePersonalesForm = ({
           placeholder="seleccione..."
           id="sangreRh"
           name="sangreRh"
-          onChange={(value) => formik.setFieldValue("sangreRh", value)} // Sin submit automático
-          // No se necesita onBlur aquí
+          onChange={(value) => formik.setFieldValue("sangreRh", value)}
           value={formik.values.sangreRh}
+          onBlur={formik.handleBlur}
         >
           {metadata.sangreRH.map((item) => (
             <Select.Option key={item.id} value={item.id}>
@@ -124,7 +146,7 @@ const AntecedentePersonalesForm = ({
           ))}
         </Select>
         {formik.touched.sangreRh && formik.errors.sangreRh ? (
-          <div className="requerido" style={{ color: "red" }}>
+          <div className="reuqerido-msj" style={{ color: "red" }}>
             {formik.errors.sangreRh}
           </div>
         ) : null}

@@ -12,6 +12,7 @@ import { Spin, Modal } from "antd";
 
 // Post consultas
 import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
+import { object } from "yup";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
@@ -25,6 +26,24 @@ const AllDataForms = ({ mode, id }) => {
 
   const [confirmButton, setconfirmButton] = useState(false);
   const [allFormDataReceive, setAllFormDataReceive] = useState([]);
+  const [validateForms, setValidateForms] = useState({
+    antObstetricos: false,
+    antPersonales: false,
+    dataConyuge: false,
+    embarazoActual: false,
+    dataPaciente: false,
+  });
+
+  // Detectar que formulario hijo ha cambiado
+  useEffect(() => {
+    const changes = Object.entries(validateForms).filter(
+      ([key, value]) => value === true
+    );
+
+    changes.forEach(([key]) => {
+      console.log(`El formulario ${key} es true`);
+    });
+  }, [validateForms]);
 
   useEffect(() => {
     if (mode === "isEditMode" && id) {
@@ -46,10 +65,12 @@ const AllDataForms = ({ mode, id }) => {
   // Aqui chatgpt
   useEffect(() => {
     // Si hay datos significa que recibimos correctamente los datos de cada formulario
-    console.log(allFormDataReceive);
+    if (allFormDataReceive.length > 0) {
+      console.log(allFormDataReceive);
+    }
 
     // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
-    if (isCreateMode) {
+    else if (isCreateMode) {
       // Crear un post en un servicio externo que debemos importar y llamar aquí
       // y guardar lo que nos dé para crear el cónyuge y esperar la respuesta del backend
       // y guardar lo que recibamos
@@ -158,6 +179,7 @@ const AllDataForms = ({ mode, id }) => {
                   onSubmit={handleFormSubmit(name)}
                   initialValues={initialValues}
                   confirmButton={confirmButton}
+                  setValidateForms={setValidateForms}
                 />
               </div>
             </div>

@@ -45,12 +45,8 @@ const EmbarazoActual = ({
           },
     validationSchema: Yup.object({
       fechaEmbarazo: Yup.date().required("*Requerido"),
-      pesoKg: Yup.number()
-        .required("*Requerido")
-        .min(1, "*Debe ser mayor que 0"),
-      talla: Yup.number()
-        .required("*Requerido")
-        .min(1, "*Debe ser mayor que 0"),
+      pesoKg: Yup.number().required("*Requerido").min(1, "*Cero o mas"),
+      talla: Yup.number().required("*Requerido").min(1, "*Cero o mas"),
       ultimaRegla: Yup.date().required("*Requerido"),
       fechaInicioConsumo: Yup.date().nullable(),
     }),
@@ -80,10 +76,6 @@ const EmbarazoActual = ({
       setHasSubmitted(true);
     }
   }, [confirmButton, hasSubmitted, formik]);
-
-  const handleFieldBlur = (e) => {
-    formik.handleBlur(e);
-  };
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
@@ -137,17 +129,16 @@ const EmbarazoActual = ({
             id="talla"
             type="number"
             name="talla"
+            step={"0.01"}
             onChange={(data) => {
               const value = Math.max(Number(data.target.value), 0);
               formik.setFieldValue("talla", value);
             }}
             value={formik.values.talla}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
           {formik.touched.talla && formik.errors.talla ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.talla}
-            </div>
+            <div className="requerido-msj">{formik.errors.talla}</div>
           ) : null}
         </div>
 
@@ -159,17 +150,16 @@ const EmbarazoActual = ({
             id="pesoKg"
             type="number"
             name="pesoKg"
+            step={"0.01"}
             onChange={(data) => {
               const value = Math.max(Number(data.target.value), 0);
               formik.setFieldValue("pesoKg", value);
             }}
             value={formik.values.pesoKg}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
           {formik.touched.pesoKg && formik.errors.pesoKg ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.pesoKg}
-            </div>
+            <div className="requerido-msj">{formik.errors.pesoKg}</div>
           ) : null}
         </div>
 
@@ -187,7 +177,7 @@ const EmbarazoActual = ({
               opacity: 1,
               cursor: "not-allowed",
             }}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
         </div>
         <div className="item-switch">
@@ -200,7 +190,7 @@ const EmbarazoActual = ({
               formik.setFieldValue("consumoAF", checked);
               formik.setFieldValue("fechaInicioConsumo", null);
             }}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
         </div>
         <div className="item">
@@ -222,7 +212,7 @@ const EmbarazoActual = ({
                   date ? date.toISOString() : null
                 );
               }}
-              onBlur={handleFieldBlur}
+              onBlur={formik.handleBlur}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
@@ -247,14 +237,12 @@ const EmbarazoActual = ({
                 );
                 calcularEdadGestacional();
               }}
-              onBlur={handleFieldBlur}
+              onBlur={formik.handleBlur}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
           {formik.touched.ultimaRegla && formik.errors.ultimaRegla ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.ultimaRegla}
-            </div>
+            <div className="requerido-msj">{formik.errors.ultimaRegla}</div>
           ) : null}
         </div>
 
@@ -277,14 +265,12 @@ const EmbarazoActual = ({
                 );
                 calcularEdadGestacional();
               }}
-              onBlur={handleFieldBlur}
+              onBlur={formik.handleBlur}
               renderInput={(params) => <Input {...params} />}
             />
           </LocalizationProvider>
           {formik.touched.fechaEmbarazo && formik.errors.fechaEmbarazo ? (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.fechaEmbarazo}
-            </div>
+            <div className="requerido-msj">{formik.errors.fechaEmbarazo}</div>
           ) : null}
         </div>
 
@@ -302,7 +288,7 @@ const EmbarazoActual = ({
               opacity: 1,
               cursor: "not-allowed",
             }}
-            onBlur={handleFieldBlur}
+            onBlur={formik.handleBlur}
           />
         </div>
       </form>

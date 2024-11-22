@@ -10,6 +10,7 @@ const ConyugeForm = ({
   conyugeRhId,
   initialValues = {},
   confirmButton,
+  setValidateForms,
 }) => {
   const { metadata } = useAuth();
   const valuesProp = initialValues?.conyuge;
@@ -36,13 +37,36 @@ const ConyugeForm = ({
       telefono: Yup.string()
         .required("*Requerido")
         .matches(/^[0-9]+$/, "*Númerico"),
-      edad: Yup.number().nullable(),
     }),
     onSubmit: (values) => {
       onSubmit(values);
       setHasSubmitted(true);
     },
   });
+
+  useEffect(() => {
+    if (mode === "isCreateMode") {
+      const validateOnBlur = () => {
+        formik.validateForm().then((errors) => {
+          const isFormValid =
+            !Object.keys(errors).length &&
+            formik.touched.sangreRhId &&
+            formik.touched.telefono &&
+            !formik.errors.sangreRhId &&
+            !formik.errors.telefono;
+
+          setValidateForms((prev) => ({
+            ...prev,
+            dataConyuge: isFormValid,
+          }));
+        });
+      };
+
+      if (formik.touched.sangreRhId || formik.touched.telefono) {
+        validateOnBlur();
+      }
+    }
+  }, [formik.values, formik.touched, formik.errors, setValidateForms]);
 
   useEffect(() => {
     if (confirmButton && !hasSubmitted) {
@@ -60,6 +84,7 @@ const ConyugeForm = ({
           placeholder="Seleccione..."
           id="sangreRhId"
           name="sangreRhId"
+          onBlur={formik.handleBlur}
           onChange={(value) => formik.setFieldValue("sangreRhId", value)}
           value={formik.values.sangreRhId}
         >
@@ -85,6 +110,7 @@ const ConyugeForm = ({
           type="text"
           onChange={formik.handleChange}
           value={formik.values.telefono}
+          onBlur={formik.handleBlur}
         />
         {formik.touched.telefono && formik.errors.telefono ? (
           <div className="requerido" style={{ color: "red" }}>
@@ -103,6 +129,7 @@ const ConyugeForm = ({
           type="number"
           onChange={formik.handleChange}
           value={formik.values.edad}
+          onBlur={formik.handleBlur}
         />
         {formik.touched.edad && formik.errors.edad ? (
           <div className="requerido" style={{ color: "red" }}>
