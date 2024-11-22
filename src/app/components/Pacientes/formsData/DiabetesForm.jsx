@@ -54,16 +54,14 @@ const DiabetesForm = ({
         ...values,
       };
       onSubmit(formData);
-      setHasSubmitted(true); // Solo marcar como enviado si se ejecuta onSubmit
+      setHasSubmitted(true);
     },
   });
 
-  // Enviar el formulario solo cuando confirmButton es true y no se ha enviado antes
   useEffect(() => {
     if (confirmButton && !hasSubmitted) {
       formik.submitForm();
     }
-    // Dependencia controlada: usamos una referencia estable para evitar múltiples ejecuciones
   }, [confirmButton, hasSubmitted]);
 
   const handleSwitchChange = (field, checked) => {

@@ -84,7 +84,7 @@ const AntecedentesObstForm = ({
         });
       };
 
-      // Verificamos si algún campo ha sido tocado y luego realizamos la validación
+      // Llamamos a la función de validación cuando se toquen los campos
       if (
         formik.touched.aborto ||
         formik.touched.cesarea ||

@@ -92,16 +92,17 @@ const EmbarazoActual = ({
     if (mode === "isCreateMode") {
       const validateOnBlur = () => {
         formik.validateForm().then((errors) => {
+          // Verifica si no hay errores en los campos requeridos
           const isFormValid =
             !Object.keys(errors).length &&
             formik.touched.fechaEmbarazo &&
             formik.touched.ultimaRegla &&
-            formik.touched.talla &&
             formik.touched.pesoKg &&
+            formik.touched.talla &&
             !formik.errors.fechaEmbarazo &&
             !formik.errors.ultimaRegla &&
-            !formik.errors.talla &&
-            !formik.errors.pesoKg;
+            !formik.errors.pesoKg &&
+            !formik.errors.talla;
 
           setValidateForms((prev) => ({
             ...prev,
@@ -109,17 +110,18 @@ const EmbarazoActual = ({
           }));
         });
       };
-      
+
+      // Solo ejecutamos la validación si alguno de los campos ha sido tocado
       if (
         formik.touched.fechaEmbarazo ||
         formik.touched.ultimaRegla ||
-        formik.touched.talla ||
-        formik.touched.pesoKg
+        formik.touched.pesoKg ||
+        formik.touched.talla
       ) {
         validateOnBlur();
       }
     }
-  }, [formik.values, formik.touched, formik.errors, setValidateForms]);
+  }, [formik.values, formik.touched, formik.errors, mode, setValidateForms]);
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
