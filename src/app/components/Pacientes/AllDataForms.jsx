@@ -14,6 +14,7 @@ import EmbarazoActual from "./formsData/EmbarazoActual";
 
 // Servicios
 import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
+import { postPaciente } from "@/services/Post/Pacientes/crearPaciente";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
@@ -87,7 +88,6 @@ const AllDataForms = ({ mode, id }) => {
       const patient = patients.find((p) => p.id === parseInt(id));
       if (patient) setPacienteData(patient);
     }
-    console.log(token);
   }, [mode, id, patients]);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const AllDataForms = ({ mode, id }) => {
           try {
             // 1. crear conyuge
             const respConyuge = await postConyuge(completeData, token);
-            console.log("Respuesta del servidor", respConyuge);
+            console.log("Conyuge creado", respConyuge);
             // guardamos el id de ese conyuge
             const conyugeId = respConyuge.conyuge.id;
             console.log("Id de conyuge", conyugeId);
@@ -118,13 +118,22 @@ const AllDataForms = ({ mode, id }) => {
               completeData.find((f) => f.formName === "PacienteForm")?.data ||
               null;
 
-            dataPatient = JSON.stringify(dataPatient, null, 2);
-            const finalDataPatient = {
-              conyugeId: conyugeId,
-              ...dataPatient,
-            };
-            console.log("Dato de paciente", finalDataPatient);
+            dataPatient.conyugeId = conyugeId;
+
+            const respPaciente = await postPaciente(dataPatient, token);
+
+            console.log("Paciente creado", respPaciente);
+            const pacienteId = respPaciente.paciente.id;
+            console.log("paciente id", pacienteId);
+
             // 3.Crear Emb Actual
+            let dataEmbActual =
+              completeData.find((f) => f.formName === "EmbarazoActual")?.data ||
+              null;
+
+            dataEmbActual.pacienteId = pacienteId;
+            console.log("emb Actual antes de enviar", dataEmbActual);
+
             // 4.Crear Emb Actual
             // 5.Crear Emb Actual
             // 6.Crear Emb Actual

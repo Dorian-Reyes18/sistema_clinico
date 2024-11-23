@@ -102,6 +102,7 @@ const PacienteForm = ({
         conyugeId,
         edad: calcularEdad(values.fechaNac),
         fechaIngreso: new Date().toISOString(),
+        fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : "", 
       };
       onSubmit(pacienteData);
       setHasSubmitted(true);
