@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import LogoClinica from "@images/logo.svg";
+import { useAuth } from "../hooks/authContext"; // Asegúrate de importar el hook
 
 const { Sider } = Layout;
 
@@ -20,10 +21,17 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { setToken, setUser } = useAuth();
 
   const handleLogout = () => {
+    // Eliminar el token de las cookies
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
+    // Limpiar el estado del token y user en el contexto
+    setToken(null); 
+    setUser(null); 
+
+    // Mostrar notificación
     notification.success({
       message: "Éxito",
       description: "Sesión cerrada correctamente",
@@ -31,6 +39,7 @@ const Sidebar = () => {
       duration: 2,
     });
 
+    // Redirigir al login
     router.push("/login");
   };
 

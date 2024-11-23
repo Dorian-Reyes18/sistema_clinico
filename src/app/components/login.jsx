@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
@@ -14,7 +12,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
-  const { loadData } = useAuth();
+  const { setToken, loadData } = useAuth(); // Desestructuramos `setToken` para pasarlo al AuthContext
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,11 +35,16 @@ const Login = () => {
       }
 
       const { token } = await response.json();
+
+      document.cookie =
+        "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+
       const expirationDate = new Date(Date.now() + 86400e3).toUTCString();
       document.cookie = `token=${token}; path=/; expires=${expirationDate};`;
 
       const decodedToken = jwt.decode(token);
       if (decodedToken) {
+        setToken(token);
         await loadData(decodedToken.id, token);
       }
 

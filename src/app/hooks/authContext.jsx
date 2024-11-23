@@ -29,6 +29,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = getCookie("token");
 
+    console.log("Token obteniendo del cookie:", token); 
+
     if (token) {
       try {
         const decodedToken = jwt.decode(token);
@@ -128,6 +130,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         token,
+        setUser,
+        setToken,
         recentSurgeries,
         surgeriesPost,
         patients,
