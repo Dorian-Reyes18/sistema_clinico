@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
-import { Spin, Modal } from "antd";
+import { Modal } from "antd";
 
 // Formularios
 import ConyugeForm from "./formsData/ConyugeForm";
@@ -12,50 +12,20 @@ import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
 
-// Servicios
-import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
-
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
-  const { patients, token } = useAuth();
+  const { patients } = useAuth();
 
   // Estados
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
   const [patientData, setPacienteData] = useState(
     () => patients.find((p) => p.id === parseInt(id)) || null
   );
-  const [confirmButton, setconfirmButton] = useState(false);
-  const [allFormDataReceive, setAllFormDataReceive] = useState([]);
+  const [confirmButton, setConfirmButton] = useState(false);
+  const [DataFormsReceive, setDataFormsReceive] = useState([]);
+  const [completeData, setCompleteData] = useState(null);
 
-  // Detectar cambios en los formularios (eliminar más tarde)
-  useEffect(() => {
-    const changes = Object.entries(allFormDataReceive).filter(
-      ([key, value]) => value !== null
-    );
-    changes.forEach(([key]) => {
-      console.log(`El formulario ${key} ha sido enviado`);
-    });
-  }, [allFormDataReceive]);
-
-  // Actualizar datos de paciente en modo edición
-  useEffect(() => {
-    if (mode === "isEditMode" && id) {
-      const patient = patients.find((p) => p.id === parseInt(id));
-      if (patient) {
-        setPacienteData(patient);
-      }
-    }
-  }, [mode, id, patients]);
-
-  // Manejar el envío de cada formulario
-  const handleFormSubmit = (formName) => (data) => {
-    console.log(`Datos del formulario ${formName} recibidos:`, data);
-    if (formName === "PacienteForm") {
-      setPacienteData(data);
-    }
-  };
-
-  // Configuración de los formularios
+  // Configuración de formularios
   const formConfig = [
     {
       name: "PacienteForm",
@@ -107,8 +77,23 @@ const AllDataForms = ({ mode, id }) => {
     },
   ];
 
-  // Función para guardar los datos
-  const handleSave = async () => {
+  // Efectos
+
+  useEffect(() => {
+    if (mode === "isEditMode" && id) {
+      const patient = patients.find((p) => p.id === parseInt(id));
+      if (patient) setPacienteData(patient);
+    }
+  }, [mode, id, patients]);
+
+  useEffect(() => {
+    if (DataFormsReceive.length === formConfig.length) {
+      setCompleteData(DataFormsReceive);
+    }
+  }, [DataFormsReceive]);
+
+  // Funciones para manejar el modal y guardado
+  const handleSave = () => {
     const modalTitle = isCreateMode
       ? "¿Está seguro de crear el paciente?"
       : "¿Está seguro de guardar los cambios?";
@@ -123,7 +108,7 @@ const AllDataForms = ({ mode, id }) => {
       cancelText: "No",
       centered: true,
       onOk() {
-        setconfirmButton(true);
+        setConfirmButton(true);
       },
       onCancel() {
         console.log("Acción cancelada.");
@@ -131,7 +116,6 @@ const AllDataForms = ({ mode, id }) => {
     });
   };
 
-  // Función para cancelar cambios
   const handleCancelBtn = () => {
     Modal.confirm({
       title: "¿Está seguro que desea cancelar?",
@@ -148,6 +132,22 @@ const AllDataForms = ({ mode, id }) => {
     });
   };
 
+  // Manejar el envío de cada formulario
+  const handleFormSubmit = (formName) => (data) => {
+    setDataFormsReceive((prevData) => {
+      const existingIndex = prevData.findIndex(
+        (entry) => entry.formName === formName
+      );
+      if (existingIndex > -1) {
+        const updatedData = [...prevData];
+        updatedData[existingIndex] = { formName, data };
+        return updatedData;
+      }
+      return [...prevData, { formName, data }];
+    });
+  };
+
+  // Renderizar formularios
   return (
     <div className="patient-form-container">
       <div className="titleForm">
