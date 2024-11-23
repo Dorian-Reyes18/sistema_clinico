@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/authContext";
+import { Spin, Modal } from "antd";
+
+// Formularios
 import ConyugeForm from "./formsData/ConyugeForm";
 import PacienteForm from "./formsData/PacienteForm";
 import DiabetesForm from "./formsData/DiabetesForm";
@@ -7,23 +11,20 @@ import AntecedentesFamiliaresForm from "./formsData/AntecedentesFamiliaresForm";
 import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
-import { useAuth } from "@/app/hooks/authContext";
-import { Spin, Modal } from "antd";
 
-// Post consultas
+// Servicios
 import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
-import { object } from "yup";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
   const { patients, token } = useAuth();
 
+  // Estados
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
   const [recordId, setRecordId] = useState(id || null);
-  const [patientData, setPacienteData] = useState(() => {
-    return patients.find((p) => p.id === parseInt(id)) || null;
-  });
-
+  const [patientData, setPacienteData] = useState(
+    () => patients.find((p) => p.id === parseInt(id)) || null
+  );
   const [confirmButton, setconfirmButton] = useState(0);
   const [allFormDataReceive, setAllFormDataReceive] = useState([]);
   const [validateForms, setValidateForms] = useState({
@@ -34,17 +35,17 @@ const AllDataForms = ({ mode, id }) => {
     dataConyuge: false,
   });
 
-  // Detectar que formulario hijo ha cambiado
+  // Detectar cambios en los formularios
   useEffect(() => {
     const changes = Object.entries(validateForms).filter(
       ([key, value]) => value === true
     );
-
     changes.forEach(([key]) => {
       console.log(`El formulario ${key} es true`);
     });
   }, [validateForms]);
 
+  // Actualizar datos de paciente en modo edición
   useEffect(() => {
     if (mode === "isEditMode" && id) {
       const patient = patients.find((p) => p.id === parseInt(id));
@@ -54,6 +55,7 @@ const AllDataForms = ({ mode, id }) => {
     }
   }, [mode, id, patients]);
 
+  // Manejar el envío de cada formulario
   const handleFormSubmit = (formName) => (data) => {
     setAllFormDataReceive((prevData) => {
       const existingIndex = prevData.findIndex(
@@ -68,16 +70,14 @@ const AllDataForms = ({ mode, id }) => {
     });
   };
 
-  // Aqui chatgpt
+  // Manejo de datos recibidos de formularios
   useEffect(() => {
-    // Si hay datos significa que recibimos correctamente los datos de cada formulario hijo
     if (allFormDataReceive.length > 0) {
       console.log(allFormDataReceive);
       if (confirmButton) {
         setconfirmButton(false);
       }
     }
-
     // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
     else if (isCreateMode) {
       // Crear un post en un servicio externo que debemos importar y llamar aquí
@@ -86,7 +86,7 @@ const AllDataForms = ({ mode, id }) => {
     }
   }, [allFormDataReceive]);
 
-  // Datos para inicializar los formularios
+  // Configuración de los formularios
   const formConfig = [
     {
       name: "PacienteForm",
@@ -138,7 +138,7 @@ const AllDataForms = ({ mode, id }) => {
     },
   ];
 
-  // Función para manejar la creación en cadena
+  // Función para guardar los datos
   const handleSave = async () => {
     const areAllFormsValid = Object.values(validateForms).every(
       (isValid) => isValid
@@ -179,6 +179,7 @@ const AllDataForms = ({ mode, id }) => {
     });
   };
 
+  // Función para cancelar cambios
   const handleCancelBtn = () => {
     Modal.confirm({
       title: "¿Está seguro que desea cancelar?",
@@ -187,7 +188,7 @@ const AllDataForms = ({ mode, id }) => {
       cancelText: "Regresar",
       centered: true,
       onOk() {
-        router.push("/pacientes"); 
+        router.push("/pacientes");
       },
       onCancel() {
         console.log("El usuario decidió no cancelar.");
@@ -203,7 +204,6 @@ const AllDataForms = ({ mode, id }) => {
             ? "Editar - Datos generales del paciente"
             : "Crear - Datos generales del paciente"}
         </h4>
-
         <p className="aviso">Los campos con un asterisco son obligatorios</p>
       </div>
 
