@@ -12,9 +12,12 @@ import AntecedentesObstForm from "./formsData/antecedentesObstetricos";
 import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
 
+// Servicios
+import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
+
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
-  const { patients } = useAuth();
+  const { patients, token } = useAuth();
 
   // Estados
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
@@ -84,6 +87,7 @@ const AllDataForms = ({ mode, id }) => {
       const patient = patients.find((p) => p.id === parseInt(id));
       if (patient) setPacienteData(patient);
     }
+    console.log(token);
   }, [mode, id, patients]);
 
   useEffect(() => {
@@ -91,6 +95,50 @@ const AllDataForms = ({ mode, id }) => {
       setCompleteData(DataFormsReceive);
     }
   }, [DataFormsReceive]);
+
+  // Creación o edición en el backend
+  useEffect(() => {
+    if (completeData) {
+      console.log("data completa", completeData);
+
+      if (isCreateMode) {
+      } else {
+        const createPatient = async () => {
+          try {
+            // 1. crear conyuge
+            const respConyuge = await postConyuge(completeData, token);
+            console.log("Respuesta del servidor", respConyuge);
+            // guardamos el id de ese conyuge
+            const conyugeId = respConyuge.conyuge.id;
+            console.log("Id de conyuge", conyugeId);
+
+            // 2.Crear Paciente
+            // Guadar la data del paciente con el id del Conyuge
+            let dataPatient =
+              completeData.find((f) => f.formName === "PacienteForm")?.data ||
+              null;
+
+            dataPatient = JSON.stringify(dataPatient, null, 2);
+            const finalDataPatient = {
+              conyugeId: conyugeId,
+              ...dataPatient,
+            };
+            console.log("Dato de paciente", finalDataPatient);
+            // 3.Crear Emb Actual
+            // 4.Crear Emb Actual
+            // 5.Crear Emb Actual
+            // 6.Crear Emb Actual
+            // 7.Crear Emb Actual
+            // 8.quitar spiner y mostrar exitos y volver un nivel
+          } catch (error) {
+            console.error("Error al procesar la consulta", error);
+          }
+        };
+
+        createPatient();
+      }
+    }
+  }, [completeData, isCreateMode, token]);
 
   // Funciones para manejar el modal y guardado
   const handleSave = () => {
@@ -156,6 +204,10 @@ const AllDataForms = ({ mode, id }) => {
             ? "Editar - Datos generales del paciente"
             : "Crear - Datos generales del paciente"}
         </h4>
+        <p className="aviso">
+          Los campos con un asterisco son obligatorios, Aseguerese de llenarlos
+          todos
+        </p>
       </div>
 
       <div className="forms-container">

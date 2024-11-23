@@ -4,10 +4,14 @@ import apiUrl from "@/global/apiURL";
 
 // Función para crear el cónyuge
 export const postConyuge = async (data, token) => {
+  const dataParset = data.find((f) =>
+    f.formName === "ConyugeForm" ? f.data : null
+  );
+  const dataJson = JSON.stringify(dataParset.data, null, 2);
   try {
     const headers = createAuthHeaders(token);
 
-    const response = await axios.post(`${apiUrl}/protected/conyuge`, data, {
+    const response = await axios.post(`${apiUrl}/protected/conyuge`, dataJson, {
       headers,
     });
 
