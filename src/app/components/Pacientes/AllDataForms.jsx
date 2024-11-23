@@ -212,9 +212,12 @@ const AllDataForms = ({ mode, id }) => {
         )}
       </div>
 
-      <button onClick={handleSave}>
-        {isCreateMode ? "Crear paciente" : "Guardar Cambios"}
-      </button>
+      <div className="btn-opt">
+        <button className="btn btn-azul" onClick={handleSave}>
+          {isCreateMode ? "Crear paciente" : "Guardar Cambios"}
+        </button>
+        <button className="btn btn-gris">Cancelar</button>
+      </div>
     </div>
   );
 };

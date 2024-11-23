@@ -87,6 +87,22 @@ html {
       box-shadow: $color-shadow-button;
     }
   }
+  .btn-gris {
+    background-color: $color-gris-v2 !important;
+    border-color: $color-gris-v2 !important;
+
+    &:active {
+      color: $color-blanco !important;
+    }
+
+    &:hover {
+      background-color: $color-gris-v3 !important;
+      border-color: $color-gris-v3 !important;
+    }
+    &:focus-visible {
+      box-shadow: $color-shadow-button;
+    }
+  }
 
   /* sidebar.css */
   .ant-menu .ant-menu-item,

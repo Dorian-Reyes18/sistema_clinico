@@ -56,7 +56,7 @@ const AntecedentesFamiliaresForm = ({
       <div className="item-textarea">
         <label>Descripción:</label>
         <Input.TextArea
-          className="textarea"
+          className="textarea-2"
           rows={1}
           name="descripcion"
           value={formik.values.descripcion}
