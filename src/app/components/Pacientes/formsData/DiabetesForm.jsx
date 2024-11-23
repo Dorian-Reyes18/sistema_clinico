@@ -61,7 +61,7 @@ const DiabetesForm = ({
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
       formik.submitForm();
-      setHasSubmitted(confirmButton); 
+      setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
 

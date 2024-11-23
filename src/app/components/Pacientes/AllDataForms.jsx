@@ -21,29 +21,21 @@ const AllDataForms = ({ mode, id }) => {
 
   // Estados
   const [isCreateMode, setIsCreateMode] = useState(mode === "isCreateMode");
-  const [recordId, setRecordId] = useState(id || null);
   const [patientData, setPacienteData] = useState(
     () => patients.find((p) => p.id === parseInt(id)) || null
   );
-  const [confirmButton, setconfirmButton] = useState(0);
+  const [confirmButton, setconfirmButton] = useState(false);
   const [allFormDataReceive, setAllFormDataReceive] = useState([]);
-  const [validateForms, setValidateForms] = useState({
-    dataPaciente: false,
-    embarazoActual: false,
-    antPersonales: false,
-    antObstetricos: false,
-    dataConyuge: false,
-  });
 
-  // Detectar cambios en los formularios (elminar mas tarde)
+  // Detectar cambios en los formularios (eliminar más tarde)
   useEffect(() => {
-    const changes = Object.entries(validateForms).filter(
-      ([key, value]) => value === true
+    const changes = Object.entries(allFormDataReceive).filter(
+      ([key, value]) => value !== null
     );
     changes.forEach(([key]) => {
-      console.log(`El formulario ${key} es true`);
+      console.log(`El formulario ${key} ha sido enviado`);
     });
-  }, [validateForms]);
+  }, [allFormDataReceive]);
 
   // Actualizar datos de paciente en modo edición
   useEffect(() => {
@@ -57,35 +49,11 @@ const AllDataForms = ({ mode, id }) => {
 
   // Manejar el envío de cada formulario
   const handleFormSubmit = (formName) => (data) => {
-    setAllFormDataReceive((prevData) => {
-      const existingIndex = prevData.findIndex(
-        (entry) => entry.formName === formName
-      );
-      if (existingIndex > -1) {
-        const updatedData = [...prevData];
-        updatedData[existingIndex] = { formName, data };
-        return updatedData;
-      }
-      return [...prevData, { formName, data }];
-    });
+    console.log(`Datos del formulario ${formName} recibidos:`, data);
+    if (formName === "PacienteForm") {
+      setPacienteData(data);
+    }
   };
-
-  // Manejo de datos recibidos de formularios
-  useEffect(() => {
-    if (allFormDataReceive.length > 0) {
-      console.log(allFormDataReceive);
-      if (confirmButton) {
-        setconfirmButton(false);
-      }
-    }
-    // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
-    else if (isCreateMode) {
-      
-      // Crear un post en un servicio externo que debemos importar y llamar aquí
-      // y guardar lo que nos dé para crear el cónyuge y esperar la respuesta del backend
-      // y guardar lo que recibamos
-    }
-  }, [allFormDataReceive]);
 
   // Configuración de los formularios
   const formConfig = [
@@ -141,23 +109,6 @@ const AllDataForms = ({ mode, id }) => {
 
   // Función para guardar los datos
   const handleSave = async () => {
-    const areAllFormsValid = Object.values(validateForms).every(
-      (isValid) => isValid
-    );
-
-    if (isCreateMode) {
-      if (!areAllFormsValid) {
-        Modal.error({
-          title: "Formulario incompleto",
-          content:
-            "Por favor, complete todos los campos requeridos antes de continuar.",
-          centered: true,
-          okText: "Entendido",
-        });
-        return;
-      }
-    }
-
     const modalTitle = isCreateMode
       ? "¿Está seguro de crear el paciente?"
       : "¿Está seguro de guardar los cambios?";
@@ -172,7 +123,7 @@ const AllDataForms = ({ mode, id }) => {
       cancelText: "No",
       centered: true,
       onOk() {
-        setconfirmButton((prev) => prev + 1);
+        setconfirmButton(true);
       },
       onCancel() {
         console.log("Acción cancelada.");
@@ -205,7 +156,6 @@ const AllDataForms = ({ mode, id }) => {
             ? "Editar - Datos generales del paciente"
             : "Crear - Datos generales del paciente"}
         </h4>
-        <p className="aviso">Los campos con un asterisco son obligatorios</p>
       </div>
 
       <div className="forms-container">
@@ -221,7 +171,6 @@ const AllDataForms = ({ mode, id }) => {
                   onSubmit={handleFormSubmit(name)}
                   initialValues={initialValues}
                   confirmButton={confirmButton}
-                  setValidateForms={setValidateForms}
                 />
               </div>
             </div>

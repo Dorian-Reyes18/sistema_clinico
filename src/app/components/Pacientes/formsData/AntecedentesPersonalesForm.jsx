@@ -11,7 +11,6 @@ const AntecedentePersonalesForm = ({
   diabetesId,
   initialValues,
   confirmButton,
-  setValidateForms, 
 }) => {
   const { metadata } = useAuth();
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -75,35 +74,11 @@ const AntecedentePersonalesForm = ({
   });
 
   useEffect(() => {
-    if (mode === "isCreateMode") {
-      const validateOnBlur = () => {
-        if (formik.touched.sangreRh && !formik.errors.sangreRh) {
-          formik.validateForm().then((errors) => {
-            const isFormValid =
-              !Object.keys(errors).length &&
-              formik.touched.sangreRh &&
-              !formik.errors.sangreRh &&
-              Object.keys(formik.touched).length > 0;
-
-            setValidateForms((prev) => ({
-              ...prev,
-              antPersonales: isFormValid,
-            }));
-          });
-        }
-      };
-
-      if (formik.touched.sangreRh) {
-        validateOnBlur();
-      }
+    if (confirmButton && confirmButton !== hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(confirmButton);
     }
-  }, [
-    formik.values.sangreRh,
-    formik.touched.sangreRh,
-    formik.errors.sangreRh,
-    setValidateForms,
-    mode,
-  ]);
+  }, [confirmButton, hasSubmitted, formik]);
 
   const renderSwitchField = (label, name) => (
     <div className="item-switch">

@@ -19,7 +19,6 @@ const PacienteForm = ({
   mode,
   initialValues = {},
   confirmButton,
-  setValidateForms,
 }) => {
   const { metadata } = useAuth();
   const [departamentoId, setDepartamentoId] = useState(null);
@@ -109,67 +108,6 @@ const PacienteForm = ({
     },
   });
 
-  useEffect(() => {
-    if (confirmButton && confirmButton !== hasSubmitted) {
-      formik.submitForm();
-      setHasSubmitted(confirmButton);
-    }
-  }, [confirmButton, hasSubmitted, formik]);
-
-  useEffect(() => {
-    if (mode === "isCreateMode") {
-      const validateOnSubmit = () => {
-        // Verificamos si todos los campos requeridos están tocados y sin errores
-        const isFormValid =
-          formik.touched.silaisId &&
-          formik.touched.municipioId &&
-          formik.touched.numeroExpediente &&
-          formik.touched.primerNombre &&
-          formik.touched.primerApellido &&
-          formik.touched.telefono1 &&
-          !formik.errors.silaisId &&
-          !formik.errors.municipioId &&
-          !formik.errors.numeroExpediente &&
-          !formik.errors.primerNombre &&
-          !formik.errors.primerApellido &&
-          !formik.errors.telefono1;
-
-        // Actualizamos el estado solo si el formulario es válido
-        setValidateForms((prev) => ({
-          ...prev,
-          dataPaciente: isFormValid,
-        }));
-      };
-
-      // Validar solo cuando se haya tocado y completado todos los campos requeridos
-      if (
-        formik.touched.silaisId &&
-        formik.touched.municipioId &&
-        formik.touched.numeroExpediente &&
-        formik.touched.primerNombre &&
-        formik.touched.primerApellido &&
-        formik.touched.telefono1
-      ) {
-        validateOnSubmit();
-      }
-    }
-  }, [
-    mode,
-    formik.touched.silaisId,
-    formik.touched.municipioId,
-    formik.touched.numeroExpediente,
-    formik.touched.primerNombre,
-    formik.touched.primerApellido,
-    formik.touched.telefono1,
-    formik.errors.silaisId,
-    formik.errors.municipioId,
-    formik.errors.numeroExpediente,
-    formik.errors.primerNombre,
-    formik.errors.primerApellido,
-    formik.errors.telefono1,
-    setValidateForms,
-  ]);
-
   const handleDepartamentoChange = (value) => {
     setDepartamentoId(value);
 
@@ -190,6 +128,13 @@ const PacienteForm = ({
       setMunicipiosFiltrados(municipios);
     }
   }, [mode, initialValues.municipio?.departamentoId, metadata.municipios]);
+
+  useEffect(() => {
+    if (confirmButton && confirmButton !== hasSubmitted) {
+      formik.submitForm();
+      setHasSubmitted(confirmButton);
+    }
+  }, [confirmButton, hasSubmitted, formik]);
 
   const renderField = (
     id,

@@ -14,9 +14,8 @@ const EmbarazoActual = ({
   onSubmit,
   initialValues,
   confirmButton,
-  setValidateForms,
 }) => {
-  const [hasSubmitted, setHasSubmitted] = useState(false); // Estado para controlar si ya se envió
+  const [hasSubmitted, setHasSubmitted] = useState(false); 
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
@@ -77,26 +76,7 @@ const EmbarazoActual = ({
       setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
-  useEffect(() => {
-    if (mode === "isCreateMode") {
-      const validateOnSubmit = () => {
-        const isFormValid =
-          formik.touched.pesoKg &&
-          formik.touched.talla &&
-          !formik.errors.pesoKg &&
-          !formik.errors.talla;
-
-        setValidateForms((prev) => ({
-          ...prev,
-          embarazoActual: isFormValid,
-        }));
-      };
-
-      if (formik.touched.pesoKg && formik.touched.talla) {
-        validateOnSubmit();
-      }
-    }
-  }, [formik.touched, formik.errors, mode, setValidateForms]);
+  
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;

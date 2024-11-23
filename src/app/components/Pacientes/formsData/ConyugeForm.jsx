@@ -8,9 +8,8 @@ const ConyugeForm = ({
   onSubmit,
   mode,
   conyugeRhId,
-  initialValues = {},
-  confirmButton,
-  setValidateForms,
+  initialValues,
+  confirmButton = {},
 }) => {
   const { metadata } = useAuth();
   const valuesProp = initialValues?.conyuge;
@@ -43,27 +42,6 @@ const ConyugeForm = ({
       setHasSubmitted(true);
     },
   });
-
-  useEffect(() => {
-    if (mode === "isCreateMode") {
-      const validateOnSubmit = () => {
-        const isFormValid =
-          formik.touched.sangreRhId &&
-          formik.touched.telefono &&
-          !formik.errors.sangreRhId &&
-          !formik.errors.telefono;
-
-        setValidateForms((prev) => ({
-          ...prev,
-          dataConyuge: isFormValid,
-        }));
-      };
-
-      if (formik.touched.sangreRhId && formik.touched.telefono) {
-        validateOnSubmit();
-      }
-    }
-  }, [formik.touched, formik.errors, mode, setValidateForms]);
 
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
