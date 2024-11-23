@@ -179,6 +179,22 @@ const AllDataForms = ({ mode, id }) => {
     });
   };
 
+  const handleCancelBtn = () => {
+    Modal.confirm({
+      title: "¿Está seguro que desea cancelar?",
+      content: "Perderá todos los cambios que haya hecho.",
+      okText: "Confirmar",
+      cancelText: "Regresar",
+      centered: true,
+      onOk() {
+        router.push("/pacientes"); 
+      },
+      onCancel() {
+        console.log("El usuario decidió no cancelar.");
+      },
+    });
+  };
+
   return (
     <div className="patient-form-container">
       <div className="titleForm">
@@ -216,7 +232,9 @@ const AllDataForms = ({ mode, id }) => {
         <button className="btn btn-azul" onClick={handleSave}>
           {isCreateMode ? "Crear paciente" : "Guardar Cambios"}
         </button>
-        <button className="btn btn-gris">Cancelar</button>
+        <button onClick={handleCancelBtn} className="btn btn-gris">
+          Cancelar
+        </button>
       </div>
     </div>
   );
