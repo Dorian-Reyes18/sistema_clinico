@@ -35,7 +35,7 @@ const AllDataForms = ({ mode, id }) => {
     dataConyuge: false,
   });
 
-  // Detectar cambios en los formularios
+  // Detectar cambios en los formularios (elminar mas tarde)
   useEffect(() => {
     const changes = Object.entries(validateForms).filter(
       ([key, value]) => value === true
@@ -80,6 +80,7 @@ const AllDataForms = ({ mode, id }) => {
     }
     // Mostrar un spinner estilo modal de carga de antd mientras ejecutamos el siguiente código
     else if (isCreateMode) {
+      
       // Crear un post en un servicio externo que debemos importar y llamar aquí
       // y guardar lo que nos dé para crear el cónyuge y esperar la respuesta del backend
       // y guardar lo que recibamos
