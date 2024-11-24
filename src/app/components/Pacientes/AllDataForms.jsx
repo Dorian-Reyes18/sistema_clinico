@@ -118,22 +118,22 @@ const AllDataForms = ({ mode, id }) => {
     if (completeData) {
       console.log("data completa", completeData);
 
+      const getFormData = (formName) =>
+        completeData.find((f) => f.formName === formName)?.data || null;
+
+      const postData = async (data, postFunction) => {
+        if (!data) return null;
+        const response = await postFunction(data, token);
+        console.log(`${postFunction.name} creada`, response);
+        return response;
+      };
+
       if (isCreateMode) {
         // Modo de Creación (POST)
         startLoading();
 
         const createPatient = async () => {
           try {
-            const getFormData = (formName) =>
-              completeData.find((f) => f.formName === formName)?.data || null;
-
-            const postData = async (data, postFunction) => {
-              if (!data) return null;
-              const response = await postFunction(data, token);
-              console.log(`${postFunction.name} creada`, response);
-              return response;
-            };
-
             // 1. Crear Conyuge
             const dataConyuge = getFormData("ConyugeForm");
             const respConyuge = await postData(dataConyuge, postConyuge);
@@ -220,6 +220,7 @@ const AllDataForms = ({ mode, id }) => {
 
         createPatient();
       } else {
+        let alternativeConyugeId = 0;
         const dataEditIds = {
           conyugeId: patientData?.conyuge?.id || null,
           patientId: patientData?.id || null,
@@ -263,47 +264,91 @@ const AllDataForms = ({ mode, id }) => {
 
             // 1. Actualizar Conyuge
             const conyugeId = dataEditIds.conyugeId;
-            await putData(dataConyuge, putConyuge, conyugeId);
+            if (!conyugeId) {
+              const respConyuge = await postData(dataConyuge, postConyuge);
+              const newConyugeId = respConyuge?.conyuge.id;
+              dataPatient.conyugeId = newConyugeId; // Asignar al paciente
+            } else {
+              await putData(dataConyuge, putConyuge, conyugeId);
+            }
 
             // 2. Actualizar Paciente
             const pacienteId = dataEditIds.patientId;
-            await putData(dataPatient, putPaciente, pacienteId);
+            if (!pacienteId) {
+              await postData(dataPatient, postPaciente);
+            } else {
+              await putData(dataPatient, putPaciente, pacienteId);
+            }
 
             // 3. Actualizar Diabetes
             const diabetesId = dataEditIds.diabetesId;
-            await putData(dataDiabetes, putDiabetes, diabetesId);
+            if (!diabetesId) {
+              dataDiabetes.pacienteid = pacienteId;
+              await postData(dataDiabetes, postDiabetes);
+            } else {
+              await putData(dataDiabetes, putDiabetes, diabetesId);
+            }
 
             // 4. Actualizar Antecedentes Personales
             const antPersonalesId = dataEditIds.antPersonalesId;
-            await putData(
-              dataAntecedentesPersonales,
-              putAntecedentesPersonales,
-              antPersonalesId
-            );
+            if (!antPersonalesId) {
+              dataAntecedentesPersonales.pacienteId = dataEditIds.patientId;
+              dataAntecedentesPersonales.diabetesId = diabetesId;
+              await postData(
+                dataAntecedentesPersonales,
+                postAntecedentesPersonales
+              );
+            } else {
+              await putData(
+                dataAntecedentesPersonales,
+                putAntecedentesPersonales,
+                antPersonalesId
+              );
+            }
 
             // 5. Actualizar Antecedentes Familiares
             const antFamiliaresId = dataEditIds.antFamiliaresId;
-            await putData(
-              dataAntecedentesFamiliares,
-              putAntecedentesFamiliares,
-              antFamiliaresId
-            );
+            if (!antFamiliaresId) {
+              dataAntecedentesFamiliares.pacienteId = dataEditIds.patientId;
+              await postData(
+                dataAntecedentesFamiliares,
+                postAntecedentesFamiliares
+              );
+            } else {
+              await putData(
+                dataAntecedentesFamiliares,
+                putAntecedentesFamiliares,
+                antFamiliaresId
+              );
+            }
 
             // 6. Actualizar Antecedentes Obstétricos
             const antObstetricosId = dataEditIds.antObstetricosId;
-            await putData(
-              dataAntecedentesObstetricos,
-              putAntecedentesObstetricos,
-              antObstetricosId
-            );
+            if (!antObstetricosId) {
+              dataAntecedentesObstetricos.pacienteId = dataEditIds.patientId;
+              await postData(
+                dataAntecedentesObstetricos,
+                postAntecedentesObstetricos
+              );
+            } else {
+              await putData(
+                dataAntecedentesObstetricos,
+                putAntecedentesObstetricos,
+                antObstetricosId
+              );
+            }
 
             // 7. Actualizar Embarazo Actual
             const embActualId = dataEditIds.embActualId;
-            await putData(dataEmbarazoActual, putEmbarazoActual, embActualId);
+            if (!embActualId) {
+              dataEmbarazoActual.pacienteId = dataEditIds.patientId;
+              await postData(dataEmbarazoActual, postEmbarazoActual);
+            } else {
+              await putData(dataEmbarazoActual, putEmbarazoActual, embActualId);
+            }
 
             stopLoading();
 
-            // Modal de confirmación con icono de check y sin botón de cancelar
             Modal.confirm({
               title: "Paciente actualizado exitosamente",
               content:

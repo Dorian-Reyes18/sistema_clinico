@@ -16,19 +16,19 @@ const AntecedentePersonalesForm = ({
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
-    pacienteId: initialValues.pacienteId,
-    diabetesId: initialValues.diabetesId,
-    teratogenicos: initialValues.teratogenicos,
-    sangreRh: initialValues.sangreRhId, // Mantén el valor de sangreRh como sangreRhId
-    licor: initialValues.licor,
-    drogas: initialValues.drogas,
-    fuma: initialValues.fuma,
-    hipertension: initialValues.hipertension,
-    epilepsia: initialValues.epilepsia,
-    tiroidea: initialValues.tiroidea,
-    neoplasicas: initialValues.neoplasicas,
-    cardiopatia: initialValues.cardiopatia,
-    inmunologia: initialValues.inmunologia,
+    pacienteId: initialValues?.pacienteId || null,
+    diabetesId: initialValues?.diabetesId || null,
+    teratogenicos: initialValues?.teratogenicos || false,
+    sangreRh: initialValues?.sangreRhId || null, // Mantén el valor de sangreRh como sangreRhId
+    licor: initialValues?.licor || false,
+    drogas: initialValues?.drogas || false,
+    fuma: initialValues?.fuma || false,
+    hipertension: initialValues?.hipertension || false,
+    epilepsia: initialValues?.epilepsia || false,
+    tiroidea: initialValues?.tiroidea || false,
+    neoplasicas: initialValues?.neoplasicas || false,
+    cardiopatia: initialValues?.cardiopatia || false,
+    inmunologia: initialValues?.inmunologia || false,
   };
 
   const formik = useFormik({
