@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
-import { Modal } from "antd";
+import { Modal, Spin, notification } from "antd";
 
 // Formularios
 import ConyugeForm from "./formsData/ConyugeForm";
@@ -35,6 +35,7 @@ const AllDataForms = ({ mode, id }) => {
   const [confirmButton, setConfirmButton] = useState(false);
   const [DataFormsReceive, setDataFormsReceive] = useState([]);
   const [completeData, setCompleteData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Configuración de formularios
   const formConfig = [
@@ -110,8 +111,8 @@ const AllDataForms = ({ mode, id }) => {
       console.log("data completa", completeData);
 
       if (isCreateMode) {
-        // Aquí podrías poner la lógica para el modo de creación, si es necesario
       } else {
+        startLoading();
         const createPatient = async () => {
           try {
             // 1. Crear Conyuge
@@ -205,18 +206,33 @@ const AllDataForms = ({ mode, id }) => {
             );
             console.log("Embarazo Actual creado", respEmbarazoActual);
 
-            // 8. Aquí puedes quitar el spinner y mostrar un mensaje de éxito, y luego regresar a un nivel superior si lo deseas
-            // spinner.style.display = 'none';  // Ejemplo para ocultar un spinner
-            // alert("Paciente creado exitosamente!");
+            stopLoading();
+
+            setLoading(false); 
+            router.push("/pacientes"); 
+            notification.success({
+              message: "Paciente creado exitosamente",
+              description:
+                "El paciente y todos sus datos relacionados se han registrado correctamente.",
+            });
           } catch (error) {
             console.error("Error al procesar la consulta", error);
+
+            notification.error({
+              message: "Error al procesar la solicitud",
+              description:
+                "Hubo un problema al registrar los datos. Intente nuevamente.",
+            });
           }
         };
 
         createPatient();
       }
     }
-  }, [completeData, token, isCreateMode]); // Dependencias para que se ejecute cuando 'completeData' o 'token' cambien
+  }, [completeData, token, isCreateMode]);
+
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
 
   // Funciones para manejar el modal y guardado
   const handleSave = () => {
@@ -276,6 +292,10 @@ const AllDataForms = ({ mode, id }) => {
   // Renderizar formularios
   return (
     <div className="patient-form-container">
+      <Modal open={loading} footer={null} closable={false} centered>
+        <Spin tip="Procesando datos, por favor espere..." size="large" />
+      </Modal>
+
       <div className="titleForm">
         <h4>
           {mode === "isEditMode"

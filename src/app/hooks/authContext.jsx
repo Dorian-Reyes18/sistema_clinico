@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          setToken(token); // Guardamos el token aquí
+          setToken(token); 
           loadData(decodedToken.id, token);
         } else {
           handleInvalidSession();
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleInvalidSession = () => {
     setUser(null);
-    setToken(null); // Limpiamos el token si la sesión es inválida
+    setToken(null); 
     setLoading(false);
   };
 
