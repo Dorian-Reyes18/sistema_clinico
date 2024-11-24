@@ -1,18 +1,17 @@
 import { useAuth } from "@/app/hooks/authContext";
 import { Popover, Pagination } from "antd";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation"; // Asegúrate de importar useRouter
+import { useRouter } from "next/navigation";
 import SearchBar from "./Search";
 import CreatePatientButton from "./CreatePatientBtn";
 
 const TablePatients = () => {
   const { patients } = useAuth();
-  const router = useRouter(); // Inicializa el hook useRouter
+  const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [patientsPerPage] = useState(50);
+  const [patientsPerPage] = useState(15); // Ajustar a 15 registros por página
   const [depMunicData, setDepMunicData] = useState(new Map());
-  const [allMonths, setAllMonths] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState(patients);
 
   useEffect(() => {
@@ -44,39 +43,17 @@ const TablePatients = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const groupedPatients = useMemo(() => {
-    return filteredPatients.reduce((acc, paciente) => {
-      const date = new Date(paciente.fechaIngreso);
-      const year = date.getFullYear();
-      const month = date
-        .toLocaleString("default", { month: "long" })
-        .toLowerCase();
-
-      if (!acc[year]) acc[year] = {};
-      if (!acc[year][month]) acc[year][month] = [];
-
-      acc[year][month].push(paciente);
-      return acc;
-    }, {});
+  // Ordenamos los pacientes por fecha de ingreso de más reciente a menos reciente
+  const sortedPatients = useMemo(() => {
+    return filteredPatients.sort(
+      (a, b) => new Date(b.fechaIngreso) - new Date(a.fechaIngreso)
+    );
   }, [filteredPatients]);
 
-  useEffect(() => {
-    const monthsArray = Object.keys(groupedPatients)
-      .sort((a, b) => b - a)
-      .flatMap((year) =>
-        Object.keys(groupedPatients[year]).map((month) => ({
-          year,
-          month,
-          patients: groupedPatients[year][month],
-        }))
-      );
-    setAllMonths(monthsArray);
-  }, [groupedPatients]);
-
-  const paginatedMonths = useMemo(() => {
+  const paginatedPatients = useMemo(() => {
     const startIndex = (currentPage - 1) * patientsPerPage;
-    return allMonths.slice(startIndex, startIndex + patientsPerPage);
-  }, [currentPage, allMonths, patientsPerPage]);
+    return sortedPatients.slice(startIndex, startIndex + patientsPerPage);
+  }, [currentPage, sortedPatients, patientsPerPage]);
 
   const findDepartmentByMunicipio = useCallback(
     (municipio) => depMunicData.get(municipio) || "Desconocido",
@@ -142,68 +119,46 @@ const TablePatients = () => {
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
 
-      {paginatedMonths.length > 0 ? (
-        paginatedMonths.map(({ year, month, patients }) => (
-          <div key={`${year}-${month}`} className="month-container">
-            <div className="text-head">
-              <h3>{`${month} - ${year}`}</h3>
-              <span className="record">
-                {`${patients.length} ${
-                  patients.length === 1 ? "registro" : "registros"
-                }`}
-              </span>
-            </div>
-            <table className="table">
-              <thead>
-                <tr>
-                  {[
-                    "Expediente",
-                    "Ingreso",
-                    "Nombre completo",
-                    "Edad",
-                    "Nacimiento",
-                    "Telf.1",
-                    "Telf.2",
-                    "Munic/Dep",
-                    "Domicilio",
-                    "Conyuge",
-                    "Opciones",
-                  ].map((heading) => (
-                    <th key={heading} scope="col" className="co">
-                      {heading}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {patients.length > 0 ? (
-                  patients.map(renderPatientRow)
-                ) : (
-                  <tr>
-                    <td colSpan="11">
-                      No hay pacientes registrados para este mes.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        ))
+      {paginatedPatients.length > 0 ? (
+        <div className="month-container">
+          <table className="table">
+            <thead>
+              <tr>
+                {[
+                  "Exped",
+                  "Ingreso",
+                  "Nombre completo",
+                  "Edad",
+                  "Nacimiento",
+                  "Telf.1",
+                  "Telf.2",
+                  "Ubicación",
+                  "Domicilio",
+                  "Conyuge",
+                  "Acción",
+                ].map((heading) => (
+                  <th key={heading} scope="col" className="co">
+                    {heading}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{paginatedPatients.map(renderPatientRow)}</tbody>
+          </table>
+        </div>
       ) : (
-        <div>Ninguna coincidencia de búsqueda</div>
+        <div>No hay pacientes registrados</div>
       )}
 
-      {filteredPatients.length === patients.length && (
-        <div className="pag-container">
-          <Pagination
-            current={currentPage}
-            pageSize={patientsPerPage}
-            total={allMonths.length}
-            onChange={setCurrentPage}
-            style={{ marginTop: "20px" }}
-          />
-        </div>
-      )}
+      <div className="pag-container">
+        <Pagination
+          current={currentPage}
+          pageSize={patientsPerPage}
+          total={filteredPatients.length}
+          onChange={setCurrentPage}
+          style={{ marginTop: "20px" }}
+        />
+      </div>
     </div>
   );
 };
