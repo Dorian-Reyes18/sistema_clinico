@@ -1,18 +1,21 @@
 import { useAuth } from "@/app/hooks/authContext";
-import { Popover, Pagination } from "antd";
+import { Popover, Pagination, Spin } from "antd";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import SearchBar from "./Search";
 import CreatePatientButton from "./CreatePatientBtn";
+import { fetchPatients } from "@/services/fetchAllData";
+import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 
 const TablePatients = () => {
-  const { patients } = useAuth();
+  const { patients, setPatients, token } = useAuth();
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [patientsPerPage] = useState(15); // Ajustar a 15 registros por página
+  const [patientsPerPage] = useState(15);
   const [depMunicData, setDepMunicData] = useState(new Map());
   const [filteredPatients, setFilteredPatients] = useState(patients);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMunicData = async () => {
@@ -43,7 +46,6 @@ const TablePatients = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Ordenamos los pacientes por fecha de ingreso de más reciente a menos reciente
   const sortedPatients = useMemo(() => {
     return filteredPatients.sort(
       (a, b) => new Date(b.fechaIngreso) - new Date(a.fechaIngreso)
@@ -112,14 +114,36 @@ const TablePatients = () => {
     </tr>
   );
 
+  // Función para refrescar los pacientes
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      const fetchedPatients = await fetchPatients(token);
+      console.log("Datos recibidos correctamente", fetchedPatients);
+      setPatients(fetchedPatients);
+      setFilteredPatients(fetchedPatients);
+    } catch (error) {
+      console.error("Error al obtener los pacientes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="base">
       <div className="actions-inputs">
-        <CreatePatientButton />{" "}
+        <button onClick={handleRefresh} className="btn-refresh">
+          Refrescar
+        </button>
+        <CreatePatientButton />
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
 
-      {paginatedPatients.length > 0 ? (
+      {loading ? (
+        <div className="loading-message">
+          <Spin /> Consultando datos...
+        </div>
+      ) : paginatedPatients.length > 0 ? (
         <div className="month-container">
           <table className="table">
             <thead>

@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          setToken(token); 
+          setToken(token);
           loadData(decodedToken.id, token);
         } else {
           handleInvalidSession();
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleInvalidSession = () => {
     setUser(null);
-    setToken(null); 
+    setToken(null);
     setLoading(false);
   };
 
@@ -135,6 +135,7 @@ export const AuthProvider = ({ children }) => {
         patients,
         metadata,
         loadData,
+        setPatients,
       }}
     >
       {children}
