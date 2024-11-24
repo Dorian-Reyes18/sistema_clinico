@@ -57,7 +57,10 @@ const PacienteForm = ({
     segundoNombre: initialValues.segundoNombre || "",
     primerApellido: initialValues.primerApellido || "",
     segundoApellido: initialValues.segundoApellido || "",
-    edad: initialValues.edad || 0,
+    edad: initialValues.fechaNac ? calcularEdad(initialValues.fechaNac) : 0,
+    fechaNac: initialValues.fechaNac
+      ? dayjs(initialValues.fechaNac).utc().format("YYYY-MM-DD")
+      : "",
     fechaNac: initialValues.fechaNac
       ? dayjs(initialValues.fechaNac).utc().format("YYYY-MM-DD")
       : "",
@@ -137,6 +140,11 @@ const PacienteForm = ({
       setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
+
+  useEffect(() => {
+    const nuevaEdad = calcularEdad(formik.values.fechaNac);
+    formik.setFieldValue("edad", nuevaEdad);
+  }, [formik.values.fechaNac]);
 
   const renderField = (
     id,
@@ -329,12 +337,7 @@ const PacienteForm = ({
           id="edad"
           name="edad"
           disabled={true}
-          onBlur={handleFieldBlur}
-          value={
-            mode === "isCreateMode"
-              ? calcularEdad(formik.values.fechaNac) || "0"
-              : formik.values.edad || "0"
-          }
+          value={formik.values.edad || "0"}
           style={{
             color: "#4b4b4b",
             backgroundColor: "#fff",

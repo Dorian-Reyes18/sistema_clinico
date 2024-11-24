@@ -21,9 +21,11 @@ const AntecedentesFamiliaresForm = ({
     enableReinitialize: true,
     onSubmit: (values) => {
       const formData = {
-        pacienteId: formik.values.pacienteId || pacienteId,
-        ...values,
+        pacienteId: values.pacienteId || pacienteId,
+        opcion: values.opcion,
+        descripcion: values.descripcion,
       };
+      console.log("Datos enviados:", formData); // Debug
       onSubmit(formData);
       setHasSubmitted(true);
     },
@@ -36,7 +38,6 @@ const AntecedentesFamiliaresForm = ({
     }
   }, [confirmButton, hasSubmitted, formik]);
 
-  // Manejo de cambio en el switch
   const handleSwitchChange = (checked) => {
     formik.setFieldValue("opcion", checked);
     if (!checked) {
