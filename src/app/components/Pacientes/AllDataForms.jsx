@@ -90,7 +90,6 @@ const AllDataForms = ({ mode, id }) => {
     },
   ];
 
-
   // Efectos
   useEffect(() => {
     if (mode === "isEditMode" && id) {
@@ -189,10 +188,10 @@ const AllDataForms = ({ mode, id }) => {
                 <CheckCircleOutlined
                   style={{ color: "#52c41a", fontSize: "32px" }}
                 />
-              ), // Ícono de check
+              ),
               okText: "Aceptar",
               centered: true,
-              cancelButtonProps: { style: { display: "none" } }, // Ocultar el botón de cancelar
+              cancelButtonProps: { style: { display: "none" } },
               onOk() {
                 router.push("/pacientes");
               },
@@ -290,10 +289,12 @@ const AllDataForms = ({ mode, id }) => {
             ? "Editar - Datos generales del paciente"
             : "Crear - Datos generales del paciente"}
         </h4>
-        <p className="aviso">
-          Los campos con un asterisco son obligatorios, Aseguerese de llenarlos
-          todos
-        </p>
+        {mode === isCreateMode ? (
+          <p className="aviso">
+            Los campos con un asterisco son obligatorios, Aseguerese de
+            llenarlos todos
+          </p>
+        ) : null}
       </div>
 
       <div className="forms-container">

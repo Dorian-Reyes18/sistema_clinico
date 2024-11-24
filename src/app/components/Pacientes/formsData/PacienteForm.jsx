@@ -49,6 +49,7 @@ const PacienteForm = ({
   };
 
   const initialFormikValues = {
+    conyugeId: initialValues.conyuge?.id || null,
     silaisId: initialValues.silais?.id || null,
     municipioId: initialValues.municipio?.id || "",
     numeroExpediente: initialValues.numeroExpediente || "",
@@ -99,10 +100,10 @@ const PacienteForm = ({
     onSubmit: (values) => {
       const pacienteData = {
         ...values,
-        conyugeId,
+        conyugeId: mode === "isEditMode" ? formik.values.conyugeId : conyugeId,
         edad: calcularEdad(values.fechaNac),
         fechaIngreso: new Date().toISOString(),
-        fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : "", 
+        fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : "",
       };
       onSubmit(pacienteData);
       setHasSubmitted(true);
