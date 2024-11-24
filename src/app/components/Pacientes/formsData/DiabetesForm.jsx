@@ -13,7 +13,7 @@ const DiabetesForm = ({
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
-    pacienteId: initialValues.pacienteid,
+    pacienteid: initialValues.pacienteid,
     mellitusTipo1: initialValues.mellitusTipo1 || false,
     mellitusTipo2: initialValues.mellitusTipo2 || false,
     ninguna: initialValues.ninguna || false,
@@ -49,7 +49,7 @@ const DiabetesForm = ({
     }),
     onSubmit: (values) => {
       const formData = {
-        pacienteId:
+        pacienteid:
           mode === "isEditMode" ? initialValues.pacienteid : pacienteId,
         ...values,
       };

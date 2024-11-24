@@ -23,6 +23,15 @@ import {
   postEmbarazoActual,
   postPaciente,
 } from "@/services/Post/Pacientes/dataPost";
+import {
+  putAntecedentesFamiliares,
+  putAntecedentesObstetricos,
+  putAntecedentesPersonales,
+  putConyuge,
+  putDiabetes,
+  putEmbarazoActual,
+  putPaciente,
+} from "@/services/Put/Pacientes/dataPut";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
@@ -110,6 +119,7 @@ const AllDataForms = ({ mode, id }) => {
       console.log("data completa", completeData);
 
       if (isCreateMode) {
+        // Modo de Creación (POST)
         startLoading();
 
         const createPatient = async () => {
@@ -209,9 +219,123 @@ const AllDataForms = ({ mode, id }) => {
         };
 
         createPatient();
+      } else {
+        const dataEditIds = {
+          conyugeId: patientData?.conyuge?.id || null,
+          patientId: patientData?.id || null,
+          diabetesId: patientData?.tipoDiabetes?.[0]?.id || null,
+          antPersonalesId: patientData?.antecedentesPersonales?.[0]?.id || null,
+          antFamiliaresId:
+            patientData?.antecedentesFamiliaresDefectos?.[0]?.id || null,
+          antObstetricosId:
+            patientData?.antecedentesObstetricos?.[0]?.id || null,
+          embActualId: patientData?.embarazoActual?.[0]?.id || null,
+        };
+        // Modo de Edición (PUT)
+        startLoading();
+
+        const updatePatient = async () => {
+          try {
+            const getFormData = (formName) =>
+              completeData.find((f) => f.formName === formName)?.data || null;
+
+            const putData = async (data, putFunction, id) => {
+              if (!data || !id) return null;
+              const response = await putFunction(id, data, token);
+              console.log(`${putFunction.name} actualizada`, response);
+              return response;
+            };
+
+            // DataCompleta
+            const dataConyuge = getFormData("ConyugeForm");
+            const dataPatient = getFormData("PacienteForm");
+            const dataDiabetes = getFormData("DiabetesForm");
+            const dataAntecedentesPersonales = getFormData(
+              "AntecedentePersonalesForm"
+            );
+            const dataAntecedentesFamiliares = getFormData(
+              "AntecedentesFamiliaresForm"
+            );
+            const dataAntecedentesObstetricos = getFormData(
+              "AntecedentesObstForm"
+            );
+            const dataEmbarazoActual = getFormData("EmbarazoActual");
+
+            // 1. Actualizar Conyuge
+            const conyugeId = dataEditIds.conyugeId;
+            await putData(dataConyuge, putConyuge, conyugeId);
+
+            // 2. Actualizar Paciente
+            const pacienteId = dataEditIds.patientId;
+            await putData(dataPatient, putPaciente, pacienteId);
+
+            // 3. Actualizar Diabetes
+            const diabetesId = dataEditIds.diabetesId;
+            await putData(dataDiabetes, putDiabetes, diabetesId);
+
+            // 4. Actualizar Antecedentes Personales
+            const antPersonalesId = dataEditIds.antPersonalesId;
+            await putData(
+              dataAntecedentesPersonales,
+              putAntecedentesPersonales,
+              antPersonalesId
+            );
+
+            // 5. Actualizar Antecedentes Familiares
+            const antFamiliaresId = dataEditIds.antFamiliaresId;
+            await putData(
+              dataAntecedentesFamiliares,
+              putAntecedentesFamiliares,
+              antFamiliaresId
+            );
+
+            // 6. Actualizar Antecedentes Obstétricos
+            const antObstetricosId = dataEditIds.antObstetricosId;
+            await putData(
+              dataAntecedentesObstetricos,
+              putAntecedentesObstetricos,
+              antObstetricosId
+            );
+
+            // 7. Actualizar Embarazo Actual
+            const embActualId = dataEditIds.embActualId;
+            await putData(dataEmbarazoActual, putEmbarazoActual, embActualId);
+
+            stopLoading();
+
+            // Modal de confirmación con icono de check y sin botón de cancelar
+            Modal.confirm({
+              title: "Paciente actualizado exitosamente",
+              content:
+                "El paciente y todos sus datos relacionados han sido actualizados correctamente.",
+              icon: (
+                <CheckCircleOutlined
+                  style={{ color: "#52c41a", fontSize: "32px" }}
+                />
+              ),
+              okText: "Aceptar",
+              centered: true,
+              cancelButtonProps: { style: { display: "none" } },
+              onOk() {
+                router.push("/pacientes");
+              },
+            });
+          } catch (error) {
+            console.error("Error al procesar la consulta", error);
+            stopLoading();
+            notification.error({
+              message: "Error al procesar la solicitud",
+              description:
+                "Hubo un problema al actualizar los datos. Intente nuevamente.",
+              duration: 10,
+            });
+          }
+        };
+
+        updatePatient();
       }
     }
-  }, [completeData, token, isCreateMode]);
+  }, [patientData, completeData, token, isCreateMode]);
 
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
