@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
 import { Modal, Spin, notification } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 // Formularios
 import ConyugeForm from "./formsData/ConyugeForm";
@@ -89,6 +90,7 @@ const AllDataForms = ({ mode, id }) => {
     },
   ];
 
+
   // Efectos
   useEffect(() => {
     if (mode === "isEditMode" && id) {
@@ -109,7 +111,6 @@ const AllDataForms = ({ mode, id }) => {
       console.log("data completa", completeData);
 
       if (isCreateMode) {
-      } else {
         startLoading();
 
         const createPatient = async () => {
@@ -178,17 +179,27 @@ const AllDataForms = ({ mode, id }) => {
             await postData(dataEmbarazoActual, postEmbarazoActual);
 
             stopLoading();
-            setLoading(false);
-            router.push("/pacientes");
 
-            notification.success({
-              message: "Paciente creado exitosamente",
-              description:
+            // Modal de confirmación con icono de check y sin botón de cancelar
+            Modal.confirm({
+              title: "Paciente creado exitosamente",
+              content:
                 "El paciente y todos sus datos relacionados se han registrado correctamente.",
-              duration: 10,
+              icon: (
+                <CheckCircleOutlined
+                  style={{ color: "#52c41a", fontSize: "32px" }}
+                />
+              ), // Ícono de check
+              okText: "Aceptar",
+              centered: true,
+              cancelButtonProps: { style: { display: "none" } }, // Ocultar el botón de cancelar
+              onOk() {
+                router.push("/pacientes");
+              },
             });
           } catch (error) {
             console.error("Error al procesar la consulta", error);
+            stopLoading();
             notification.error({
               message: "Error al procesar la solicitud",
               description:
