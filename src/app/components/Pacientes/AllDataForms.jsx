@@ -90,7 +90,6 @@ const AllDataForms = ({ mode, id }) => {
   ];
 
   // Efectos
-
   useEffect(() => {
     if (mode === "isEditMode" && id) {
       const patient = patients.find((p) => p.id === parseInt(id));
@@ -105,7 +104,6 @@ const AllDataForms = ({ mode, id }) => {
   }, [DataFormsReceive]);
 
   // Creación o edición en el backend
-
   useEffect(() => {
     if (completeData) {
       console.log("data completa", completeData);
@@ -113,115 +111,89 @@ const AllDataForms = ({ mode, id }) => {
       if (isCreateMode) {
       } else {
         startLoading();
+
         const createPatient = async () => {
           try {
+            const getFormData = (formName) =>
+              completeData.find((f) => f.formName === formName)?.data || null;
+
+            const postData = async (data, postFunction) => {
+              if (!data) return null;
+              const response = await postFunction(data, token);
+              console.log(`${postFunction.name} creada`, response);
+              return response;
+            };
+
             // 1. Crear Conyuge
-            let dataConyuge =
-              completeData.find((f) => f.formName === "ConyugeForm")?.data ||
-              null;
-            const respConyuge = await postConyuge(dataConyuge, token);
-            console.log("Conyuge creado", respConyuge);
-            const conyugeId = respConyuge.conyuge.id;
-            console.log("Id de conyuge", conyugeId);
+            const dataConyuge = getFormData("ConyugeForm");
+            const respConyuge = await postData(dataConyuge, postConyuge);
+            const conyugeId = respConyuge?.conyuge.id;
 
             // 2. Crear Paciente
-            let dataPatient =
-              completeData.find((f) => f.formName === "PacienteForm")?.data ||
-              null;
+            const dataPatient = getFormData("PacienteForm");
             dataPatient.conyugeId = conyugeId;
-            const respPaciente = await postPaciente(dataPatient, token);
-            console.log("Paciente creado", respPaciente);
-            const pacienteId = respPaciente.paciente.id;
-            console.log("Paciente ID", pacienteId);
+            const respPaciente = await postData(dataPatient, postPaciente);
+            const pacienteId = respPaciente?.paciente.id;
 
             // 3. Crear Diabetes
-            let dataDiabetes =
-              completeData.find((f) => f.formName === "DiabetesForm")?.data ||
-              null;
+            const dataDiabetes = getFormData("DiabetesForm");
             dataDiabetes.pacienteid = pacienteId;
-            const respDiabetes = await postDiabetes(dataDiabetes, token);
-            console.log("Diabetes creada", respDiabetes);
-            const diabetesId = respDiabetes.tipoDiabetes.id;
-            console.log("Diabetes ID", diabetesId);
+            const respDiabetes = await postData(dataDiabetes, postDiabetes);
+            const diabetesId = respDiabetes?.tipoDiabetes.id;
 
             // 4. Crear Antecedentes Personales
-            let dataAntecedentesPersonales =
-              completeData.find(
-                (f) => f.formName === "AntecedentePersonalesForm"
-              )?.data || null;
-            console.log(
-              "Datos de antecedentes antes de enviar",
-              dataAntecedentesPersonales
+            const dataAntecedentesPersonales = getFormData(
+              "AntecedentePersonalesForm"
             );
             dataAntecedentesPersonales.diabetesId = diabetesId;
             dataAntecedentesPersonales.pacienteId = pacienteId;
-
-            const respAntecedentesPersonales = await postAntecedentesPersonales(
+            await postData(
               dataAntecedentesPersonales,
-              token
-            );
-            console.log(
-              "Antecedentes Personales creados",
-              respAntecedentesPersonales
+              postAntecedentesPersonales
             );
 
             // 5. Crear Antecedentes Familiares
-            let dataAntecedentesFamiliares =
-              completeData.find(
-                (f) => f.formName === "AntecedentesFamiliaresForm"
-              )?.data || null;
-            dataAntecedentesFamiliares.pacienteId = pacienteId;
-            const respAntecedentesFamiliares = await postAntecedentesFamiliares(
-              dataAntecedentesFamiliares,
-              token
+            const dataAntecedentesFamiliares = getFormData(
+              "AntecedentesFamiliaresForm"
             );
-            console.log(
-              "Antecedentes Familiares creados",
-              respAntecedentesFamiliares
+            dataAntecedentesFamiliares.pacienteId = pacienteId;
+            await postData(
+              dataAntecedentesFamiliares,
+              postAntecedentesFamiliares
             );
 
             // 6. Crear Antecedentes Obstétricos
-            let dataAntecedentesObstetricos =
-              completeData.find((f) => f.formName === "AntecedentesObstForm")
-                ?.data || null;
+            const dataAntecedentesObstetricos = getFormData(
+              "AntecedentesObstForm"
+            );
             dataAntecedentesObstetricos.pacienteId = pacienteId;
-            const respAntecedentesObstetricos =
-              await postAntecedentesObstetricos(
-                dataAntecedentesObstetricos,
-                token
-              );
-            console.log(
-              "Antecedentes Obstétricos creados",
-              respAntecedentesObstetricos
+            await postData(
+              dataAntecedentesObstetricos,
+              postAntecedentesObstetricos
             );
 
             // 7. Crear Embarazo Actual
-            let dataEmbarazoActual =
-              completeData.find((f) => f.formName === "EmbarazoActual")?.data ||
-              null;
+            const dataEmbarazoActual = getFormData("EmbarazoActual");
             dataEmbarazoActual.pacienteId = pacienteId;
-            const respEmbarazoActual = await postEmbarazoActual(
-              dataEmbarazoActual,
-              token
-            );
-            console.log("Embarazo Actual creado", respEmbarazoActual);
+            await postData(dataEmbarazoActual, postEmbarazoActual);
 
             stopLoading();
+            setLoading(false);
+            router.push("/pacientes");
 
-            setLoading(false); 
-            router.push("/pacientes"); 
             notification.success({
               message: "Paciente creado exitosamente",
               description:
                 "El paciente y todos sus datos relacionados se han registrado correctamente.",
+              duration: 10,
             });
           } catch (error) {
             console.error("Error al procesar la consulta", error);
-
             notification.error({
               message: "Error al procesar la solicitud",
               description:
                 "Hubo un problema al registrar los datos. Intente nuevamente.",
+              duration: 10,
             });
           }
         };
@@ -234,7 +206,6 @@ const AllDataForms = ({ mode, id }) => {
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
 
-  // Funciones para manejar el modal y guardado
   const handleSave = () => {
     const modalTitle = isCreateMode
       ? "¿Está seguro de crear el paciente?"
@@ -292,8 +263,14 @@ const AllDataForms = ({ mode, id }) => {
   // Renderizar formularios
   return (
     <div className="patient-form-container">
-      <Modal open={loading} footer={null} closable={false} centered>
-        <Spin tip="Procesando datos, por favor espere..." size="large" />
+      <Modal
+        className="modal-confirm"
+        open={loading}
+        footer={null}
+        closable={false}
+        centered
+      >
+        <Spin size="large" />
       </Modal>
 
       <div className="titleForm">

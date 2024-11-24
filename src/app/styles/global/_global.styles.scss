@@ -146,4 +146,17 @@ html {
     font-size: 13.2px;
     color: red;
   }
+  .modal-confirm {
+    .ant-modal-content {
+      display: flex;
+      justify-content: center;
+      background-color: transparent;
+      box-shadow: none;
+
+      .ant-spin-dot {
+        font-size: 75px;
+        color: white !important;
+      }
+    }
+  }
 }
