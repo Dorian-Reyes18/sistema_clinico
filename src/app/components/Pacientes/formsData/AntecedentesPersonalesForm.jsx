@@ -19,7 +19,7 @@ const AntecedentePersonalesForm = ({
     pacienteId: initialValues.pacienteId,
     diabetesId: initialValues.diabetesId,
     teratogenicos: initialValues.teratogenicos,
-    sangreRh: initialValues.sangreRhId,
+    sangreRh: initialValues.sangreRhId, // Mantén el valor de sangreRh como sangreRhId
     licor: initialValues.licor,
     drogas: initialValues.drogas,
     fuma: initialValues.fuma,
@@ -63,9 +63,11 @@ const AntecedentePersonalesForm = ({
       inmunologia: Yup.boolean(),
     }),
     onSubmit: (values) => {
+      // Cambiar solo aquí el nombre de la propiedad sangreRh a sangreRhId
       const formData = {
         pacienteId: formik.values.pacienteId || pacienteId,
         diabetesId: formik.values.diabetesId || diabetesId,
+        sangreRhId: formik.values.sangreRh, // Aquí se convierte sangreRh en sangreRhId
         ...values,
       };
       onSubmit(formData);
@@ -115,10 +117,10 @@ const AntecedentePersonalesForm = ({
         </label>
         <Select
           className="switch"
-          placeholder="seleccione..."
+          placeholder="Seleccione..."
           id="sangreRh"
           name="sangreRh"
-          onChange={(value) => formik.setFieldValue("sangreRh", value)}
+          onChange={(value) => formik.setFieldValue("sangreRh", value)} // Aquí se mantiene como sangreRh
           value={formik.values.sangreRh}
           onBlur={formik.handleBlur}
         >

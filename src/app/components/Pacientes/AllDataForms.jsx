@@ -13,8 +13,15 @@ import AntecedentePersonalesForm from "./formsData/AntecedentesPersonalesForm";
 import EmbarazoActual from "./formsData/EmbarazoActual";
 
 // Servicios
-import { postConyuge } from "@/services/Post/Pacientes/crearConyuge";
-import { postPaciente } from "@/services/Post/Pacientes/crearPaciente";
+import {
+  postAntecedentesFamiliares,
+  postAntecedentesObstetricos,
+  postAntecedentesPersonales,
+  postConyuge,
+  postDiabetes,
+  postEmbarazoActual,
+  postPaciente,
+} from "@/services/Post/Pacientes/dataPost";
 
 const AllDataForms = ({ mode, id }) => {
   const router = useRouter();
@@ -97,48 +104,110 @@ const AllDataForms = ({ mode, id }) => {
   }, [DataFormsReceive]);
 
   // Creación o edición en el backend
+
   useEffect(() => {
     if (completeData) {
       console.log("data completa", completeData);
 
       if (isCreateMode) {
+        // Aquí podrías poner la lógica para el modo de creación, si es necesario
       } else {
         const createPatient = async () => {
           try {
-            // 1. crear conyuge
-            const respConyuge = await postConyuge(completeData, token);
+            // 1. Crear Conyuge
+            let dataConyuge =
+              completeData.find((f) => f.formName === "ConyugeForm")?.data ||
+              null;
+            const respConyuge = await postConyuge(dataConyuge, token);
             console.log("Conyuge creado", respConyuge);
-            // guardamos el id de ese conyuge
             const conyugeId = respConyuge.conyuge.id;
             console.log("Id de conyuge", conyugeId);
 
-            // 2.Crear Paciente
-            // Guadar la data del paciente con el id del Conyuge
+            // 2. Crear Paciente
             let dataPatient =
               completeData.find((f) => f.formName === "PacienteForm")?.data ||
               null;
-
             dataPatient.conyugeId = conyugeId;
-
             const respPaciente = await postPaciente(dataPatient, token);
-
             console.log("Paciente creado", respPaciente);
             const pacienteId = respPaciente.paciente.id;
-            console.log("paciente id", pacienteId);
+            console.log("Paciente ID", pacienteId);
 
-            // 3.Crear Emb Actual
-            let dataEmbActual =
+            // 3. Crear Diabetes
+            let dataDiabetes =
+              completeData.find((f) => f.formName === "DiabetesForm")?.data ||
+              null;
+            dataDiabetes.pacienteid = pacienteId;
+            const respDiabetes = await postDiabetes(dataDiabetes, token);
+            console.log("Diabetes creada", respDiabetes);
+            const diabetesId = respDiabetes.tipoDiabetes.id;
+            console.log("Diabetes ID", diabetesId);
+
+            // 4. Crear Antecedentes Personales
+            let dataAntecedentesPersonales =
+              completeData.find(
+                (f) => f.formName === "AntecedentePersonalesForm"
+              )?.data || null;
+            console.log(
+              "Datos de antecedentes antes de enviar",
+              dataAntecedentesPersonales
+            );
+            dataAntecedentesPersonales.diabetesId = diabetesId;
+            dataAntecedentesPersonales.pacienteId = pacienteId;
+
+            const respAntecedentesPersonales = await postAntecedentesPersonales(
+              dataAntecedentesPersonales,
+              token
+            );
+            console.log(
+              "Antecedentes Personales creados",
+              respAntecedentesPersonales
+            );
+
+            // 5. Crear Antecedentes Familiares
+            let dataAntecedentesFamiliares =
+              completeData.find(
+                (f) => f.formName === "AntecedentesFamiliaresForm"
+              )?.data || null;
+            dataAntecedentesFamiliares.pacienteId = pacienteId;
+            const respAntecedentesFamiliares = await postAntecedentesFamiliares(
+              dataAntecedentesFamiliares,
+              token
+            );
+            console.log(
+              "Antecedentes Familiares creados",
+              respAntecedentesFamiliares
+            );
+
+            // 6. Crear Antecedentes Obstétricos
+            let dataAntecedentesObstetricos =
+              completeData.find((f) => f.formName === "AntecedentesObstForm")
+                ?.data || null;
+            dataAntecedentesObstetricos.pacienteId = pacienteId;
+            const respAntecedentesObstetricos =
+              await postAntecedentesObstetricos(
+                dataAntecedentesObstetricos,
+                token
+              );
+            console.log(
+              "Antecedentes Obstétricos creados",
+              respAntecedentesObstetricos
+            );
+
+            // 7. Crear Embarazo Actual
+            let dataEmbarazoActual =
               completeData.find((f) => f.formName === "EmbarazoActual")?.data ||
               null;
+            dataEmbarazoActual.pacienteId = pacienteId;
+            const respEmbarazoActual = await postEmbarazoActual(
+              dataEmbarazoActual,
+              token
+            );
+            console.log("Embarazo Actual creado", respEmbarazoActual);
 
-            dataEmbActual.pacienteId = pacienteId;
-            console.log("emb Actual antes de enviar", dataEmbActual);
-
-            // 4.Crear Emb Actual
-            // 5.Crear Emb Actual
-            // 6.Crear Emb Actual
-            // 7.Crear Emb Actual
-            // 8.quitar spiner y mostrar exitos y volver un nivel
+            // 8. Aquí puedes quitar el spinner y mostrar un mensaje de éxito, y luego regresar a un nivel superior si lo deseas
+            // spinner.style.display = 'none';  // Ejemplo para ocultar un spinner
+            // alert("Paciente creado exitosamente!");
           } catch (error) {
             console.error("Error al procesar la consulta", error);
           }
@@ -147,7 +216,7 @@ const AllDataForms = ({ mode, id }) => {
         createPatient();
       }
     }
-  }, [completeData, isCreateMode, token]);
+  }, [completeData, token, isCreateMode]); // Dependencias para que se ejecute cuando 'completeData' o 'token' cambien
 
   // Funciones para manejar el modal y guardado
   const handleSave = () => {

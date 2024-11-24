@@ -20,12 +20,20 @@ export const AuthProvider = ({ children }) => {
   const [patients, setPatients] = useState([]);
   const [metadata, setMetadata] = useState([]);
 
-  // Eliminamos la obtención del token desde las cookies
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
+
   useEffect(() => {
+    const token = getCookie("token");
+
     if (token) {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
+          setToken(token); // Guardamos el token aquí
           loadData(decodedToken.id, token);
         } else {
           handleInvalidSession();
@@ -37,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       handleInvalidSession();
     }
-  }, [token]); // Esto ahora depende del token que se pasa desde el login
+  }, [token]);
 
   const handleInvalidSession = () => {
     setUser(null);
@@ -121,7 +129,7 @@ export const AuthProvider = ({ children }) => {
         error,
         token,
         setUser,
-        setToken, // Proveemos la función setToken para que el Login pueda establecer el token
+        setToken,
         recentSurgeries,
         surgeriesPost,
         patients,
