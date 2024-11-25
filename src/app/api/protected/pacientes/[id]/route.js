@@ -51,13 +51,13 @@ export async function GET(req, { params }) {
           },
           tipoDiabetes: {
             include: {
-              evaluacionActual: true, 
+              evaluacionActual: true,
             },
           },
           antecedentesPersonales: true,
           antecedentesFamiliaresDefectos: true,
           antecedentesObstetricos: true,
-          embarazoActual: true, 
+          embarazoActual: true,
         },
       });
 
@@ -123,20 +123,80 @@ export async function PUT(req, { params }) {
     }
   });
 }
-
 export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
 
     try {
-      await prisma.paciente.delete({
-        where: { id: parseInt(id) },
+      // Convertir el ID recibido a número
+      const pacienteId = parseInt(id);
+
+      // Validar si el paciente existe antes de proceder
+      const pacienteExiste = await prisma.paciente.findUnique({
+        where: { id: pacienteId },
       });
+
+      if (!pacienteExiste) {
+        return NextResponse.json(
+          { error: "Paciente no encontrado." },
+          { status: 404 }
+        );
+      }
+
+      // Realizar la eliminación en cascada manual mediante una transacción
+      await prisma.$transaction([
+        prisma.antecedentesPersonales.deleteMany({
+          where: {
+            paciente: {
+              id: pacienteId,
+            },
+          }, // Cambiar a 'paciente' como relación en lugar de 'pacienteId'
+        }),
+        prisma.antecedentesFamiliaresDefectos.deleteMany({
+          where: {
+            paciente: {
+              id: pacienteId,
+            },
+          },
+        }),
+        prisma.antecedentesObstetricos.deleteMany({
+          where: {
+            paciente: {
+              id: pacienteId,
+            },
+          },
+        }),
+        prisma.embarazoActual.deleteMany({
+          where: {
+            paciente: {
+              id: pacienteId,
+            },
+          },
+        }),
+        prisma.tipoDiabetes.deleteMany({
+          where: {
+            pacienteid: pacienteId, // Asegúrate de usar el campo correcto
+          },
+        }),
+        prisma.conyuge.deleteMany({
+          where: {
+            pacientes: {
+              some: {
+                id: pacienteId, // Asegúrate de usar la relación correcta
+              },
+            },
+          },
+        }),
+        prisma.paciente.delete({
+          where: { id: pacienteId },
+        }),
+      ]);
+
       return NextResponse.json(
         {
-          message: "Paciente eliminado exitosamente",
+          message: "Paciente y sus dependencias eliminados exitosamente",
         },
-        { status: 204 }
+        { status: 200 }
       );
     } catch (error) {
       if (error.code === "P2025") {
@@ -147,7 +207,7 @@ export async function DELETE(req, { params }) {
       }
       return handleError(
         error,
-        "Error al eliminar el paciente, tiene registros asociados"
+        "Error al eliminar el paciente o sus dependencias relacionadas"
       );
     }
   });
