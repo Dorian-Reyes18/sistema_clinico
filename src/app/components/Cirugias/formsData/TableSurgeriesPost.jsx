@@ -146,25 +146,33 @@ const TableSurgeriesPost = () => {
         </div>
       ) : isSearchActive ? (
         // Mostrar resultados de búsqueda como una única tabla
-        <div className="search-results">
-          <h3>Resultados de búsqueda</h3>
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="co">N°-Exp</th>
-                <th className="co">Creación</th>
-                <th className="co">Paciente</th>
-                <th className="co">Intervención</th>
-                <th className="co">Cirugía</th>
-                <th className="co">Responsable</th>
-                <th className="co">Estado</th>
-                <th className="co">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSurgeries.map((cirugia) => renderPatientRow(cirugia))}
-            </tbody>
-          </table>
+        <div className="month-container">
+          <div className="section">
+            <div className="text-head">
+              <h3>Resultados de búsqueda</h3>
+            </div>
+            <div>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th className="co">N°-Exp</th>
+                    <th className="co">Creación</th>
+                    <th className="co">Paciente</th>
+                    <th className="co">Intervención</th>
+                    <th className="co">Cirugía</th>
+                    <th className="co">Responsable</th>
+                    <th className="co">Estado</th>
+                    <th className="co">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSurgeries.map((cirugia) =>
+                    renderPatientRow(cirugia)
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       ) : (
         // Mostrar las tablas divididas por secciones
