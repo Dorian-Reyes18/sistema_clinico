@@ -15,7 +15,7 @@ const EmbarazoActual = ({
   initialValues,
   confirmButton,
 }) => {
-  const [hasSubmitted, setHasSubmitted] = useState(false); 
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
@@ -46,8 +46,8 @@ const EmbarazoActual = ({
     validationSchema: Yup.object({
       pesoKg: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
       talla: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
-      fechaEmbarazo: Yup.date().nullable().notRequired(), 
-      ultimaRegla: Yup.date().nullable().notRequired(), 
+      fechaEmbarazo: Yup.date().nullable().notRequired(),
+      ultimaRegla: Yup.date().nullable().notRequired(),
     }),
 
     onSubmit: (values) => {
@@ -76,11 +76,15 @@ const EmbarazoActual = ({
       setHasSubmitted(confirmButton);
     }
   }, [confirmButton, hasSubmitted, formik]);
-  
+
+  useEffect(() => {
+    calcularEdadGestacional(); // Recalcular cuando cambien las fechas
+  }, [formik.values.fechaEmbarazo, formik.values.ultimaRegla]);
 
   const calcularEdadGestacional = () => {
     const { fechaEmbarazo, ultimaRegla } = formik.values;
 
+    // Asegúrate de que ambas fechas estén disponibles
     if (fechaEmbarazo && ultimaRegla) {
       const fechaEmbarazoParsed = dayjs(fechaEmbarazo);
       const ultimaReglaParsed = dayjs(ultimaRegla);
@@ -90,9 +94,7 @@ const EmbarazoActual = ({
           ultimaReglaParsed,
           "days"
         );
-
         const semanasDeDiferencia = Math.floor(diferenciaEnDias / 7);
-
         formik.setFieldValue("edadGestacional", semanasDeDiferencia);
       } else {
         formik.setFieldValue("edadGestacional", 0);
@@ -242,7 +244,7 @@ const EmbarazoActual = ({
                   "ultimaRegla",
                   date ? date.toISOString() : null
                 );
-                calcularEdadGestacional();
+                calcularEdadGestacional(); // Recalcular inmediatamente
                 formik.validateField("ultimaRegla");
               }}
               onBlur={() => formik.setFieldTouched("ultimaRegla", true)}
@@ -273,7 +275,7 @@ const EmbarazoActual = ({
                   "fechaEmbarazo",
                   date ? date.toISOString() : null
                 );
-                calcularEdadGestacional();
+                calcularEdadGestacional(); 
                 formik.validateField("fechaEmbarazo");
               }}
               onBlur={() => {
