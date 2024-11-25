@@ -69,7 +69,7 @@ const SearchPost = ({
     <div className="wrapper">
       <div className="input-wrapper">
         <Input
-          placeholder="Exped, fecha, paciente, intervención, cirugía, responsable, estado..."
+          placeholder="Exped, fecha, paciente, intervención, etc..."
           value={searchTerm}
           onChange={handleChange}
           className="form-control mb-3"
