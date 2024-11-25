@@ -9,11 +9,39 @@
       display: grid;
       gap: 30px;
 
+      .loading-message {
+        width: 100%;
+        display: flex;
+        gap: 20px;
+        padding: 50px;
+        align-items: center;
+        justify-content: center;
+      }
+
       .actions-inputs {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         gap: 20px;
+
+        .btn-refresh {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          padding: 7px 10px;
+          background-color: $color-blanco;
+          border-radius: 8px;
+          -webkit-border-radius: 8px;
+          -moz-border-radius: 8px;
+          -ms-border-radius: 8px;
+          -o-border-radius: 8px;
+
+          svg {
+            width: 20px;
+            height: 20px;
+          }
+        }
 
         .wrapper {
           position: relative;

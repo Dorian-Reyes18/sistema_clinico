@@ -132,16 +132,20 @@ const TablePatients = () => {
   return (
     <div className="base">
       <div className="actions-inputs">
-        <button onClick={handleRefresh} className="btn-refresh">
-          Refrescar
-        </button>
+        <div onClick={handleRefresh} className="btn-refresh">
+          {loading ? (
+            <Spin indicator={<LoadingOutlined />} />
+          ) : (
+            <ReloadOutlined />
+          )}
+        </div>
         <CreatePatientButton />
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
 
       {loading ? (
         <div className="loading-message">
-          <Spin /> Consultando datos...
+          <Spin /> <span>Consultando datos...</span>
         </div>
       ) : paginatedPatients.length > 0 ? (
         <div className="month-container">
@@ -174,15 +178,18 @@ const TablePatients = () => {
         <div>No hay pacientes registrados</div>
       )}
 
-      <div className="pag-container">
-        <Pagination
-          current={currentPage}
-          pageSize={patientsPerPage}
-          total={filteredPatients.length}
-          onChange={setCurrentPage}
-          style={{ marginTop: "20px" }}
-        />
-      </div>
+      {/* Mostrar el paginador solo si no estamos cargando */}
+      {!loading && (
+        <div className="pag-container">
+          <Pagination
+            current={currentPage}
+            pageSize={patientsPerPage}
+            total={filteredPatients.length}
+            onChange={setCurrentPage}
+            style={{ marginTop: "20px" }}
+          />
+        </div>
+      )}
     </div>
   );
 };
