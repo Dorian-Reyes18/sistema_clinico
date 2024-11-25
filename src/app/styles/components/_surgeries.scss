@@ -73,6 +73,8 @@
       }
 
       .month-container {
+        display: grid;
+        gap: 50px;
         background: $color-blanco;
         padding: 20px;
         border-radius: 10px;

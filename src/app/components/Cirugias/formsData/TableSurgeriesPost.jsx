@@ -1,19 +1,25 @@
 import { useAuth } from "@/app/hooks/authContext";
-import { Pagination, Spin } from "antd";
+import { Pagination, Spin, Button } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import SearchIntra from "../SearchIntra";
+import SearchPost from "../SearchPost";
 import { fetchSurgeriesPost } from "@/services/fetchAllData";
 import CreateIntraButton from "../CreateIntraButton";
 
 const TableSurgeriesPost = () => {
-  const { recentSurgeries, token, surgeriesPost, setSurgeriesPost } = useAuth();
+  const { token, surgeriesPost, setSurgeriesPost } = useAuth();
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [surgeriesPerPage] = useState(20);
+  const [currentPageNeonatal, setCurrentPageNeonatal] = useState(1);
+  const [currentPageNervioso, setCurrentPageNervioso] = useState(1);
+  const [surgeriesPerPage] = useState(50);
   const [loading, setLoading] = useState(false);
   const [filteredSurgeries, setFilteredSurgeries] = useState([]);
-  const [cirugias, setCirugias] = useState([]);
+  const [neonatalSurgeries, setNeonatalSurgeries] = useState([]);
+  const [nerviosoCentralSurgeries, setNerviosoCentralSurgeries] = useState([]);
+
+  // Estados para manejar la visibilidad de las secciones
+  const [showNeonatal, setShowNeonatal] = useState(true);
+  const [showNerviosoCentral, setShowNerviosoCentral] = useState(true);
 
   useEffect(() => {
     const fetchSurgeries = async () => {
@@ -21,8 +27,17 @@ const TableSurgeriesPost = () => {
       try {
         const data = await fetchSurgeriesPost(token);
         setSurgeriesPost(data);
-        setFilteredSurgeries(data);
-        setCirugias(surgeriesPost?.registros);
+        setFilteredSurgeries(data.registros);
+
+        const neonatal = data.registros.filter(
+          (cirugia) => cirugia.tipoCirugia === "Neonatal"
+        );
+        const nerviosoCentral = data.registros.filter(
+          (cirugia) => cirugia.tipoCirugia === "Nervioso central"
+        );
+
+        setNeonatalSurgeries(neonatal);
+        setNerviosoCentralSurgeries(nerviosoCentral);
       } catch (error) {
         console.error("Error fetching surgeries:", error);
       } finally {
@@ -31,12 +46,22 @@ const TableSurgeriesPost = () => {
     };
 
     fetchSurgeries();
-  }, [setSurgeriesPost, token, setCirugias]);
+  }, [setSurgeriesPost, token]);
 
-  const paginatedSurgeries = useMemo(() => {
-    const startIndex = (currentPage - 1) * surgeriesPerPage;
-    return filteredSurgeries.slice(startIndex, startIndex + surgeriesPerPage);
-  }, [currentPage, filteredSurgeries, surgeriesPerPage]);
+  // Paginación para cirugías neonatales
+  const paginatedNeonatalSurgeries = useMemo(() => {
+    const startIndex = (currentPageNeonatal - 1) * surgeriesPerPage;
+    return neonatalSurgeries.slice(startIndex, startIndex + surgeriesPerPage);
+  }, [currentPageNeonatal, neonatalSurgeries, surgeriesPerPage]);
+
+  // Paginación para cirugías nervioso central
+  const paginatedNerviosoCentralSurgeries = useMemo(() => {
+    const startIndex = (currentPageNervioso - 1) * surgeriesPerPage;
+    return nerviosoCentralSurgeries.slice(
+      startIndex,
+      startIndex + surgeriesPerPage
+    );
+  }, [currentPageNervioso, nerviosoCentralSurgeries, surgeriesPerPage]);
 
   const formatDate = (isoDate) => {
     if (!isoDate) return "No disponible";
@@ -57,7 +82,7 @@ const TableSurgeriesPost = () => {
         <td className="center">
           {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
         </td>
-        <td className="center">{cirugia?.fechaDeIntervencion}</td>
+        <td className="center">{formatDate(cirugia?.fechaDeIntervencion)}</td>
         <td className="center">{cirugia?.tipoCirugia}</td>
         <td className="center">{cirugia?.doctor?.nombreYApellido}</td>
 
@@ -69,7 +94,7 @@ const TableSurgeriesPost = () => {
         </td>
         <td className="place">
           <div
-            className="btn-edit "
+            className="btn-edit"
             onClick={() => {
               router.push(
                 `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
@@ -85,64 +110,117 @@ const TableSurgeriesPost = () => {
     <div className="base">
       <div className="actions-inputs">
         <CreateIntraButton />
-        <SearchIntra data={cirugias} onSearch={setFilteredSurgeries} />
+        <SearchPost data={filteredSurgeries} onSearch={setFilteredSurgeries} />
       </div>
 
       {loading ? (
         <div className="loading-message">
           <Spin /> <span>Consultando datos...</span>
         </div>
-      ) : filteredSurgeries.length > 0 ? (
+      ) : (
         <>
           <div className="month-container">
+            {/* Cirugías Neonatales */}
             <div className="section">
               <div className="text-head">
-                <h3>Cirugías Intrauterinas</h3>
+                <h3>Cirugías Neonatales</h3>
                 <span className="record">
-                  {`${cirugias.length} ${
-                    cirugias.length === 1
+                  {`${neonatalSurgeries.length} ${
+                    neonatalSurgeries.length === 1
                       ? "registro en total"
                       : "registros totales"
                   }`}
                 </span>
+                <Button
+                  onClick={() => setShowNeonatal(!showNeonatal)}
+                  style={{ marginBottom: "10px" }}
+                >
+                  {showNeonatal ? "Ocultar" : "Mostrar"}
+                </Button>
               </div>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th className="co">N°-Exp</th>
-                    <th className="co">Creación</th>
-                    <th className="co">Paciente</th>
-                    <th className="co">Intervención</th>
-                    <th className="co">Cirugia</th>
-                    <th className="co">Responsable</th>
-                    <th className="co">Estado</th>
-                    <th className="co">Ación</th>
-                    <th className="co">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedSurgeries.map((cirugia) =>
-                    renderPatientrowIntra(cirugia)
-                  )}
-                </tbody>
-              </table>
+              {showNeonatal && (
+                <div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th className="co">N°-Exp</th>
+                        <th className="co">Creación</th>
+                        <th className="co">Paciente</th>
+                        <th className="co">Intervención</th>
+                        <th className="co">Cirugía</th>
+                        <th className="co">Responsable</th>
+                        <th className="co">Estado</th>
+                        <th className="co">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedNeonatalSurgeries.map((cirugia) =>
+                        renderPatientrowIntra(cirugia)
+                      )}
+                    </tbody>
+                  </table>
+                  <Pagination
+                    current={currentPageNeonatal}
+                    pageSize={surgeriesPerPage}
+                    total={neonatalSurgeries.length}
+                    onChange={(page) => setCurrentPageNeonatal(page)}
+                    style={{ marginTop: "20px" }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Cirugías Nervioso Central */}
+            <div className="section">
+              <div className="text-head">
+                <h3>Cirugías Nervioso Central</h3>
+                <span className="record">
+                  {`${nerviosoCentralSurgeries.length} ${
+                    nerviosoCentralSurgeries.length === 1
+                      ? "registro en total"
+                      : "registros totales"
+                  }`}
+                </span>
+                <Button
+                  onClick={() => setShowNerviosoCentral(!showNerviosoCentral)}
+                  style={{ marginBottom: "10px" }}
+                >
+                  {showNerviosoCentral ? "Ocultar" : "Mostrar"}
+                </Button>
+              </div>
+              {showNerviosoCentral && (
+                <div>
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th className="co">N°-Exp</th>
+                        <th className="co">Creación</th>
+                        <th className="co">Paciente</th>
+                        <th className="co">Intervención</th>
+                        <th className="co">Cirugía</th>
+                        <th className="co">Responsable</th>
+                        <th className="co">Estado</th>
+                        <th className="co">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedNerviosoCentralSurgeries.map((cirugia) =>
+                        renderPatientrowIntra(cirugia)
+                      )}
+                    </tbody>
+                  </table>
+                  <Pagination
+                    current={currentPageNervioso}
+                    pageSize={surgeriesPerPage}
+                    total={nerviosoCentralSurgeries.length}
+                    onChange={(page) => setCurrentPageNervioso(page)}
+                    style={{ marginTop: "20px" }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </>
-      ) : (
-        <div>No se encontró ninguna coincidencia</div>
-      )}
-
-      {!loading && filteredSurgeries.length > 0 && (
-        <div className="pag-container">
-          <Pagination
-            current={currentPage}
-            pageSize={surgeriesPerPage}
-            total={filteredSurgeries.length}
-            onChange={(page) => setCurrentPage(page)}
-            style={{ marginTop: "20px" }}
-          />
-        </div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs } from "antd";
 import TableSurgeriesIntra from "./TableSurgeriesIntra";
-// import AnotherComponent from "./AnotherComponent"; // Componente adicional si lo necesitas
+import TableSurgeriesPost from "./TableSurgeriesPost";
 
 const { TabPane } = Tabs;
 
@@ -14,7 +14,7 @@ const PadreSurgeries = () => {
             <TableSurgeriesIntra />
           </TabPane>
           <TabPane tab="Cirugías Postoperatorias" key="2">
-            {/* <AnotherComponent /> */}
+            <TableSurgeriesPost />
           </TabPane>
         </Tabs>
       </div>
