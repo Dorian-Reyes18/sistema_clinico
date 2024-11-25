@@ -34,39 +34,87 @@ const TableSurgeries = () => {
     return recentSurgeries.slice(startIndex, startIndex + surgeriesPerPage);
   }, [currentPage, recentSurgeries, surgeriesPerPage]);
 
+  //   Funciones
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "No disponible";
+    const date = new Date(isoDate);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const renderPatientrowIntra = (cirugia) => {
     return (
       <tr key={cirugia.id}>
         <td className="center">
           <strong>{cirugia?.paciente?.numeroExpediente}</strong>
         </td>
-        <td>{cirugia?.fechaDeCreacion || "No disponible"}</td>
+        <td>{formatDate(cirugia?.fechaDeCreacion)}</td>{" "}
+        {/* Aquí formateamos la fecha */}
         <td>
           {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
         </td>
         <td>{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
-        <td>{cirugia.diagnosticoPrenatal?.length > 0 ? "Sí" : "No llenado"}</td>
-        <td>{cirugia.evaluacionActual ? "Sí" : "No llenado"}</td>
-        <td>{cirugia.tipoCirugia || "No especificado"}</td>
-        <td>{cirugia.complicacionesQuirurgicas || "No especificado"}</td>
-        <td>{cirugia.etapa || "No especificado"}</td>
-        <td>{cirugia.estado ? "Activa" : "Finalizada"}</td>
-        <td>Editar</td>
+        <td className="center">
+          {cirugia.diagnosticoPrenatal?.length > 0 ? "Sí" : "No"}
+        </td>
+        <td className="center">{cirugia.evaluacionActual ? "Sí" : "No"}</td>
+        <td className="center">{cirugia.tipoCirugia || "No especificado"}</td>
+        <td className="center">
+          {cirugia.complicacionesQuirurgicas ? "Si" : "No" || "No"}
+        </td>
+        <td
+          className="center"
+          style={
+            cirugia.etapa === "Intra"
+              ? { color: "#E2A70D" }
+              : { color: "#1074BC" }
+          }
+        >
+          <strong>{cirugia.etapa || "No especificado"}</strong>
+        </td>
+        <td
+          className="center"
+          style={cirugia.estado ? { color: "#02A81D" } : { color: "#BD3548" }}
+        >
+          <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
+        </td>
+        <td className="place">
+          <div
+            className="btn-edit "
+            onClick={() => {
+              router.push(
+                `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
+              );
+            }}
+          ></div>
+        </td>
       </tr>
     );
   };
-
   return (
     <div className="base">
       <div className="actions-inputs"></div>
 
-      <div className="month-container">
-        <div className="section">
-          <h3>Cirugías Intrauterinas</h3>
-          {loading ? (
-            <Spin tip="Cargando cirugías..." />
-          ) : (
-            <>
+      {loading ? (
+        <div className="loading-message">
+          <Spin /> <span>Consultando datos...</span>
+        </div>
+      ) : (
+        <>
+          <div className="month-container">
+            <div className="section">
+              <div className="text-head">
+                <h3>Cirugías Intrauterinas</h3>
+                <span className="record">
+                  {`${recentSurgeries.length} ${
+                    recentSurgeries.length === 1
+                      ? "registro en total"
+                      : "registros totales"
+                  }`}
+                </span>
+              </div>
               <table className="table">
                 <thead>
                   <tr>
@@ -89,20 +137,21 @@ const TableSurgeries = () => {
                   )}
                 </tbody>
               </table>
-
-              <div className="pag-container">
-                <Pagination
-                  current={currentPage}
-                  pageSize={surgeriesPerPage}
-                  total={recentSurgeries.length}
-                  onChange={(page) => setCurrentPage(page)}
-                  style={{ marginTop: "20px" }}
-                />
-              </div>
-            </>
-          )}
+            </div>
+          </div>
+        </>
+      )}
+      {!loading && (
+        <div className="pag-container">
+          <Pagination
+            current={currentPage}
+            pageSize={surgeriesPerPage}
+            total={recentSurgeries.length}
+            onChange={(page) => setCurrentPage(page)}
+            style={{ marginTop: "20px" }}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 };

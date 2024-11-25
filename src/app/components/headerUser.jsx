@@ -21,6 +21,11 @@ const HeaderUser = ({ currentPath }) => {
         label: "Cirugías",
         imageSrc: "/images/home/CirugiasIcon.png",
       };
+    } else if (path === "/cirugias/gestionarCirugias") {
+      return {
+        label: "Gestión de cirugías Intrauterinas",
+        imageSrc: "/images/home/CirugiasIcon.png",
+      };
     } else if (path === "/pacientes") {
       return {
         label: "Pacientes",
@@ -57,7 +62,7 @@ const HeaderUser = ({ currentPath }) => {
             gap: 15,
           }}
         >
-          <VolverBtn currentPath={currentPath} /> 
+          <VolverBtn currentPath={currentPath} />
           <Image src={imageSrc} alt="Icono saludo" width={20} height={20} />
           <span>{label}</span>
         </p>
