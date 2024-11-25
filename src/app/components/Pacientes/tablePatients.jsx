@@ -149,6 +149,16 @@ const TablePatients = () => {
         </div>
       ) : paginatedPatients.length > 0 ? (
         <div className="month-container">
+          <div className="text-head">
+            <h3>Pacientes</h3>
+            <span className="record">
+              {`${patients.length} ${
+                patients.length === 1
+                  ? "registro en total"
+                  : "registros totales"
+              }`}
+            </span>
+          </div>
           <table className="table">
             <thead>
               <tr>

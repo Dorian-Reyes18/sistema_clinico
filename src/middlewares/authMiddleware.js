@@ -22,7 +22,7 @@ export async function authenticateRequest(req) {
     );
   }
 
-  const decoded = verifyToken(token);
+  const decoded = verifyToken(token); 
   if (!decoded) {
     console.log("Token inválido o expirado");
     return NextResponse.json(
@@ -31,7 +31,9 @@ export async function authenticateRequest(req) {
     );
   }
 
+  // Almacenamos la información del usuario decodificado para futuras consultas
   req.user = decoded;
+
   console.log("Token válido, usuario decodificado:", decoded);
-  return null; 
+  return null;
 }

@@ -128,10 +128,8 @@ export async function DELETE(req, { params }) {
     const { id } = params;
 
     try {
-      // Convertir el ID recibido a número
       const pacienteId = parseInt(id);
 
-      // Validar si el paciente existe antes de proceder
       const pacienteExiste = await prisma.paciente.findUnique({
         where: { id: pacienteId },
       });
@@ -175,14 +173,14 @@ export async function DELETE(req, { params }) {
         }),
         prisma.tipoDiabetes.deleteMany({
           where: {
-            pacienteid: pacienteId, // Asegúrate de usar el campo correcto
+            pacienteid: pacienteId,
           },
         }),
         prisma.conyuge.deleteMany({
           where: {
             pacientes: {
               some: {
-                id: pacienteId, // Asegúrate de usar la relación correcta
+                id: pacienteId,
               },
             },
           },

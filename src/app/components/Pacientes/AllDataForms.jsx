@@ -220,7 +220,6 @@ const AllDataForms = ({ mode, id }) => {
 
         createPatient();
       } else {
-        let alternativeConyugeId = 0;
         const dataEditIds = {
           conyugeId: patientData?.conyuge?.id || null,
           patientId: patientData?.id || null,
@@ -232,6 +231,9 @@ const AllDataForms = ({ mode, id }) => {
             patientData?.antecedentesObstetricos?.[0]?.id || null,
           embActualId: patientData?.embarazoActual?.[0]?.id || null,
         };
+
+        console.log(dataEditIds);
+
         // Modo de Edición (PUT)
         startLoading();
 
