@@ -161,18 +161,23 @@ html {
   }
 
   .ant-tabs {
-    .ant-tabs-nav {
-      .ant-tabs-tab {
-        padding: 10px 20px;
-        margin: 0 0 0 8px;
-      }
+    .ant-tabs-nav-wrap {
+      .ant-tabs-nav-list {
+        .ant-tabs-tab {
+          padding: 10px 20px;
+          margin: 0 !important;
+          border-bottom-color: $color-azul;
+        }
 
-      .ant-tabs-tab-active {
-        background: none;
-        border-bottom-color: none;
-        border: 1px solid $color-azul;
-        .ant-tabs-tab-btn {
-          color: $color-azul;
+        .ant-tabs-tab-active {
+          background: none;
+          color: $color-letra-gris;
+          border: 1px solid $color-azul;
+          border-bottom-color: transparent;
+
+          .ant-tabs-tab-btn {
+            color: $color-letra-gris;
+          }
         }
       }
     }

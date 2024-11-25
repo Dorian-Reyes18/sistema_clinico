@@ -23,4 +23,3 @@ const PadreSurgeries = () => {
 };
 
 export default PadreSurgeries;
-// 
