@@ -2,8 +2,7 @@ import { useAuth } from "@/app/hooks/authContext";
 import { Popover, Pagination, Spin } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-// import SearchBar from "./Search"; // Si tienes la barra de búsqueda
-// import CreatePatientButton from "./CreatePatientBtn"; // Si tienes el botón de crear paciente
+import SearchIntra from "../SearchIntra";
 import { fetchRecentSurgeries } from "@/services/fetchAllData";
 
 const TableSurgeries = () => {
@@ -12,6 +11,7 @@ const TableSurgeries = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [surgeriesPerPage] = useState(20);
   const [loading, setLoading] = useState(false);
+  const [filteredSurgeries, setFilteredSurgeries] = useState([]);
 
   useEffect(() => {
     const fetchSurgeries = async () => {
@@ -19,6 +19,7 @@ const TableSurgeries = () => {
       try {
         const data = await fetchRecentSurgeries(token);
         setRecentSurgeries(data);
+        setFilteredSurgeries(data);
       } catch (error) {
         console.error("Error fetching surgeries:", error);
       } finally {
@@ -31,10 +32,9 @@ const TableSurgeries = () => {
 
   const paginatedSurgeries = useMemo(() => {
     const startIndex = (currentPage - 1) * surgeriesPerPage;
-    return recentSurgeries.slice(startIndex, startIndex + surgeriesPerPage);
-  }, [currentPage, recentSurgeries, surgeriesPerPage]);
+    return filteredSurgeries.slice(startIndex, startIndex + surgeriesPerPage);
+  }, [currentPage, filteredSurgeries, surgeriesPerPage]);
 
-  //   Funciones
   const formatDate = (isoDate) => {
     if (!isoDate) return "No disponible";
     const date = new Date(isoDate);
@@ -50,12 +50,11 @@ const TableSurgeries = () => {
         <td className="center">
           <strong>{cirugia?.paciente?.numeroExpediente}</strong>
         </td>
-        <td>{formatDate(cirugia?.fechaDeCreacion)}</td>{" "}
-        {/* Aquí formateamos la fecha */}
+        <td>{formatDate(cirugia?.fechaDeCreacion)}</td>
         <td>
           {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
         </td>
-        <td>{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
+        <td className="center">{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
         <td className="center">
           {cirugia.diagnosticoPrenatal?.length > 0 ? "Sí" : "No"}
         </td>
@@ -93,15 +92,18 @@ const TableSurgeries = () => {
       </tr>
     );
   };
+
   return (
     <div className="base">
-      <div className="actions-inputs"></div>
+      <div className="actions-inputs">
+        <SearchIntra data={recentSurgeries} onSearch={setFilteredSurgeries} />
+      </div>
 
       {loading ? (
         <div className="loading-message">
           <Spin /> <span>Consultando datos...</span>
         </div>
-      ) : (
+      ) : filteredSurgeries.length > 0 ? (
         <>
           <div className="month-container">
             <div className="section">
@@ -118,17 +120,17 @@ const TableSurgeries = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>N°-Exp</th>
-                    <th>Creación</th>
-                    <th>Paciente</th>
-                    <th>Diag.Previo</th>
-                    <th>Diag.Prenatal</th>
-                    <th>Eval.Actual</th>
-                    <th>Cirugia</th>
-                    <th>Riesgos</th>
-                    <th>Etapa</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th className="co">N°-Exp</th>
+                    <th className="co">Creación</th>
+                    <th className="co">Paciente</th>
+                    <th className="co">Diag.Previo</th>
+                    <th className="co">Diag.Prenatal</th>
+                    <th className="co">Eval.Actual</th>
+                    <th className="co">Cirugia</th>
+                    <th className="co">Riesgos</th>
+                    <th className="co">Etapa</th>
+                    <th className="co">Estado</th>
+                    <th className="co">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -140,13 +142,16 @@ const TableSurgeries = () => {
             </div>
           </div>
         </>
+      ) : (
+        <div>No se encontró ninguna coincidencia</div>
       )}
-      {!loading && (
+
+      {!loading && filteredSurgeries.length > 0 && (
         <div className="pag-container">
           <Pagination
             current={currentPage}
             pageSize={surgeriesPerPage}
-            total={recentSurgeries.length}
+            total={filteredSurgeries.length}
             onChange={(page) => setCurrentPage(page)}
             style={{ marginTop: "20px" }}
           />
