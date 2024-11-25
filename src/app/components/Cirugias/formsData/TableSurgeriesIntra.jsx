@@ -52,8 +52,8 @@ const TableSurgeriesIntra = () => {
         <td className="center">
           <strong>{cirugia?.paciente?.numeroExpediente}</strong>
         </td>
-        <td>{formatDate(cirugia?.fechaDeCreacion)}</td>
-        <td>
+        <td className="center">{formatDate(cirugia?.fechaDeCreacion)}</td>
+        <td className="center">
           {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
         </td>
         <td className="center">{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
