@@ -5,6 +5,7 @@ import Layout from "../components/layout";
 import { Spin } from "antd";
 import HeaderUser from "../components/headerUser";
 import { usePathname } from "next/navigation";
+import PadreSurgeries from "../components/Cirugias/formsData/padreSurgeries";
 
 const Cirugia = () => {
   const currentPath = usePathname();
@@ -48,6 +49,7 @@ const Cirugia = () => {
   return (
     <Layout>
       <HeaderUser currentPath={currentPath} />
+      <PadreSurgeries />
     </Layout>
   );
 };

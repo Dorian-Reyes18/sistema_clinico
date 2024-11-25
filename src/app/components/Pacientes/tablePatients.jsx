@@ -16,7 +16,7 @@ const TablePatients = () => {
   const [depMunicData, setDepMunicData] = useState(new Map());
   const [filteredPatients, setFilteredPatients] = useState(patients);
   const [loading, setLoading] = useState(false);
-  const [isFirstRender, setIsFirstRender] = useState(true); // Para manejar el primer renderizado
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
     const fetchMunicData = async () => {
@@ -47,14 +47,13 @@ const TablePatients = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Solo refrescar los pacientes después del primer renderizado
   useEffect(() => {
     if (!isFirstRender) {
       handleRefresh();
     } else {
-      setIsFirstRender(false); // Cambiar el estado a false después del primer renderizado
+      setIsFirstRender(false);
     }
-  }, [isFirstRender]); // Este useEffect solo se ejecutará cuando isFirstRender cambie
+  }, [isFirstRender]);
 
   const sortedPatients = useMemo(() => {
     return filteredPatients.sort(

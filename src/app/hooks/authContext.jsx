@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import {
-  fetchRecentSurgeries,
+  fetchRecentSurgeries, //intrauterinas
   fetchUserData,
-  fetchSurgeriesPost,
+  fetchSurgeriesPost, //PostOperatorias
   fetchPatients,
   fetchMetadata,
 } from "@/services/fetchAllData";
@@ -57,27 +57,22 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
 
     // Intentamos cargar los datos de la caché
-    const cachedUserData = JSON.parse(sessionStorage.getItem("userData"));
-    const cachedRecentSurgeriesData = JSON.parse(
-      sessionStorage.getItem("recentSurgeriesData")
+    const cachedUserData = sessionStorage.getItem("userData");
+    const cachedRecentSurgeriesData = sessionStorage.getItem(
+      "recentSurgeriesData"
     );
-    const cachedSurgeriesPostData = JSON.parse(
-      sessionStorage.getItem("surgeriesPostData")
-    );
-    const cachedPatientsData = JSON.parse(
-      sessionStorage.getItem("patientsData")
-    );
-    const cachedMetadataData = JSON.parse(
-      sessionStorage.getItem("metadataData")
-    );
+    const cachedSurgeriesPostData = sessionStorage.getItem("surgeriesPostData");
+    const cachedPatientsData = sessionStorage.getItem("patientsData");
+    const cachedMetadataData = sessionStorage.getItem("metadataData");
 
     // Si hay datos en caché, los mostramos primero
-    if (cachedUserData) setUser(cachedUserData);
+    if (cachedUserData) setUser(JSON.parse(cachedUserData));
     if (cachedRecentSurgeriesData)
-      setRecentSurgeries(cachedRecentSurgeriesData);
-    if (cachedSurgeriesPostData) setSurgeriesPost(cachedSurgeriesPostData);
-    if (cachedPatientsData) setPatients(cachedPatientsData);
-    if (cachedMetadataData) setMetadata(cachedMetadataData);
+      setRecentSurgeries(JSON.parse(cachedRecentSurgeriesData));
+    if (cachedSurgeriesPostData)
+      setSurgeriesPost(JSON.parse(cachedSurgeriesPostData));
+    if (cachedPatientsData) setPatients(JSON.parse(cachedPatientsData));
+    if (cachedMetadataData) setMetadata(JSON.parse(cachedMetadataData));
 
     // Ahora hacemos los fetch para actualizar en el fondo
     try {
@@ -132,6 +127,8 @@ export const AuthProvider = ({ children }) => {
         setToken,
         recentSurgeries,
         surgeriesPost,
+        setRecentSurgeries,
+        setSurgeriesPost,
         patients,
         metadata,
         loadData,
