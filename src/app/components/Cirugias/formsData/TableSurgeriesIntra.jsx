@@ -4,8 +4,10 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SearchIntra from "../SearchIntra";
 import { fetchRecentSurgeries } from "@/services/fetchAllData";
+import CreateIntraButton from "../CreateIntraButton";
+import CrearPaciente from "@/app/pacientes/crearPaciente/page";
 
-const TableSurgeries = () => {
+const TableSurgeriesIntra = () => {
   const { recentSurgeries, setRecentSurgeries, token } = useAuth();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,6 +98,7 @@ const TableSurgeries = () => {
   return (
     <div className="base">
       <div className="actions-inputs">
+        <CreateIntraButton />
         <SearchIntra data={recentSurgeries} onSearch={setFilteredSurgeries} />
       </div>
 
@@ -161,4 +164,4 @@ const TableSurgeries = () => {
   );
 };
 
-export default TableSurgeries;
+export default TableSurgeriesIntra;

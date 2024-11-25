@@ -8,7 +8,7 @@ const SearchIntra = ({ data, onSearch }) => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    const lowerCaseValue = value.toLowerCase(); // Transformar solo para comparación
+    const lowerCaseValue = value.toLowerCase(); 
 
     const filteredData = data.filter((cirugia) => {
       // Propiedades de la cirugía a buscar
@@ -44,7 +44,7 @@ const SearchIntra = ({ data, onSearch }) => {
     <div className="wrapper">
       <div className="input-wrapper">
         <Input
-          placeholder="Exped, nombre, estado, etapa..."
+          placeholder="Exped, fecha, paciente, cirugia, estado..."
           value={searchTerm}
           onChange={handleChange}
           className="form-control mb-3"

@@ -159,4 +159,22 @@ html {
       }
     }
   }
+
+  .ant-tabs {
+    .ant-tabs-nav {
+      .ant-tabs-tab {
+        padding: 10px 20px;
+        margin: 0 0 0 8px;
+      }
+
+      .ant-tabs-tab-active {
+        background: none;
+        border-bottom-color: none;
+        border: 1px solid $color-azul;
+        .ant-tabs-tab-btn {
+          color: $color-azul;
+        }
+      }
+    }
+  }
 }
