@@ -1,12 +1,28 @@
 import { Input } from "antd";
 import { useState } from "react";
 
-const SearchPost = ({ data, onSearch }) => {
+const SearchPost = ({
+  data,
+  onSearch,
+  setFilteredSurgeries,
+  setIsSearchActive,
+  setShowNeonatal,
+  setShowNerviosoCentral,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+
+    if (value.trim() === "") {
+      // Restaurar estado inicial cuando no hay texto
+      setFilteredSurgeries(data);
+      setIsSearchActive(false);
+      setShowNeonatal(true);
+      setShowNerviosoCentral(true);
+      return;
+    }
 
     const lowerCaseValue = value.toLowerCase();
 
@@ -42,7 +58,11 @@ const SearchPost = ({ data, onSearch }) => {
       );
     });
 
-    onSearch(filteredData);
+    // Actualizar estados según los resultados
+    setFilteredSurgeries(filteredData);
+    setIsSearchActive(true);
+    setShowNeonatal(false);
+    setShowNerviosoCentral(false);
   };
 
   return (

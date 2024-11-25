@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/hooks/authContext";
-import { Pagination, Spin, Button } from "antd";
+import { Pagination, Spin, Button, Input } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SearchPost from "../SearchPost";
@@ -11,7 +11,7 @@ const TableSurgeriesPost = () => {
   const router = useRouter();
   const [currentPageNeonatal, setCurrentPageNeonatal] = useState(1);
   const [currentPageNervioso, setCurrentPageNervioso] = useState(1);
-  const [surgeriesPerPage] = useState(50);
+  const [surgeriesPerPage] = useState(20);
   const [loading, setLoading] = useState(false);
   const [filteredSurgeries, setFilteredSurgeries] = useState([]);
   const [neonatalSurgeries, setNeonatalSurgeries] = useState([]);
@@ -20,6 +20,7 @@ const TableSurgeriesPost = () => {
   // Estados para manejar la visibilidad de las secciones
   const [showNeonatal, setShowNeonatal] = useState(true);
   const [showNerviosoCentral, setShowNerviosoCentral] = useState(true);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   useEffect(() => {
     const fetchSurgeries = async () => {
@@ -48,6 +49,17 @@ const TableSurgeriesPost = () => {
     fetchSurgeries();
   }, [setSurgeriesPost, token]);
 
+  // Función para manejar el filtro de búsqueda
+  const handleSearch = (searchResults) => {
+    setIsSearchActive(searchResults.length > 0);
+    setFilteredSurgeries(searchResults);
+
+    if (searchResults.length === 0) {
+      setShowNeonatal(true);
+      setShowNerviosoCentral(true);
+    }
+  };
+
   // Paginación para cirugías neonatales
   const paginatedNeonatalSurgeries = useMemo(() => {
     const startIndex = (currentPageNeonatal - 1) * surgeriesPerPage;
@@ -72,7 +84,7 @@ const TableSurgeriesPost = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const renderPatientrowIntra = (cirugia) => {
+  const renderPatientRow = (cirugia) => {
     return (
       <tr key={cirugia.id}>
         <td className="center">
@@ -85,7 +97,6 @@ const TableSurgeriesPost = () => {
         <td className="center">{formatDate(cirugia?.fechaDeIntervencion)}</td>
         <td className="center">{cirugia?.tipoCirugia}</td>
         <td className="center">{cirugia?.doctor?.nombreYApellido}</td>
-
         <td
           className="center"
           style={cirugia.estado ? { color: "#02A81D" } : { color: "#BD3548" }}
@@ -106,121 +117,156 @@ const TableSurgeriesPost = () => {
     );
   };
 
+  // Efecto para restablecer las secciones cuando se borra la búsqueda
+  useEffect(() => {
+    if (!isSearchActive) {
+      setShowNeonatal(true);
+      setShowNerviosoCentral(true);
+    }
+  }, [isSearchActive]);
+
   return (
     <div className="base">
       <div className="actions-inputs">
         <CreateIntraButton />
-        <SearchPost data={filteredSurgeries} onSearch={setFilteredSurgeries} />
+        {/* Componente de búsqueda */}
+        <SearchPost
+          data={[...neonatalSurgeries, ...nerviosoCentralSurgeries]}
+          onSearch={handleSearch}
+          setFilteredSurgeries={setFilteredSurgeries}
+          setIsSearchActive={setIsSearchActive}
+          setShowNeonatal={setShowNeonatal}
+          setShowNerviosoCentral={setShowNerviosoCentral}
+        />
       </div>
 
       {loading ? (
         <div className="loading-message">
           <Spin /> <span>Consultando datos...</span>
         </div>
+      ) : isSearchActive ? (
+        // Mostrar resultados de búsqueda como una única tabla
+        <div className="search-results">
+          <h3>Resultados de búsqueda</h3>
+          <table className="table">
+            <thead>
+              <tr>
+                <th className="co">N°-Exp</th>
+                <th className="co">Creación</th>
+                <th className="co">Paciente</th>
+                <th className="co">Intervención</th>
+                <th className="co">Cirugía</th>
+                <th className="co">Responsable</th>
+                <th className="co">Estado</th>
+                <th className="co">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredSurgeries.map((cirugia) => renderPatientRow(cirugia))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <>
-          <div className="month-container">
-            {/* Cirugías Neonatales */}
-            <div className="section">
-              <div className="text-head">
-                <h3>Cirugías Neonatales</h3>
-                <span className="record">
-                  {`${neonatalSurgeries.length} ${
-                    neonatalSurgeries.length === 1
-                      ? "registro en total"
-                      : "registros totales"
-                  }`}
-                </span>
-                <Button
-                  onClick={() => setShowNeonatal(!showNeonatal)}
-                  style={{ marginBottom: "10px" }}
-                >
-                  {showNeonatal ? "Ocultar" : "Mostrar"}
-                </Button>
-              </div>
-              {showNeonatal && (
-                <div>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th className="co">N°-Exp</th>
-                        <th className="co">Creación</th>
-                        <th className="co">Paciente</th>
-                        <th className="co">Intervención</th>
-                        <th className="co">Cirugía</th>
-                        <th className="co">Responsable</th>
-                        <th className="co">Estado</th>
-                        <th className="co">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedNeonatalSurgeries.map((cirugia) =>
-                        renderPatientrowIntra(cirugia)
-                      )}
-                    </tbody>
-                  </table>
-                  <Pagination
-                    current={currentPageNeonatal}
-                    pageSize={surgeriesPerPage}
-                    total={neonatalSurgeries.length}
-                    onChange={(page) => setCurrentPageNeonatal(page)}
-                    style={{ marginTop: "20px" }}
-                  />
-                </div>
-              )}
+        // Mostrar las tablas divididas por secciones
+        <div className="month-container">
+          <div className="section">
+            <div className="text-head">
+              <h3>Cirugías Neonatales</h3>
+              <span className="record">
+                {`${neonatalSurgeries.length} ${
+                  neonatalSurgeries.length === 1
+                    ? "registro en total"
+                    : "registros totales"
+                }`}
+              </span>
+              <Button
+                onClick={() => setShowNeonatal(!showNeonatal)}
+                style={{ marginBottom: "10px" }}
+              >
+                {showNeonatal ? "Ocultar" : "Mostrar"}
+              </Button>
             </div>
-
-            {/* Cirugías Nervioso Central */}
-            <div className="section">
-              <div className="text-head">
-                <h3>Cirugías Nervioso Central</h3>
-                <span className="record">
-                  {`${nerviosoCentralSurgeries.length} ${
-                    nerviosoCentralSurgeries.length === 1
-                      ? "registro en total"
-                      : "registros totales"
-                  }`}
-                </span>
-                <Button
-                  onClick={() => setShowNerviosoCentral(!showNerviosoCentral)}
-                  style={{ marginBottom: "10px" }}
-                >
-                  {showNerviosoCentral ? "Ocultar" : "Mostrar"}
-                </Button>
+            {showNeonatal && (
+              <div>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th className="co">N°-Exp</th>
+                      <th className="co">Creación</th>
+                      <th className="co">Paciente</th>
+                      <th className="co">Intervención</th>
+                      <th className="co">Cirugía</th>
+                      <th className="co">Responsable</th>
+                      <th className="co">Estado</th>
+                      <th className="co">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedNeonatalSurgeries.map((cirugia) =>
+                      renderPatientRow(cirugia)
+                    )}
+                  </tbody>
+                </table>
+                <Pagination
+                  current={currentPageNeonatal}
+                  pageSize={surgeriesPerPage}
+                  total={neonatalSurgeries.length}
+                  onChange={(page) => setCurrentPageNeonatal(page)}
+                  style={{ marginTop: "20px" }}
+                />
               </div>
-              {showNerviosoCentral && (
-                <div>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th className="co">N°-Exp</th>
-                        <th className="co">Creación</th>
-                        <th className="co">Paciente</th>
-                        <th className="co">Intervención</th>
-                        <th className="co">Cirugía</th>
-                        <th className="co">Responsable</th>
-                        <th className="co">Estado</th>
-                        <th className="co">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedNerviosoCentralSurgeries.map((cirugia) =>
-                        renderPatientrowIntra(cirugia)
-                      )}
-                    </tbody>
-                  </table>
-                  <Pagination
-                    current={currentPageNervioso}
-                    pageSize={surgeriesPerPage}
-                    total={nerviosoCentralSurgeries.length}
-                    onChange={(page) => setCurrentPageNervioso(page)}
-                    style={{ marginTop: "20px" }}
-                  />
-                </div>
-              )}
-            </div>
+            )}
           </div>
-        </>
+
+          <div className="section">
+            <div className="text-head">
+              <h3>Cirugías Nervioso Central</h3>
+              <span className="record">
+                {`${nerviosoCentralSurgeries.length} ${
+                  nerviosoCentralSurgeries.length === 1
+                    ? "registro en total"
+                    : "registros totales"
+                }`}
+              </span>
+              <Button
+                onClick={() => setShowNerviosoCentral(!showNerviosoCentral)}
+                style={{ marginBottom: "10px" }}
+              >
+                {showNerviosoCentral ? "Ocultar" : "Mostrar"}
+              </Button>
+            </div>
+            {showNerviosoCentral && (
+              <div>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th className="co">N°-Exp</th>
+                      <th className="co">Creación</th>
+                      <th className="co">Paciente</th>
+                      <th className="co">Intervención</th>
+                      <th className="co">Cirugía</th>
+                      <th className="co">Responsable</th>
+                      <th className="co">Estado</th>
+                      <th className="co">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedNerviosoCentralSurgeries.map((cirugia) =>
+                      renderPatientRow(cirugia)
+                    )}
+                  </tbody>
+                </table>
+                <Pagination
+                  current={currentPageNervioso}
+                  pageSize={surgeriesPerPage}
+                  total={nerviosoCentralSurgeries.length}
+                  onChange={(page) => setCurrentPageNervioso(page)}
+                  style={{ marginTop: "20px" }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
