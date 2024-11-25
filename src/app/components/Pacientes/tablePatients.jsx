@@ -188,7 +188,7 @@ const TablePatients = () => {
           </table>
         </div>
       ) : (
-        <div>No hay pacientes registrados</div>
+        <div>No se encontró ninguna coincidencia</div>
       )}
 
       {!loading && (
