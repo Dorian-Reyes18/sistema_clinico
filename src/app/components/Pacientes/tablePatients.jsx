@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SearchBar from "./Search";
 import CreatePatientButton from "./CreatePatientBtn";
 import { fetchPatients } from "@/services/fetchAllData";
-import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const TablePatients = () => {
   const { patients, setPatients, token } = useAuth();
@@ -16,6 +16,7 @@ const TablePatients = () => {
   const [depMunicData, setDepMunicData] = useState(new Map());
   const [filteredPatients, setFilteredPatients] = useState(patients);
   const [loading, setLoading] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true); // Para manejar el primer renderizado
 
   useEffect(() => {
     const fetchMunicData = async () => {
@@ -45,6 +46,15 @@ const TablePatients = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Solo refrescar los pacientes después del primer renderizado
+  useEffect(() => {
+    if (!isFirstRender) {
+      handleRefresh();
+    } else {
+      setIsFirstRender(false); // Cambiar el estado a false después del primer renderizado
+    }
+  }, [isFirstRender]); // Este useEffect solo se ejecutará cuando isFirstRender cambie
 
   const sortedPatients = useMemo(() => {
     return filteredPatients.sort(
@@ -132,13 +142,6 @@ const TablePatients = () => {
   return (
     <div className="base">
       <div className="actions-inputs">
-        <div onClick={handleRefresh} className="btn-refresh">
-          {loading ? (
-            <Spin indicator={<LoadingOutlined />} />
-          ) : (
-            <ReloadOutlined />
-          )}
-        </div>
         <CreatePatientButton />
         <SearchBar data={patients} onSearch={setFilteredPatients} />
       </div>
@@ -188,7 +191,6 @@ const TablePatients = () => {
         <div>No hay pacientes registrados</div>
       )}
 
-      {/* Mostrar el paginador solo si no estamos cargando */}
       {!loading && (
         <div className="pag-container">
           <Pagination
