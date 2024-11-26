@@ -111,9 +111,24 @@ const EmbarazoActual = ({
     }
   };
 
+  // Función para obtener la categoría del IMC según la OMS
+  const obtenerCategoriaIMC = (imc) => {
+    if (imc < 18.5) {
+      return "Bajo peso";
+    } else if (imc >= 18.5 && imc < 24.9) {
+      return "Normal";
+    } else if (imc >= 25 && imc < 29.9) {
+      return "Sobrepeso";
+    } else if (imc >= 30) {
+      return "Obesidad";
+    }
+    return "";
+  };
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
+        {/* Formulario con los campos existentes */}
         <div className="item">
           <label htmlFor="talla">
             Talla (m) <span className="señal-req"> *</span>
@@ -177,6 +192,25 @@ const EmbarazoActual = ({
             onBlur={formik.handleBlur}
           />
         </div>
+
+        {/* Campo que muestra la categoría del IMC */}
+        <div className="item">
+          <label htmlFor="categoriaIMC">Categoría IMC</label>
+          <Input
+            className="text"
+            id="categoriaIMC"
+            name="categoriaIMC"
+            value={obtenerCategoriaIMC(formik.values.imc)}
+            disabled={true}
+            style={{
+              color: "#4b4b4b",
+              backgroundColor: "#fff",
+              opacity: 1,
+              cursor: "not-allowed",
+            }}
+          />
+        </div>
+
         <div className="item-switch">
           <label htmlFor="consumoAF">Consumo AF</label>
           <Switch
@@ -190,6 +224,7 @@ const EmbarazoActual = ({
             onBlur={formik.handleBlur}
           />
         </div>
+
         <div className="item">
           <label htmlFor="fechaInicioConsumo">Fecha Inicio Consumo</label>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
