@@ -140,7 +140,7 @@ model EmbarazoActual {
   pesoKg             Float?
   talla              Float?
   ultimaRegla        DateTime?
-  edadGestacional    Float?
+  edadGestacional    String?
   imc                Float?
   consumoAF          Boolean?
   fechaInicioConsumo DateTime?
