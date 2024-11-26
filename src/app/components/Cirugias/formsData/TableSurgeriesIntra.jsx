@@ -67,16 +67,6 @@ const TableSurgeriesIntra = () => {
         </td>
         <td
           className="center"
-          style={
-            cirugia.etapa === "Intra"
-              ? { color: "#E2A70D" }
-              : { color: "#1074BC" }
-          }
-        >
-          <strong>{cirugia.etapa || "No especificado"}</strong>
-        </td>
-        <td
-          className="center"
           style={cirugia.estado ? { color: "#02A81D" } : { color: "#BD3548" }}
         >
           <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
@@ -131,7 +121,6 @@ const TableSurgeriesIntra = () => {
                     <th className="co">Eval.Actual</th>
                     <th className="co">Cirugia</th>
                     <th className="co">Riesgos</th>
-                    <th className="co">Etapa</th>
                     <th className="co">Estado</th>
                     <th className="co">Acción</th>
                   </tr>

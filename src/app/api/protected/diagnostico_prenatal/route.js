@@ -46,7 +46,7 @@ export async function GET(req) {
         tipoCirugiaRealizada: diagnostico.tipoCirugiaRealizada,
         estudioGen: diagnostico.estudioGen,
         resultadoEstGen: diagnostico.resultadoEstGen,
-        embarazoUnico: diagnostico.embarazoUnico,
+        tipoEmbarazo: diagnostico.tipoEmbarazo,
         categoria: diagnostico.categoria,
         tipoDefecto: diagnostico.tipoDefecto,
         cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
@@ -73,7 +73,7 @@ export async function POST(req) {
       tipoCirugiaRealizada,
       estudioGen,
       resultadoEstGen,
-      embarazoUnico,
+      tipoEmbarazo,
     } = await req.json();
 
     // Validar que los IDs referenciados existan
@@ -105,7 +105,7 @@ export async function POST(req) {
           tipoCirugiaRealizada,
           estudioGen,
           resultadoEstGen,
-          embarazoUnico,
+          tipoEmbarazo,
         },
         include: {
           categoria: true,
@@ -126,7 +126,7 @@ export async function POST(req) {
             tipoCirugiaRealizada: nuevoDiagnostico.tipoCirugiaRealizada,
             estudioGen: nuevoDiagnostico.estudioGen,
             resultadoEstGen: nuevoDiagnostico.resultadoEstGen,
-            embarazoUnico: nuevoDiagnostico.embarazoUnico,
+            tipoEmbarazo: nuevoDiagnostico.tipoEmbarazo,
             categoria: nuevoDiagnostico.categoria,
             tipoDefecto: nuevoDiagnostico.tipoDefecto,
             cirugiaIntra: nuevoDiagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra

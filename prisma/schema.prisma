@@ -179,13 +179,13 @@ model Conyuge {
 
 model DiagnosticoPrenatal {
   id                          Int                         @id @default(autoincrement())
-  cirugiaIntraId              Int
-  categoriaId                 Int
+  cirugiaIntraId              Int   
+  categoriaId                 Int       
   tipoDefectoId               Int
   tipoCirugiaRealizada        String
   estudioGen                  Boolean?
   resultadoEstGen             String?
-  embarazoUnico               Boolean?
+  tipoEmbarazo                String?
   categoria                   Categoria                   @relation(fields: [categoriaId], references: [id])
   tipoDefecto                 TipoDefecto                 @relation(fields: [tipoDefectoId], references: [id])
   ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina @relation(fields: [cirugiaIntraId], references: [id])
@@ -217,7 +217,7 @@ model OrdenQuirurgicaIntrauterina {
   tipoCirugia               String                  @default("Sin Especificar")
   fechaDeCreacion           DateTime?               @default(now())
   teniaDiagnostico          Boolean?
-  etapa                     String?
+  etapa                     String?                 //Eliminar Valor
   complicacionesQuirurgicas String?
   estado                    Boolean?
   paciente                  Paciente                @relation(fields: [pacienteId], references: [id])
@@ -323,7 +323,7 @@ model ResultadosPerinatales {
 model OrdenQuirurgicaPostoperacion {
   id                     Int                      @id @default(autoincrement())
   fechaDeCreacion        DateTime?                @default(now())
-  tipoCirugia            String? //Puede ser Neonatal o Nerviosocentral
+  tipoCirugia            String? 
   pacienteId             Int
   doctorId               Int
   estado                 Boolean?

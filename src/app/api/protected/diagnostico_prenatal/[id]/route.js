@@ -74,7 +74,7 @@ export async function GET(req, { params }) {
         tipoCirugiaRealizada: diagnostico.tipoCirugiaRealizada,
         estudioGen: diagnostico.estudioGen,
         resultadoEstGen: diagnostico.resultadoEstGen,
-        embarazoUnico: diagnostico.embarazoUnico,
+        tipoEmbarazo: diagnostico.tipoEmbarazo,
         categoria: diagnostico.categoria,
         tipoDefecto: diagnostico.tipoDefecto,
         cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
@@ -117,7 +117,7 @@ export async function PUT(req, { params }) {
           tipoCirugiaRealizada: diagnostico.tipoCirugiaRealizada,
           estudioGen: diagnostico.estudioGen,
           resultadoEstGen: diagnostico.resultadoEstGen,
-          embarazoUnico: diagnostico.embarazoUnico,
+          tipoEmbarazo: diagnostico.tipoEmbarazo,
           categoria: diagnostico.categoria,
           tipoDefecto: diagnostico.tipoDefecto,
           cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra

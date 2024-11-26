@@ -10,6 +10,8 @@ import {
 
 const AuthContext = createContext();
 
+let isFetchingData = false; // Bandera global para evitar fetches duplicados
+
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,8 +35,10 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          setToken(token);
-          loadData(decodedToken.id, token);
+          if (!user) {
+            setToken(token); // Establecer el token solo si no está configurado
+            loadData(decodedToken.id, token);
+          }
         } else {
           handleInvalidSession();
         }
@@ -45,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       handleInvalidSession();
     }
-  }, [token]);
+  }, []); // Sin dependencias adicionales para evitar loops
 
   const handleInvalidSession = () => {
     setUser(null);
@@ -54,6 +58,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadData = async (userId, token) => {
+    if (isFetchingData) return; // Evita fetches duplicados
+    isFetchingData = true;
+
     setLoading(true);
 
     // Intentamos cargar los datos de la caché
@@ -76,21 +83,19 @@ export const AuthProvider = ({ children }) => {
 
     // Ahora hacemos los fetch para actualizar en el fondo
     try {
-      await refreshDataInBackground(userId, token);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshDataInBackground = async (userId, token) => {
-    try {
-      const newUserData = await fetchUserData(userId, token);
-      const newRecentSurgeries = await fetchRecentSurgeries(token);
-      const newSurgeriesPost = await fetchSurgeriesPost(token);
-      const newPatients = await fetchPatients(token);
-      const newMetadata = await fetchMetadata(token);
+      const [
+        newUserData,
+        newRecentSurgeries,
+        newSurgeriesPost,
+        newPatients,
+        newMetadata,
+      ] = await Promise.all([
+        fetchUserData(userId, token),
+        fetchRecentSurgeries(token),
+        fetchSurgeriesPost(token),
+        fetchPatients(token),
+        fetchMetadata(token),
+      ]);
 
       // Actualizamos los estados y la caché
       setUser(newUserData);
@@ -99,7 +104,6 @@ export const AuthProvider = ({ children }) => {
       setPatients(newPatients);
       setMetadata(newMetadata);
 
-      // Cacheamos los nuevos datos
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
       sessionStorage.setItem(
         "recentSurgeriesData",
@@ -112,7 +116,11 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.setItem("patientsData", JSON.stringify(newPatients));
       sessionStorage.setItem("metadataData", JSON.stringify(newMetadata));
     } catch (error) {
-      console.error("Error al actualizar en segundo plano:", error);
+      console.error("Error al actualizar los datos:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+      isFetchingData = false; // Restablece la bandera
     }
   };
 
