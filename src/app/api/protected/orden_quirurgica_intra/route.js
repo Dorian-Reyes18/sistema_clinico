@@ -31,7 +31,11 @@ export async function GET(req) {
     try {
       const ordenes = await prisma.ordenQuirurgicaIntrauterina.findMany({
         include: {
-          paciente: true,
+          paciente: {
+            include: {
+              evaluacionesActuales: true,
+            },
+          },
           evaluacionActual: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
@@ -58,7 +62,7 @@ export async function POST(req) {
   return handleRequest(req, async () => {
     const {
       pacienteId,
-      tipoCirugia, 
+      tipoCirugia,
       teniaDiagnostico,
       evaluacionActualId,
       etapa,

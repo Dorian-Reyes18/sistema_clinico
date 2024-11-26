@@ -42,7 +42,7 @@ export async function GET(req) {
           tipoDiabetes: {
             include: {
               antecedentesPersonales: true,
-              evaluacionActual: true,
+              // evaluacionActual: true,
             },
           },
           antecedentesPersonales: true,

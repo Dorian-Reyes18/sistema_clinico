@@ -146,7 +146,7 @@ const TableSurgeriesIntra = () => {
           </div>
         </>
       ) : (
-        <div>No se encontró ninguna coincidencia</div>
+        <span>No hay datos para mostrar</span>
       )}
 
       {!loading && filteredSurgeries.length > 0 && (

@@ -35,7 +35,7 @@ export async function GET(req, { params }) {
         where: { id: parseInt(id) },
         include: {
           paciente: true,
-          evaluacionActual: true,
+          evaluacionesActuales: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
         },

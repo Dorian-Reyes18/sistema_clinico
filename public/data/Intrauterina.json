@@ -1,0 +1,69 @@
+{
+  "OrdenQuirurgicaIntrauterina": {
+    "pacienteId": 1, //primer tabla que se crea
+    "tipoCirugia": "Percutanea",
+    "fechaDeCreacion": "fecha en formato ISO",
+    "teniaDiagnostico": "Si",
+    "etapa": "Intraquirgica",
+    "complicacionesQuirurgicas": "Descripcion",
+    "estado": true,
+    "diagnosticoPrenatal": 1,
+    "resultadosPerinatales": 1
+  },
+  "IntrauterinaAbierta": {
+    "OrdenQuirurgicaIntrauterinaId": 1, //Requiere el registro de la orden creada
+    "ubicacionPlacentaria": "descripcion",
+    "fechaCirugia": "2024-10-01T10:00:00Z",
+    "horaInicioAnestesia": "2024-10-01T09:30:00Z",
+    "horaInicioCirugiaMaterna": "2024-10-01T10:00:00Z",
+    "horaInicioCirugiaFetal": "2024-10-01T10:30:00Z",
+    "horaFinalizacionCirugia": "2024-10-01T11:30:00Z",
+    "sangreEstimado": 100,
+    "cierreDeMielomeningocele": true,
+    "derivacionVentriculoamniotica": false,
+    "cierreDeEncefalocele": true,
+    "drenajeDeQuistesCoroideosUniOBilaterales": false,
+    "tipoAnestesiaId": "3",
+    "complicacionesAnestesicas": "Ninguna",
+    "frecuenciaCardiacaFetalInicio": 140.5,
+    "incisionEnPiel": true,
+    "incisionEnUtero": true,
+    "tamanoDelDefecto": "3cm",
+    "nivelAnatomico": "Lumbo-sacral",
+    "nivelFuncional": "Nivel 1",
+    "ilaInicialDeLiquidoAmniotico": "Normal",
+    "ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico": false,
+    "frecuenciaCardiacaFetalFinalizacion": 140.0,
+    "complicacionesQuirurgicas": "Ninguna"
+  },
+  "IntrauterinaPercutanea": {
+    //Requiere el registro de la orden creada
+    "OrdenQuirurgicaIntrauterina": 1,
+    "ubicacionPlacentaria": "descripcion",
+    "ablacionDeVasoTumoral": true,
+    "ablacionDeVasoNutricioSistemico": true,
+    "ablacionDeVasoNutricioFetal": true,
+    "fechaCirugia": true,
+    "horaInicioAnestesia": true,
+    "tipoAnestesiaId": true,
+    "complicacionesAnestesicas": "string",
+    "horaInicioCirugiaFetal": true,
+    "frecuenciaCardiacaFetalInicio": "string",
+    "bolsilloUnicoInicialDeLiquidoAmniotico": true,
+    "sangradoEstimado": "string",
+    "frecuenciaCardiacaFetalFinalizacion": true,
+    "complicacionesQuirurgicas": true,
+    "horaFinalizacionCirugia": true,
+    "diagnosticoPrenatal": true
+  },
+  "ResultadosPerinatales": {
+    //Requiere el registro de la orden creada
+    "ordenQuirurgicaId": 1,
+    "tipoDeParto": "string",
+    "fechaNac": "fecha en formato iso",
+    "edadFinalizacion": "string",
+    "natalidad": "string",
+    "descripcionFetal": "string",
+    "pesoGramos": 25
+  }
+}
