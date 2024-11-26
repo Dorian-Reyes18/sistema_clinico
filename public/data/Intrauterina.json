@@ -3,8 +3,7 @@
     "pacienteId": 1, //primer tabla que se crea
     "tipoCirugia": "Percutanea",
     "fechaDeCreacion": "fecha en formato ISO",
-    "teniaDiagnostico": "Si",
-    "etapa": "Intraquirgica",
+    "teniaDiagnostico": true,
     "complicacionesQuirurgicas": "Descripcion",
     "estado": true,
     "diagnosticoPrenatal": 1,

@@ -19,7 +19,6 @@ const EmbarazoActual = ({
 
   const formikInitialValues = {
     pacienteId: initialValues.pacienteId,
-    fechaEmbarazo: initialValues.fechaEmbarazo || null,
     pesoKg: initialValues.pesoKg || 0,
     talla: initialValues.talla || 0,
     ultimaRegla: initialValues.ultimaRegla || null,
@@ -34,7 +33,6 @@ const EmbarazoActual = ({
       mode === "isEditMode"
         ? formikInitialValues
         : {
-            fechaEmbarazo: null,
             pesoKg: 0,
             talla: 0,
             ultimaRegla: null,
@@ -46,7 +44,6 @@ const EmbarazoActual = ({
     validationSchema: Yup.object({
       pesoKg: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
       talla: Yup.number().required("*Requerido").min(1, "*no puede ser cero"),
-      fechaEmbarazo: Yup.date().nullable().notRequired(),
       ultimaRegla: Yup.date().nullable().notRequired(),
     }),
 
@@ -78,32 +75,25 @@ const EmbarazoActual = ({
   }, [confirmButton, hasSubmitted, formik]);
 
   useEffect(() => {
-    calcularEdadGestacional(); // Recalcular cuando cambien las fechas
-  }, [formik.values.fechaEmbarazo, formik.values.ultimaRegla]);
+    calcularEdadGestacional();
+  }, [formik.values.ultimaRegla]);
 
   const calcularEdadGestacional = () => {
-    const { fechaEmbarazo, ultimaRegla } = formik.values;
+    const { ultimaRegla } = formik.values;
 
-    // Asegúrate de que ambas fechas estén disponibles
-    if (fechaEmbarazo && ultimaRegla) {
-      const fechaEmbarazoParsed = dayjs(fechaEmbarazo);
+    if (ultimaRegla) {
       const ultimaReglaParsed = dayjs(ultimaRegla);
+      const hoy = dayjs();
+      const diferenciaEnDias = hoy.diff(ultimaReglaParsed, "days");
+      const semanasDeDiferencia = Math.floor(diferenciaEnDias / 7);
+      const diasRestantes = diferenciaEnDias % 7;
+      const semanasTexto = semanasDeDiferencia === 1 ? "sem" : "semanas";
+      const diasTexto = diasRestantes === 1 ? "día" : "días";
 
-      if (fechaEmbarazoParsed.isAfter(ultimaReglaParsed)) {
-        const diferenciaEnDias = fechaEmbarazoParsed.diff(
-          ultimaReglaParsed,
-          "days"
-        );
-        const semanasDeDiferencia = Math.floor(diferenciaEnDias / 7);
-        formik.setFieldValue("edadGestacional", semanasDeDiferencia);
-      } else {
-        formik.setFieldValue("edadGestacional", 0);
-        console.warn(
-          "La fecha de embarazo no puede ser anterior a la última regla."
-        );
-      }
+      const edadGestacional = `${semanasDeDiferencia} ${semanasTexto}, ${diasRestantes} ${diasTexto}`;
+      formik.setFieldValue("edadGestacional", edadGestacional);
     } else {
-      formik.setFieldValue("edadGestacional", 0);
+      formik.setFieldValue("edadGestacional", "0 sem, 0 días");
     }
   };
 
@@ -176,8 +166,8 @@ const EmbarazoActual = ({
             className="value"
             id="imc"
             name="imc"
-            disabled={true}
             value={formik.values.imc}
+            disabled={true}
             style={{
               color: "#4b4b4b",
               backgroundColor: "#fff",
@@ -244,7 +234,7 @@ const EmbarazoActual = ({
                   "ultimaRegla",
                   date ? date.toISOString() : null
                 );
-                calcularEdadGestacional(); // Recalcular inmediatamente
+                calcularEdadGestacional();
                 formik.validateField("ultimaRegla");
               }}
               onBlur={() => formik.setFieldTouched("ultimaRegla", true)}
@@ -257,53 +247,19 @@ const EmbarazoActual = ({
         </div>
 
         <div className="item">
-          <label htmlFor="fechaEmbarazo">
-            Fecha de embarazo <span className="señal-req"> *</span>
-          </label>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <DatePicker
-              id="fechaEmbarazo"
-              name="fechaEmbarazo"
-              className="calendar"
-              value={
-                formik.values.fechaEmbarazo
-                  ? dayjs(formik.values.fechaEmbarazo)
-                  : null
-              }
-              onChange={(date) => {
-                formik.setFieldValue(
-                  "fechaEmbarazo",
-                  date ? date.toISOString() : null
-                );
-                calcularEdadGestacional(); 
-                formik.validateField("fechaEmbarazo");
-              }}
-              onBlur={() => {
-                formik.setFieldTouched("fechaEmbarazo", true);
-              }}
-              renderInput={(params) => <Input {...params} />}
-            />
-          </LocalizationProvider>
-          {formik.touched.fechaEmbarazo && formik.errors.fechaEmbarazo ? (
-            <div className="requerido-msj">{formik.errors.fechaEmbarazo}</div>
-          ) : null}
-        </div>
-
-        <div className="item">
-          <label htmlFor="edadGestacional">Gesta(sem):</label>
+          <label htmlFor="edadGestacional">Gestación</label>
           <Input
-            className="value"
+            className="text"
             id="edadGestacional"
             name="edadGestacional"
-            disabled={true}
             value={formik.values.edadGestacional}
+            disabled={true}
             style={{
               color: "#4b4b4b",
               backgroundColor: "#fff",
               opacity: 1,
               cursor: "not-allowed",
             }}
-            onBlur={formik.handleBlur}
           />
         </div>
       </form>

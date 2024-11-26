@@ -217,7 +217,6 @@ model OrdenQuirurgicaIntrauterina {
   tipoCirugia               String                  @default("Sin Especificar")
   fechaDeCreacion           DateTime?               @default(now())
   teniaDiagnostico          Boolean?
-  etapa                     String?                 //Eliminar Valor
   complicacionesQuirurgicas String?
   estado                    Boolean?
   paciente                  Paciente                @relation(fields: [pacienteId], references: [id])
