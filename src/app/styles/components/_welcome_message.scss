@@ -1,3 +1,14 @@
+.saludo {
+  @include media(desktop) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @include media(desktopXXL) {
+    justify-content: flex-start;
+  }
+}
+
 .welcome-message {
   width: fit-content;
   background: $color-azul;
@@ -9,6 +20,13 @@
   -moz-border-radius: 20px;
   -ms-border-radius: 20px;
   -o-border-radius: 20px;
+
+  @include media(desktop) {
+    width: 85%;
+  }
+  @include media(desktopXXL) {
+    width: 100%;
+  }
 
   .info {
     color: $color-blanco;

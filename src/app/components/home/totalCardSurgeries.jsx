@@ -1,12 +1,17 @@
 "use client";
 import { useAuth } from "@/app/hooks/authContext";
 import { useState, useEffect } from "react";
+import {
+  fetchRecentSurgeries,
+  fetchSurgeriesPost,
+} from "@/services/fetchAllData";
 import CardSurgeries from "./cardSurgeries";
 import DefaultIcon from "@images/home/cirugia.png";
 import TotalIcon from "@images/home/todas.png";
 
 const TotalCardSurgeries = () => {
-  const { user, loading, surgeriesPost, recentSurgeries, error } = useAuth();
+  const { surgeriesPost, error, token } = useAuth();
+  const [recentSurgeries, setRecentSurgeries] = useState([]); // Estado para las cirugías recientes
   const [surgeryCounts, setSurgeryCounts] = useState({
     todas: 0,
     percutanea: 0,
@@ -15,6 +20,29 @@ const TotalCardSurgeries = () => {
     neonatal: 0,
     nerviosoCentral: 0,
   });
+  const [loading, setLoading] = useState(true);
+
+  const loadRecentSurgeries = async () => {
+    try {
+      const data = await fetchRecentSurgeries(token);
+      setRecentSurgeries(data);
+    } catch (error) {
+      console.error("Error al obtener cirugías recientes:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await loadRecentSurgeries();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   useEffect(() => {
     const contarCirugias = (cirugias) => {
@@ -27,24 +55,26 @@ const TotalCardSurgeries = () => {
       };
 
       cirugias.forEach((cirugia) => {
-        switch (cirugia.tipoCirugia) {
-          case "Cirugía percutánea":
+        const tipoCirugia = cirugia.tipoCirugia.toLowerCase();
+
+        switch (tipoCirugia) {
+          case "percutanea":
             counts.percutanea++;
             break;
-          case "Cirugía abierta":
+          case "abierta":
             counts.abierta++;
             break;
-          case "Cirugía endoscópica":
+          case "endoscopica":
             counts.endoscopica++;
             break;
-          case "Cirugía neonatal":
+          case "neonatal":
             counts.neonatal++;
             break;
-          case "Cirugía nervioso central":
+          case "nervioso central":
             counts.nerviosoCentral++;
             break;
           default:
-            break; // En caso de tipos de cirugía no esperados
+            break;
         }
       });
 
@@ -52,6 +82,9 @@ const TotalCardSurgeries = () => {
     };
 
     const saveSurgerys = () => {
+      if (!recentSurgeries.length || !surgeriesPost?.registros?.length) return;
+
+      // Filtrar las cirugías recientes terminadas
       const surgerysIntraFinish = recentSurgeries.filter(
         (cirugia) => cirugia.estado === false
       );
@@ -59,25 +92,26 @@ const TotalCardSurgeries = () => {
         (cirugia) => cirugia.estado === false
       );
 
+      // Contar las cirugías por tipo
       const countsIntra = contarCirugias(surgerysIntraFinish);
       const countsPost = contarCirugias(surgerysPostFinish);
 
+      // Calcular el total de cirugías
       const total = surgerysIntraFinish.length + surgerysPostFinish.length;
 
+      // Actualizar el estado con los conteos
       setSurgeryCounts({
         todas: total,
-        percutanea: countsIntra.percutanea,
-        abierta: countsIntra.abierta,
-        endoscopica: countsIntra.endoscopica,
+        percutanea: countsIntra.percutanea + countsPost.percutanea,
+        abierta: countsIntra.abierta + countsPost.abierta,
+        endoscopica: countsIntra.endoscopica + countsPost.endoscopica,
         neonatal: countsIntra.neonatal + countsPost.neonatal,
         nerviosoCentral:
           countsIntra.nerviosoCentral + countsPost.nerviosoCentral,
       });
     };
 
-    if (recentSurgeries.length > 0 && surgeriesPost.registros.length > 0) {
-      saveSurgerys();
-    }
+    saveSurgerys();
   }, [recentSurgeries, surgeriesPost]);
 
   if (loading) {
