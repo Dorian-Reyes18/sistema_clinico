@@ -48,7 +48,7 @@ const OrdenIntrauterinaForm = ({
       fechaDeCreacion: Yup.date().optional().notRequired(),
       tipoCirugia: Yup.string().required("*Requerido"),
       teniaDiagnostico: Yup.boolean().optional().notRequired(),
-      complicacionesQuirurgicas: Yup.string().optional().required(),
+      complicacionesQuirurgicas: Yup.string().optional().notRequired(),
       estado: Yup.boolean().required("*Requerido"),
     }),
     onSubmit: (values) => {
@@ -76,8 +76,11 @@ const OrdenIntrauterinaForm = ({
     <form onSubmit={formik.handleSubmit}>
       {/* Campo de Expediente */}
       <div className="item">
-        <label htmlFor="expediente">Expediente</label>
+        <label htmlFor="expediente">
+          Expediente: <span className="señal-req"> *</span>
+        </label>
         <Input
+          type="number"
           className="text"
           id="expediente"
           name="expediente"
@@ -91,7 +94,7 @@ const OrdenIntrauterinaForm = ({
       <div className="item">
         <label htmlFor="Paciente">Paciente</label>
         <Input
-          className="value"
+          className="text"
           id="edad"
           name="edad"
           disabled={true}
@@ -117,7 +120,7 @@ const OrdenIntrauterinaForm = ({
           name="tipoCirugia"
           onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
           onBlur={handleFieldBlur}
-          value={formik.values.tipoCirugia}
+          value={formik.values.tipoCirugia || ""}
         >
           <Option value="Percutanea">Percutánea</Option>
           <Option value="Endoscopica">Endoscópica</Option>
@@ -167,7 +170,7 @@ const OrdenIntrauterinaForm = ({
           onChange={(e) =>
             formik.setFieldValue("complicacionesQuirurgicas", e.target.value)
           }
-          value={formik.values.complicacionesQuirurgicas}
+          value={formik.values.complicacionesQuirurgicas || ""}
           onBlur={(e) => {
             handleFieldBlur(e);
             formik.validateField("complicacionesQuirurgicas");

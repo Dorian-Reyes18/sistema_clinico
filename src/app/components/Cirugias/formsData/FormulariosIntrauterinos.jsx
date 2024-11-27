@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
 import { Modal, Spin, notification } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -23,10 +23,10 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
   ];
 
   const handleSave = () => {
-    const modalTitle = isCreateMode
+    const modalTitle = "isCreateMode"
       ? "¿Está seguro de crear la cirugía?"
       : "¿Está seguro de guardar los cambios?";
-    const modalContent = isCreateMode
+    const modalContent = "isCreateMode"
       ? "Los datos se guardarán y se creará una nueva cirugía."
       : "Los cambios serán guardados y no podrás deshacerlos.";
 
