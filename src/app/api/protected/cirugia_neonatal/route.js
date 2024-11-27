@@ -12,7 +12,6 @@ const handleError = (error, message, status = 500) => {
     );
   }
   if (error.code === "P2003") {
-    // Manejo de errores de clave foránea
     return NextResponse.json(
       {
         error:

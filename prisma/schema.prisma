@@ -188,7 +188,7 @@ model DiagnosticoPrenatal {
   tipoEmbarazo                String?
   categoria                   Categoria                   @relation(fields: [categoriaId], references: [id])
   tipoDefecto                 TipoDefecto                 @relation(fields: [tipoDefectoId], references: [id])
-  ordenQuirurgicaIntrauterina OrdenQuirurgicaIntrauterina @relation(fields: [cirugiaIntraId], references: [id])
+  cirugiaIntra                OrdenQuirurgicaIntrauterina @relation(fields: [cirugiaIntraId], references: [id])
 }
 
 model EvaluacionActual {
