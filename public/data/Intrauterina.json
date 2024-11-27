@@ -1,5 +1,3 @@
-
-
 {
   "OrdenQuirurgicaIntrauterina": {
     "pacienteId": 1,
@@ -40,8 +38,7 @@
       "frecuenciaCardiacaFetalFinalizacion": "125",
       "complicacionesQuirurgicas": "Sin complicaciones",
       "horaFinalizacionCirugia": "2024-11-20T12:00:00Z"
-    }
-    ,
+    },
     {
       "ubicacionPlacentaria": "Anterior",
       "laserDeAnastomosisPlacentaria": false,
@@ -65,7 +62,6 @@
       "complicacionesQuirurgicas": "Sin complicaciones",
       "horaFinalizacionCirugia": "2024-11-21T17:00:00Z"
     }
-    
   ],
   "IntrauterinaAbierta": {
     "ubicacionPlacentaria": "descripcion",

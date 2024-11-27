@@ -32,15 +32,11 @@ export async function GET(req) {
         include: {
           categoria: true,
           tipoDefecto: true,
-          ordenQuirurgicaIntrauterina: true,
-          intrauterinaPercutanea: true,
-          intrauterinaEndoscopica: true,
-          intrauterinaAbierta: true,
-          ordenQuirurgicaPostoperacion: true,
+          cirugiaIntra: true, // Relación ajustada al modelo actual
         },
       });
 
-      // Transformar el resultado para no incluir los IDs
+      // Transformar el resultado para no incluir los IDs referenciados directamente
       const resultado = diagnosticos.map((diagnostico) => ({
         id: diagnostico.id,
         tipoCirugiaRealizada: diagnostico.tipoCirugiaRealizada,
@@ -49,11 +45,7 @@ export async function GET(req) {
         tipoEmbarazo: diagnostico.tipoEmbarazo,
         categoria: diagnostico.categoria,
         tipoDefecto: diagnostico.tipoDefecto,
-        cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
-        intrauterinaPercutanea: diagnostico.intrauterinaPercutanea,
-        intrauterinaEndoscopica: diagnostico.intrauterinaEndoscopica,
-        intrauterinaAbierta: diagnostico.intrauterinaAbierta,
-        ordenQuirurgicaPostoperacion: diagnostico.ordenQuirurgicaPostoperacion,
+        cirugiaIntra: diagnostico.cirugiaIntra,
       }));
 
       return NextResponse.json(resultado);
@@ -110,11 +102,7 @@ export async function POST(req) {
         include: {
           categoria: true,
           tipoDefecto: true,
-          ordenQuirurgicaIntrauterina: true,
-          intrauterinaPercutanea: true,
-          intrauterinaEndoscopica: true,
-          intrauterinaAbierta: true,
-          ordenQuirurgicaPostoperacion: true,
+          cirugiaIntra: true, // Relación ajustada al modelo actual
         },
       });
 
@@ -129,12 +117,7 @@ export async function POST(req) {
             tipoEmbarazo: nuevoDiagnostico.tipoEmbarazo,
             categoria: nuevoDiagnostico.categoria,
             tipoDefecto: nuevoDiagnostico.tipoDefecto,
-            cirugiaIntra: nuevoDiagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
-            intrauterinaPercutanea: nuevoDiagnostico.intrauterinaPercutanea,
-            intrauterinaEndoscopica: nuevoDiagnostico.intrauterinaEndoscopica,
-            intrauterinaAbierta: nuevoDiagnostico.intrauterinaAbierta,
-            ordenQuirurgicaPostoperacion:
-              nuevoDiagnostico.ordenQuirurgicaPostoperacion,
+            cirugiaIntra: nuevoDiagnostico.cirugiaIntra,
           },
         },
         { status: 201 }

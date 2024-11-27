@@ -5,7 +5,6 @@ import { authenticateRequest } from "@/middlewares/authMiddleware";
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
 
-  // Manejo de errores específicos de Prisma
   if (error.code === "P2025") {
     return NextResponse.json(
       { error: "Diagnóstico no encontrado." },
@@ -54,11 +53,7 @@ export async function GET(req, { params }) {
         include: {
           categoria: true,
           tipoDefecto: true,
-          ordenQuirurgicaIntrauterina: true,
-          intrauterinaPercutanea: true,
-          intrauterinaEndoscopica: true,
-          intrauterinaAbierta: true,
-          ordenQuirurgicaPostoperacion: true,
+          cirugiaIntra: true, 
         },
       });
 
@@ -77,11 +72,7 @@ export async function GET(req, { params }) {
         tipoEmbarazo: diagnostico.tipoEmbarazo,
         categoria: diagnostico.categoria,
         tipoDefecto: diagnostico.tipoDefecto,
-        cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
-        intrauterinaPercutanea: diagnostico.intrauterinaPercutanea,
-        intrauterinaEndoscopica: diagnostico.intrauterinaEndoscopica,
-        intrauterinaAbierta: diagnostico.intrauterinaAbierta,
-        ordenQuirurgicaPostoperacion: diagnostico.ordenQuirurgicaPostoperacion,
+        cirugiaIntra: diagnostico.cirugiaIntra,
       });
     } catch (error) {
       return handleError(error, "Error al obtener el diagnóstico prenatal");
@@ -93,20 +84,32 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
-    const data = await req.json();
+    const {
+      cirugiaIntraId,
+      categoriaId,
+      tipoDefectoId,
+      tipoCirugiaRealizada,
+      estudioGen,
+      resultadoEstGen,
+      tipoEmbarazo,
+    } = await req.json();
 
     try {
       const diagnostico = await prisma.diagnosticoPrenatal.update({
         where: { id: parseInt(id) },
-        data,
+        data: {
+          cirugiaIntraId,
+          categoriaId,
+          tipoDefectoId,
+          tipoCirugiaRealizada,
+          estudioGen,
+          resultadoEstGen,
+          tipoEmbarazo,
+        },
         include: {
           categoria: true,
           tipoDefecto: true,
-          ordenQuirurgicaIntrauterina: true,
-          intrauterinaPercutanea: true,
-          intrauterinaEndoscopica: true,
-          intrauterinaAbierta: true,
-          ordenQuirurgicaPostoperacion: true,
+          cirugiaIntra: true,
         },
       });
 
@@ -120,12 +123,7 @@ export async function PUT(req, { params }) {
           tipoEmbarazo: diagnostico.tipoEmbarazo,
           categoria: diagnostico.categoria,
           tipoDefecto: diagnostico.tipoDefecto,
-          cirugiaIntra: diagnostico.ordenQuirurgicaIntrauterina, // renombrar a cirugiaIntra
-          intrauterinaPercutanea: diagnostico.intrauterinaPercutanea,
-          intrauterinaEndoscopica: diagnostico.intrauterinaEndoscopica,
-          intrauterinaAbierta: diagnostico.intrauterinaAbierta,
-          ordenQuirurgicaPostoperacion:
-            diagnostico.ordenQuirurgicaPostoperacion,
+          cirugiaIntra: diagnostico.cirugiaIntra, 
         },
       });
     } catch (error) {
@@ -134,7 +132,6 @@ export async function PUT(req, { params }) {
   });
 }
 
-// DELETE - Eliminar un diagnóstico prenatal por ID
 export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
@@ -147,7 +144,7 @@ export async function DELETE(req, { params }) {
       return NextResponse.json(
         { message: "Diagnóstico prenatal eliminado exitosamente" },
         { status: 200 }
-      ); // Cambiado a 200 para indicar éxito en la eliminación
+      );
     } catch (error) {
       return handleError(error, "Error al eliminar el diagnóstico prenatal");
     }
