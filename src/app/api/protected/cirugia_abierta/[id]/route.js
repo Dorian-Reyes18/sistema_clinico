@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
-// Manejo de errores
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
   if (error.code === "P2025") {
@@ -14,7 +13,6 @@ const handleError = (error, defaultMessage, status = 500) => {
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -31,7 +29,6 @@ export async function GET(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
 
-    // Validar ID
     if (isNaN(id) || parseInt(id) <= 0) {
       return NextResponse.json({ error: "ID no válido." }, { status: 400 });
     }
@@ -39,9 +36,6 @@ export async function GET(req, { params }) {
     try {
       const registro = await prisma.intrauterinaAbierta.findUnique({
         where: { id: parseInt(id) },
-        include: {
-          diagnosticoPrenatal: true,
-        },
       });
 
       if (!registro) {
@@ -51,8 +45,7 @@ export async function GET(req, { params }) {
         );
       }
 
-      const { diagnosticoPrenatalId, ...rest } = registro; // Eliminar el campo diagnosticoPrenatalId
-      return NextResponse.json(rest);
+      return NextResponse.json(registro);
     } catch (error) {
       return handleError(
         error,
@@ -68,39 +61,19 @@ export async function PUT(req, { params }) {
     const { id } = params;
     const data = await req.json();
 
-    // Validar ID
     if (isNaN(id) || parseInt(id) <= 0) {
       return NextResponse.json({ error: "ID no válido." }, { status: 400 });
     }
 
     try {
-      // Validar que el ID de diagnóstico prenatal exista si se está actualizando
-      if (data.diagnosticoPrenatalId) {
-        const diagnosticoExists = await prisma.diagnosticoPrenatal.findUnique({
-          where: { id: data.diagnosticoPrenatalId },
-        });
-
-        if (!diagnosticoExists) {
-          return NextResponse.json(
-            { error: "El Diagnóstico Prenatal especificado no existe." },
-            { status: 404 }
-          );
-        }
-      }
-
       const registro = await prisma.intrauterinaAbierta.update({
         where: { id: parseInt(id) },
         data,
-        include: {
-          diagnosticoPrenatal: true,
-        },
       });
-
-      const { diagnosticoPrenatalId, ...rest } = registro; // Eliminar el campo diagnosticoPrenatalId
 
       return NextResponse.json({
         message: "Registro de Intrauterina Abierta actualizado exitosamente",
-        registro: rest,
+        registro,
       });
     } catch (error) {
       return handleError(
@@ -116,24 +89,19 @@ export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
 
-    // Validar ID
     if (isNaN(id) || parseInt(id) <= 0) {
       return NextResponse.json({ error: "ID no válido." }, { status: 400 });
     }
 
     try {
-      // Comprobar si el registro está asociado a otros registros
-      const asociado = await prisma.otraTabla.findUnique({
-        where: { intrauterinaId: parseInt(id) }, // Cambia "otraTabla" por el nombre real
+      const registroExistente = await prisma.intrauterinaAbierta.findUnique({
+        where: { id: parseInt(id) },
       });
 
-      if (asociado) {
+      if (!registroExistente) {
         return NextResponse.json(
-          {
-            error:
-              "El registro no se puede eliminar porque tiene registros asociados.",
-          },
-          { status: 400 }
+          { error: "El registro no existe." },
+          { status: 404 }
         );
       }
 
@@ -143,7 +111,7 @@ export async function DELETE(req, { params }) {
 
       return NextResponse.json(
         { message: "Registro de Intrauterina Abierta eliminado exitosamente" },
-        { status: 204 }
+        { status: 200 }
       );
     } catch (error) {
       return handleError(

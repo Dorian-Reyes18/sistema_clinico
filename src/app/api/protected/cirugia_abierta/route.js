@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
-// Manejo de errores
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
   if (error.code === "P2025") {
@@ -14,7 +13,6 @@ const handleError = (error, defaultMessage, status = 500) => {
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -30,18 +28,9 @@ const handleRequest = async (req, operation) => {
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
-      const registros = await prisma.intrauterinaAbierta.findMany({
-        include: {
-          diagnosticoPrenatal: true, // Anidar el objeto de DiagnosticoPrenatal
-        },
-      });
+      const registros = await prisma.intrauterinaAbierta.findMany();
 
-      // Eliminar el campo diagnosticoPrenatalId de cada registro
-      const registrosSinId = registros.map(
-        ({ diagnosticoPrenatalId, ...rest }) => rest
-      );
-
-      return NextResponse.json(registrosSinId);
+      return NextResponse.json(registros);
     } catch (error) {
       return handleError(
         error,
@@ -58,8 +47,7 @@ export async function POST(req) {
 
     // Validar campos necesarios
     const requiredFields = [
-      "diagnosticoPrenatalId",
-      "ubicacionPlacentaria",
+      "ubicacionPlacentaria", 
       "tamanoDelDefecto",
     ];
 
@@ -72,31 +60,14 @@ export async function POST(req) {
       );
     }
 
-    // Validar que el ID de diagnóstico prenatal exista
-    const diagnosticoExists = await prisma.diagnosticoPrenatal.findUnique({
-      where: { id: data.diagnosticoPrenatalId },
-    });
-
-    if (!diagnosticoExists) {
-      return NextResponse.json(
-        { error: "El Diagnóstico Prenatal especificado no existe." },
-        { status: 404 }
-      );
-    }
-
     try {
       const nuevoRegistro = await prisma.intrauterinaAbierta.create({
         data,
-        include: {
-          diagnosticoPrenatal: true, // Incluir objeto de DiagnosticoPrenatal
-        },
       });
-
-      const { diagnosticoPrenatalId, ...rest } = nuevoRegistro; // Eliminar el campo diagnosticoPrenatalId
 
       return NextResponse.json({
         message: "Registro de Intrauterina Abierta creado exitosamente",
-        registro: rest,
+        registro: nuevoRegistro,
       });
     } catch (error) {
       return handleError(
