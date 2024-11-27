@@ -15,21 +15,10 @@ const fetchData = async (endpoint, token) => {
   return await response.json();
 };
 
-export const ordenPrenatalCompleta = async (token) => {
+export const fetchOrdenPrenatalCompleta = async (token) => {
   return fetchData("/protected/orden_intra_completa", token);
 };
 
-export const ordenPostNatal = async (userId, token) => {
-  return fetchData(`/protected/usuarios/${userId}`, token);
-};
-
-export const fetchRecentSurgeries = async (token) => {
-  return fetchData("/protected/orden_quirurgica_intra", token);
-};
-
-export const fetchSurgeriesPost = async (token) => {
+export const fetchOrdenPostnatalCompleta = async (token) => {
   return fetchData("/protected/orden_quirurgica_post", token);
-};
-export const fetchMetadata = async (token) => {
-  return fetchData("/protected/metadata", token);
 };

@@ -1,26 +1,32 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import {
-  fetchRecentSurgeries, //intrauterinas
+  fetchRecentSurgeries,
   fetchUserData,
-  fetchSurgeriesPost, //PostOperatorias
+  fetchSurgeriesPost,
   fetchPatients,
   fetchMetadata,
 } from "@/services/fetchAllData";
+import {
+  fetchOrdenPostnatalCompleta,
+  fetchOrdenPrenatalCompleta,
+} from "@/services/fetchSurgeries";
 
 const AuthContext = createContext();
 
-let isFetchingData = false; // Bandera global para evitar fetches duplicados
+let isFetchingData = false;
 
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); // Almacena el token aquí
+  const [token, setToken] = useState(null);
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
   const [metadata, setMetadata] = useState([]);
+  const [postNatalSurgeries, setPostNatalSurgeries] = useState([]);
+  const [preNatalSurgeries, setPreNatalSurgeries] = useState([]);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -36,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
           if (!user) {
-            setToken(token); // Establecer el token solo si no está configurado
+            setToken(token);
             loadData(decodedToken.id, token);
           }
         } else {
@@ -49,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       handleInvalidSession();
     }
-  }, []); // Sin dependencias adicionales para evitar loops
+  }, []);
 
   const handleInvalidSession = () => {
     setUser(null);
@@ -58,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadData = async (userId, token) => {
-    if (isFetchingData) return; // Evita fetches duplicados
+    if (isFetchingData) return;
     isFetchingData = true;
 
     setLoading(true);
@@ -89,8 +95,12 @@ export const AuthProvider = ({ children }) => {
         newSurgeriesPost,
         newPatients,
         newMetadata,
+        newPostNatalSurgeries, 
+        newPreNatalSurgeries, 
       ] = await Promise.all([
         fetchUserData(userId, token),
+        fetchOrdenPostnatalCompleta(token),
+        fetchOrdenPrenatalCompleta(token),
         fetchRecentSurgeries(token),
         fetchSurgeriesPost(token),
         fetchPatients(token),
@@ -103,7 +113,10 @@ export const AuthProvider = ({ children }) => {
       setSurgeriesPost(newSurgeriesPost);
       setPatients(newPatients);
       setMetadata(newMetadata);
+      setPostNatalSurgeries(newPostNatalSurgeries); 
+      setPreNatalSurgeries(newPreNatalSurgeries); 
 
+      // Actualizar la caché con los nuevos datos
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
       sessionStorage.setItem(
         "recentSurgeriesData",
@@ -115,12 +128,20 @@ export const AuthProvider = ({ children }) => {
       );
       sessionStorage.setItem("patientsData", JSON.stringify(newPatients));
       sessionStorage.setItem("metadataData", JSON.stringify(newMetadata));
+      sessionStorage.setItem(
+        "postNatalSurgeriesData",
+        JSON.stringify(newPostNatalSurgeries)
+      );
+      sessionStorage.setItem(
+        "preNatalSurgeriesData",
+        JSON.stringify(newPreNatalSurgeries)
+      );
     } catch (error) {
       console.error("Error al actualizar los datos:", error);
       setError(error.message);
     } finally {
       setLoading(false);
-      isFetchingData = false; // Restablece la bandera
+      isFetchingData = false; 
     }
   };
 
@@ -135,8 +156,12 @@ export const AuthProvider = ({ children }) => {
         setToken,
         recentSurgeries,
         surgeriesPost,
+        postNatalSurgeries, 
+        preNatalSurgeries, 
         setRecentSurgeries,
         setSurgeriesPost,
+        setPostNatalSurgeries,
+        setPreNatalSurgeries,
         patients,
         metadata,
         loadData,
