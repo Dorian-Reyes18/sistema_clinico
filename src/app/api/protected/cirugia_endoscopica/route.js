@@ -14,7 +14,6 @@ const handleError = (error, defaultMessage, status = 500) => {
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -26,19 +25,17 @@ const handleRequest = async (req, operation) => {
   }
 };
 
-// GET - Obtener todos los registros de Intrauterina Endoscopica
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
       const registros = await prisma.intrauterinaEndoscopica.findMany({
         include: {
-          diagnosticoPrenatal: true, // Anidar el objeto de DiagnosticoPrenatal
+          ordenQuirurgica: true, 
         },
       });
 
-      // Eliminar el campo diagnosticoPrenatalId de cada registro
       const registrosSinId = registros.map(
-        ({ diagnosticoPrenatalId, ...rest }) => rest
+        ({ ordenQuirurgicaId, ...rest }) => rest
       );
 
       return NextResponse.json(registrosSinId);
@@ -56,8 +53,10 @@ export async function POST(req) {
   return handleRequest(req, async () => {
     const data = await req.json();
 
-    // Validar campos necesarios
-    const requiredFields = ["diagnosticoPrenatalId", "ubicacionPlacentaria"];
+
+    const requiredFields = [
+      "ubicacionPlacentaria", 
+    ];
 
     const missingFields = requiredFields.filter((field) => !data[field]);
 
@@ -68,27 +67,29 @@ export async function POST(req) {
       );
     }
 
-    // Validar que el ID de diagnóstico prenatal exista
-    const diagnosticoExists = await prisma.diagnosticoPrenatal.findUnique({
-      where: { id: data.diagnosticoPrenatalId },
-    });
+    if (data.ordenQuirurgicaId) {
+      const ordenQuirurgicaExists =
+        await prisma.ordenQuirurgicaIntrauterina.findUnique({
+          where: { id: data.ordenQuirurgicaId },
+        });
 
-    if (!diagnosticoExists) {
-      return NextResponse.json(
-        { error: "El Diagnóstico Prenatal especificado no existe." },
-        { status: 404 }
-      );
+      if (!ordenQuirurgicaExists) {
+        return NextResponse.json(
+          { error: "La Orden Quirúrgica especificada no existe." },
+          { status: 404 }
+        );
+      }
     }
 
     try {
       const nuevoRegistro = await prisma.intrauterinaEndoscopica.create({
         data,
         include: {
-          diagnosticoPrenatal: true, // Incluir objeto de DiagnosticoPrenatal
+          ordenQuirurgica: true, 
         },
       });
 
-      const { diagnosticoPrenatalId, ...rest } = nuevoRegistro; // Eliminar el campo diagnosticoPrenatalId
+      const { ordenQuirurgicaId, ...rest } = nuevoRegistro; 
 
       return NextResponse.json({
         message: "Registro de Intrauterina Endoscopica creado exitosamente",
