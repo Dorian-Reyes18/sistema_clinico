@@ -1,24 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import {
-  fetchRecentSurgeries,
+  fetchRecentSurgeries, //intrauterinas
   fetchUserData,
-  fetchSurgeriesPost,
+  fetchSurgeriesPost, //PostOperatorias
   fetchPatients,
   fetchMetadata,
-  fetchOrdenPostnatalCompleta,
-  fetchOrdenPrenatalCompleta,
 } from "@/services/fetchAllData";
 
 const AuthContext = createContext();
 
-let isFetchingData = false;
+let isFetchingData = false; // Bandera global para evitar fetches duplicados
 
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(null); // Almacena el token aquí
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -39,9 +37,8 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
-          ñ;
           if (!user) {
-            setToken(token);
+            setToken(token); // Establecer el token solo si no está configurado
             loadData(decodedToken.id, token);
           }
         } else {
@@ -54,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       handleInvalidSession();
     }
-  }, []);
+  }, []); // Sin dependencias adicionales para evitar loops
 
   const handleInvalidSession = () => {
     setUser(null);
@@ -63,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadData = async (userId, token) => {
-    if (isFetchingData) return;
+    if (isFetchingData) return; // Evita fetches duplicados
     isFetchingData = true;
 
     setLoading(true);
@@ -94,16 +91,12 @@ export const AuthProvider = ({ children }) => {
         newSurgeriesPost,
         newPatients,
         newMetadata,
-        newPostnatalSurgerie,
-        newPrenatalSurgerie,
       ] = await Promise.all([
         fetchUserData(userId, token),
         fetchRecentSurgeries(token),
         fetchSurgeriesPost(token),
         fetchPatients(token),
         fetchMetadata(token),
-        fetchOrdenPrenatalCompleta(token),
-        fetchOrdenPostnatalCompleta(token),
       ]);
 
       // Actualizamos los estados y la caché
@@ -112,8 +105,6 @@ export const AuthProvider = ({ children }) => {
       setSurgeriesPost(newSurgeriesPost);
       setPatients(newPatients);
       setMetadata(newMetadata);
-      setPrenatalSurgeries(newPrenatalSurgerie);
-      setPostnatalSurgeries(newPostnatalSurgerie);
 
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
       sessionStorage.setItem(
@@ -131,7 +122,7 @@ export const AuthProvider = ({ children }) => {
       setError(error.message);
     } finally {
       setLoading(false);
-      isFetchingData = false; // Restablece la bandera
+      isFetchingData = false; 
     }
   };
 
