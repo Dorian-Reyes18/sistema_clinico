@@ -32,7 +32,7 @@ export async function GET(req) {
     try {
       const registros = await prisma.embarazoActual.findMany({
         include: {
-          paciente: true, // Anidar el objeto de Paciente
+          paciente: true,
         },
       });
 
@@ -54,7 +54,7 @@ export async function POST(req) {
     const data = await req.json();
 
     // Validar campos necesarios
-    const requiredFields = ["pacienteId", "fechaEmbarazo"];
+    const requiredFields = ["pacienteId"]; // "fechaEmbarazo" eliminado
     const missingFields = requiredFields.filter((field) => !data[field]);
 
     if (missingFields.length > 0) {
@@ -80,7 +80,7 @@ export async function POST(req) {
       const nuevoRegistro = await prisma.embarazoActual.create({
         data,
         include: {
-          paciente: true, 
+          paciente: true,
         },
       });
 

@@ -2,13 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
-// Manejo de errores
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de solicitudes comunes
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -22,7 +20,7 @@ const handleRequest = async (req, operation) => {
 
 // DELETE: Eliminar la orden quirúrgica y sus registros asociados
 export async function DELETE(req, { params }) {
-  const { id } = params; // Obtenemos el id desde params
+  const { id } = params;
 
   if (!id || isNaN(parseInt(id, 10))) {
     return NextResponse.json(
@@ -31,7 +29,7 @@ export async function DELETE(req, { params }) {
     );
   }
 
-  const idNumber = parseInt(id, 10); // Convertir el id a número entero
+  const idNumber = parseInt(id, 10);
 
   return handleRequest(req, async () => {
     console.log("Eliminando orden quirúrgica con ID:", idNumber);
@@ -40,38 +38,38 @@ export async function DELETE(req, { params }) {
       // 1. Eliminar los registros asociados a la orden quirúrgica en cadena
       await prisma.diagnosticoPrenatal.deleteMany({
         where: {
-          cirugiaIntraId: idNumber, // Usamos idNumber como entero
+          cirugiaIntraId: idNumber,
         },
       });
 
       await prisma.intrauterinaEndoscopica.deleteMany({
         where: {
-          ordenQuirurgicaId: idNumber, // Usamos idNumber como entero
+          ordenQuirurgicaId: idNumber,
         },
       });
 
       await prisma.intrauterinaAbierta.deleteMany({
         where: {
-          ordenQuirurgicaId: idNumber, // Usamos idNumber como entero
+          ordenQuirurgicaId: idNumber,
         },
       });
 
       await prisma.intrauterinaPercutanea.deleteMany({
         where: {
-          ordenQuirurgicaId: idNumber, // Usamos idNumber como entero
+          ordenQuirurgicaId: idNumber,
         },
       });
 
       await prisma.resultadosPerinatales.deleteMany({
         where: {
-          ordenQuirurgicaId: idNumber, // Usamos idNumber como entero
+          ordenQuirurgicaId: idNumber,
         },
       });
 
       // 2. Eliminar la orden quirúrgica
       const ordenQuirurgica = await prisma.ordenQuirurgicaIntrauterina.delete({
         where: {
-          id: idNumber, // Usamos idNumber como entero
+          id: idNumber,
         },
       });
 
@@ -86,7 +84,6 @@ export async function DELETE(req, { params }) {
   });
 }
 
-// GET: Obtener una orden quirúrgica por ID con los datos relacionados concatenados
 export async function GET(req, { params }) {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;

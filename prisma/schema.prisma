@@ -136,7 +136,6 @@ model AntecedentesPersonales {
 model EmbarazoActual {
   id                 Int       @id @default(autoincrement())
   pacienteId         Int
-  fechaEmbarazo      DateTime?
   pesoKg             Float?
   talla              Float?
   ultimaRegla        DateTime?

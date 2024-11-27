@@ -211,45 +211,6 @@ const EmbarazoActual = ({
           />
         </div>
 
-        <div className="item-switch">
-          <label htmlFor="consumoAF">Consumo AF</label>
-          <Switch
-            id="consumoAF"
-            name="consumoAF"
-            checked={formik.values.consumoAF}
-            onChange={(checked) => {
-              formik.setFieldValue("consumoAF", checked);
-              formik.setFieldValue("fechaInicioConsumo", null);
-            }}
-            onBlur={formik.handleBlur}
-          />
-        </div>
-
-        <div className="item">
-          <label htmlFor="fechaInicioConsumo">Fecha Inicio Consumo</label>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <DatePicker
-              id="fechaInicioConsumo"
-              name="fechaInicioConsumo"
-              className="calendar"
-              disabled={!formik.values.consumoAF}
-              value={
-                formik.values.fechaInicioConsumo
-                  ? dayjs(formik.values.fechaInicioConsumo)
-                  : null
-              }
-              onChange={(date) => {
-                formik.setFieldValue(
-                  "fechaInicioConsumo",
-                  date ? date.toISOString() : null
-                );
-              }}
-              onBlur={formik.handleBlur}
-              renderInput={(params) => <Input {...params} />}
-            />
-          </LocalizationProvider>
-        </div>
-
         <div className="item">
           <label htmlFor="ultmaRegla">
             Última regla <span className="señal-req"> *</span>
@@ -296,6 +257,45 @@ const EmbarazoActual = ({
               cursor: "not-allowed",
             }}
           />
+        </div>
+
+        <div className="item-switch">
+          <label htmlFor="consumoAF">Consumo AF</label>
+          <Switch
+            id="consumoAF"
+            name="consumoAF"
+            checked={formik.values.consumoAF}
+            onChange={(checked) => {
+              formik.setFieldValue("consumoAF", checked);
+              formik.setFieldValue("fechaInicioConsumo", null);
+            }}
+            onBlur={formik.handleBlur}
+          />
+        </div>
+
+        <div className="item">
+          <label htmlFor="fechaInicioConsumo">Fecha Inicio Consumo</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <DatePicker
+              id="fechaInicioConsumo"
+              name="fechaInicioConsumo"
+              className="calendar"
+              disabled={!formik.values.consumoAF}
+              value={
+                formik.values.fechaInicioConsumo
+                  ? dayjs(formik.values.fechaInicioConsumo)
+                  : null
+              }
+              onChange={(date) => {
+                formik.setFieldValue(
+                  "fechaInicioConsumo",
+                  date ? date.toISOString() : null
+                );
+              }}
+              onBlur={formik.handleBlur}
+              renderInput={(params) => <Input {...params} />}
+            />
+          </LocalizationProvider>
         </div>
       </form>
     </div>

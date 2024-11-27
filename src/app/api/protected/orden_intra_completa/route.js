@@ -51,25 +51,22 @@ export async function POST(req) {
       DiagnosticoPrenatal,
     } = data;
 
-    // Log para ver si pacienteId está presente en los datos
+    
     console.log(
       "OrdenQuirurgicaIntrauterina recibido:",
       OrdenQuirurgicaIntrauterina
     );
 
-    // Log de los datos que se están enviando a la base de datos
     console.log(
       "Datos para crear la orden quirúrgica:",
       OrdenQuirurgicaIntrauterina
     );
 
     try {
-      // Crear la orden quirúrgica Intrauterina
       const ordenQuirurgica = await prisma.ordenQuirurgicaIntrauterina.create({
         data: OrdenQuirurgicaIntrauterina,
       });
 
-      // Crear el registro DiagnosticoPrenatal, si existe
       if (DiagnosticoPrenatal) {
         await prisma.diagnosticoPrenatal.create({
           data: {
@@ -79,7 +76,6 @@ export async function POST(req) {
         });
       }
 
-      // Crear los registros Endoscopicas, si existen
       if (Endoscopicas && Endoscopicas.length > 0) {
         for (let endoscopica of Endoscopicas) {
           await prisma.intrauterinaEndoscopica.create({
@@ -93,7 +89,6 @@ export async function POST(req) {
         }
       }
 
-      // Crear el registro IntrauterinaAbierta, si existe
       if (IntrauterinaAbierta) {
         await prisma.intrauterinaAbierta.create({
           data: {
@@ -105,7 +100,6 @@ export async function POST(req) {
         });
       }
 
-      // Crear el registro IntrauterinaPercutanea, si existe
       if (IntrauterinaPercutanea) {
         await prisma.intrauterinaPercutanea.create({
           data: {
@@ -117,7 +111,6 @@ export async function POST(req) {
         });
       }
 
-      // Crear el registro ResultadosPerinatales, si existe
       if (ResultadosPerinatales) {
         await prisma.resultadosPerinatales.create({
           data: {
@@ -140,11 +133,9 @@ export async function POST(req) {
   });
 }
 
-// GET: Obtener todas las órdenes quirúrgicas con los datos relacionados
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
-      // Obtener todas las órdenes quirúrgicas con las relaciones
       const ordenesQuirurgicas =
         await prisma.ordenQuirurgicaIntrauterina.findMany({
           include: {
