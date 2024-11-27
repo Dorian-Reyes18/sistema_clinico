@@ -26,6 +26,11 @@ const HeaderUser = ({ currentPath }) => {
         label: "Gestión de cirugías Intrauterinas",
         imageSrc: "/images/home/CirugiasIcon.png",
       };
+    } else if (path === "/cirugias/gestionarCirugiaPostnatal") {
+      return {
+        label: "Gestión de cirugías PostNatales",
+        imageSrc: "/images/home/CirugiasIcon.png",
+      };
     } else if (path === "/pacientes") {
       return {
         label: "Pacientes",

@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SearchPost from "../SearchPost";
 import { fetchSurgeriesPost } from "@/services/fetchAllData";
-import CreateIntraButton from "../CreateIntraButton";
+import CreatePosnatalButtons from "../CreatePosnatlButtons";
 
 const TableSurgeriesPost = () => {
   const { token, surgeriesPost, setSurgeriesPost } = useAuth();
@@ -108,7 +108,7 @@ const TableSurgeriesPost = () => {
             className="btn-edit"
             onClick={() => {
               router.push(
-                `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
+                `/cirugias/gestionarCirugiaPosnatal?mode=isEditMode&id=${cirugia.id}`
               );
             }}
           ></div>
@@ -128,7 +128,7 @@ const TableSurgeriesPost = () => {
   return (
     <div className="base">
       <div className="actions-inputs">
-        <CreateIntraButton />
+        <CreatePosnatalButtons />
         {/* Componente de búsqueda */}
         <SearchPost
           data={[...neonatalSurgeries, ...nerviosoCentralSurgeries]}
