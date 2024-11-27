@@ -33,3 +33,11 @@ export const fetchSurgeriesPost = async (token) => {
 export const fetchMetadata = async (token) => {
   return fetchData("/protected/metadata", token);
 };
+
+export const fetchOrdenPrenatalCompleta = async (token) => {
+  return fetchData("/protected/orden_intra_completa", token);
+};
+
+export const fetchOrdenPostnatalCompleta = async (token) => {
+  return fetchData("/protected/orden_quirurgica_post", token);
+};

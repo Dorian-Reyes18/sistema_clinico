@@ -6,11 +6,9 @@ import {
   fetchSurgeriesPost,
   fetchPatients,
   fetchMetadata,
-} from "@/services/fetchAllData";
-import {
   fetchOrdenPostnatalCompleta,
   fetchOrdenPrenatalCompleta,
-} from "@/services/fetchSurgeries";
+} from "@/services/fetchAllData";
 
 const AuthContext = createContext();
 
@@ -25,8 +23,8 @@ export const AuthProvider = ({ children }) => {
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
   const [metadata, setMetadata] = useState([]);
-  const [postNatalSurgeries, setPostNatalSurgeries] = useState([]);
-  const [preNatalSurgeries, setPreNatalSurgeries] = useState([]);
+  const [prenatalSurgeries, setPrenatalSurgeries] = useState([]);
+  const [postnatalSurgeries, setPostnatalSurgeries] = useState([]);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -41,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
+          ñ;
           if (!user) {
             setToken(token);
             loadData(decodedToken.id, token);
@@ -95,16 +94,16 @@ export const AuthProvider = ({ children }) => {
         newSurgeriesPost,
         newPatients,
         newMetadata,
-        newPostNatalSurgeries, 
-        newPreNatalSurgeries, 
+        newPostnatalSurgerie,
+        newPrenatalSurgerie,
       ] = await Promise.all([
         fetchUserData(userId, token),
-        fetchOrdenPostnatalCompleta(token),
-        fetchOrdenPrenatalCompleta(token),
         fetchRecentSurgeries(token),
         fetchSurgeriesPost(token),
         fetchPatients(token),
         fetchMetadata(token),
+        fetchOrdenPrenatalCompleta(token),
+        fetchOrdenPostnatalCompleta(token),
       ]);
 
       // Actualizamos los estados y la caché
@@ -113,10 +112,9 @@ export const AuthProvider = ({ children }) => {
       setSurgeriesPost(newSurgeriesPost);
       setPatients(newPatients);
       setMetadata(newMetadata);
-      setPostNatalSurgeries(newPostNatalSurgeries); 
-      setPreNatalSurgeries(newPreNatalSurgeries); 
+      setPrenatalSurgeries(newPrenatalSurgerie);
+      setPostnatalSurgeries(newPostnatalSurgerie);
 
-      // Actualizar la caché con los nuevos datos
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
       sessionStorage.setItem(
         "recentSurgeriesData",
@@ -128,20 +126,12 @@ export const AuthProvider = ({ children }) => {
       );
       sessionStorage.setItem("patientsData", JSON.stringify(newPatients));
       sessionStorage.setItem("metadataData", JSON.stringify(newMetadata));
-      sessionStorage.setItem(
-        "postNatalSurgeriesData",
-        JSON.stringify(newPostNatalSurgeries)
-      );
-      sessionStorage.setItem(
-        "preNatalSurgeriesData",
-        JSON.stringify(newPreNatalSurgeries)
-      );
     } catch (error) {
       console.error("Error al actualizar los datos:", error);
       setError(error.message);
     } finally {
       setLoading(false);
-      isFetchingData = false; 
+      isFetchingData = false; // Restablece la bandera
     }
   };
 
@@ -156,12 +146,12 @@ export const AuthProvider = ({ children }) => {
         setToken,
         recentSurgeries,
         surgeriesPost,
-        postNatalSurgeries, 
-        preNatalSurgeries, 
+        prenatalSurgeries,
+        postnatalSurgeries,
         setRecentSurgeries,
         setSurgeriesPost,
-        setPostNatalSurgeries,
-        setPreNatalSurgeries,
+        setPostnatalSurgeries,
+        setPrenatalSurgeries,
         patients,
         metadata,
         loadData,

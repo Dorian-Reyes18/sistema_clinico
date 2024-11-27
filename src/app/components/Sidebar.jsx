@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import LogoClinica from "@images/logo.svg";
-import { useAuth } from "../hooks/authContext"; // Asegúrate de importar el hook
+import { useAuth } from "../hooks/authContext"; 
 
 const { Sider } = Layout;
 
@@ -24,10 +24,7 @@ const Sidebar = () => {
   const { setToken, setUser } = useAuth();
 
   const handleLogout = () => {
-    // Eliminar el token de las cookies
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    // Limpiar el estado del token y user en el contexto
     setToken(null); 
     setUser(null); 
 

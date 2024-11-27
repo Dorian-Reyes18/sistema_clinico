@@ -14,11 +14,3 @@ const fetchData = async (endpoint, token) => {
 
   return await response.json();
 };
-
-export const fetchOrdenPrenatalCompleta = async (token) => {
-  return fetchData("/protected/orden_intra_completa", token);
-};
-
-export const fetchOrdenPostnatalCompleta = async (token) => {
-  return fetchData("/protected/orden_quirurgica_post", token);
-};
