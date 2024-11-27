@@ -26,6 +26,7 @@ const handleRequest = async (req, operation) => {
   }
 };
 
+// GET - Obtener una orden quirúrgica específica
 export async function GET(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
@@ -35,9 +36,12 @@ export async function GET(req, { params }) {
         where: { id: parseInt(id) },
         include: {
           paciente: true,
-          evaluacionesActuales: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
+          evaluacionActual: true,
+          intrauterinaPercutanea: true,
+          intrauterinaEndoscopica: true,
+          intrauterinaAbierta: true,
         },
       });
 
@@ -51,13 +55,29 @@ export async function GET(req, { params }) {
       const {
         diagnosticoPrenatal,
         resultadosPerinatales,
+        intrauterinaPercutanea,
+        intrauterinaEndoscopica,
+        intrauterinaAbierta,
         ...ordenSinDatosVacios
       } = orden;
 
       return NextResponse.json({
         ...ordenSinDatosVacios,
-        ...(diagnosticoPrenatal.length ? { diagnosticoPrenatal } : {}),
-        ...(resultadosPerinatales.length ? { resultadosPerinatales } : {}),
+        diagnosticoPrenatal: diagnosticoPrenatal.length
+          ? diagnosticoPrenatal
+          : undefined,
+        resultadosPerinatales: resultadosPerinatales.length
+          ? resultadosPerinatales
+          : undefined,
+        cirugiasIntrauterinas: {
+          percutanea: intrauterinaPercutanea.length
+            ? intrauterinaPercutanea
+            : undefined,
+          endoscopica: intrauterinaEndoscopica.length
+            ? intrauterinaEndoscopica
+            : undefined,
+          abierta: intrauterinaAbierta.length ? intrauterinaAbierta : undefined,
+        },
       });
     } catch (error) {
       return handleError(error, "Error al obtener la orden quirúrgica");
@@ -65,6 +85,7 @@ export async function GET(req, { params }) {
   });
 }
 
+// PUT - Actualizar una orden quirúrgica específica
 export async function PUT(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;
@@ -88,15 +109,21 @@ export async function PUT(req, { params }) {
         data,
         include: {
           paciente: true,
-          evaluacionActual: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
+          evaluacionActual: true,
+          intrauterinaPercutanea: true,
+          intrauterinaEndoscopica: true,
+          intrauterinaAbierta: true,
         },
       });
 
       const {
         diagnosticoPrenatal,
         resultadosPerinatales,
+        intrauterinaPercutanea,
+        intrauterinaEndoscopica,
+        intrauterinaAbierta,
         ...ordenSinDatosVacios
       } = ordenActualizada;
 
@@ -104,8 +131,23 @@ export async function PUT(req, { params }) {
         message: "Orden quirúrgica actualizada exitosamente",
         orden: {
           ...ordenSinDatosVacios,
-          ...(diagnosticoPrenatal.length ? { diagnosticoPrenatal } : {}),
-          ...(resultadosPerinatales.length ? { resultadosPerinatales } : {}),
+          diagnosticoPrenatal: diagnosticoPrenatal.length
+            ? diagnosticoPrenatal
+            : undefined,
+          resultadosPerinatales: resultadosPerinatales.length
+            ? resultadosPerinatales
+            : undefined,
+          cirugiasIntrauterinas: {
+            percutanea: intrauterinaPercutanea.length
+              ? intrauterinaPercutanea
+              : undefined,
+            endoscopica: intrauterinaEndoscopica.length
+              ? intrauterinaEndoscopica
+              : undefined,
+            abierta: intrauterinaAbierta.length
+              ? intrauterinaAbierta
+              : undefined,
+          },
         },
       });
     } catch (error) {
@@ -114,6 +156,7 @@ export async function PUT(req, { params }) {
   });
 }
 
+// DELETE - Eliminar una orden quirúrgica específica
 export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const { id } = params;

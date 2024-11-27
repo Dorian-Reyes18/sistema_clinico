@@ -26,28 +26,50 @@ const handleRequest = async (req, operation) => {
   }
 };
 
+// GET - Obtener todas las órdenes quirúrgicas intrauterinas
 export async function GET(req) {
   return handleRequest(req, async () => {
     try {
       const ordenes = await prisma.ordenQuirurgicaIntrauterina.findMany({
         include: {
-          paciente: {
-            include: {
-              evaluacionesActuales: true,
-            },
-          },
-          evaluacionActual: true,
+          paciente: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
+          evaluacionActual: true,
+          intrauterinaPercutanea: true,
+          intrauterinaEndoscopica: true,
+          intrauterinaAbierta: true,
         },
       });
 
       const ordenesTransformadas = ordenes.map((orden) => {
-        const { diagnosticoPrenatal, resultadosPerinatales, ...resto } = orden;
+        const {
+          diagnosticoPrenatal,
+          resultadosPerinatales,
+          intrauterinaPercutanea,
+          intrauterinaEndoscopica,
+          intrauterinaAbierta,
+          ...resto
+        } = orden;
         return {
           ...resto,
-          ...(diagnosticoPrenatal.length ? { diagnosticoPrenatal } : {}),
-          ...(resultadosPerinatales.length ? { resultadosPerinatales } : {}),
+          diagnosticoPrenatal: diagnosticoPrenatal.length
+            ? diagnosticoPrenatal
+            : undefined,
+          resultadosPerinatales: resultadosPerinatales.length
+            ? resultadosPerinatales
+            : undefined,
+          cirugiasIntrauterinas: {
+            percutanea: intrauterinaPercutanea.length
+              ? intrauterinaPercutanea
+              : undefined,
+            endoscopica: intrauterinaEndoscopica.length
+              ? intrauterinaEndoscopica
+              : undefined,
+            abierta: intrauterinaAbierta.length
+              ? intrauterinaAbierta
+              : undefined,
+          },
         };
       });
 
@@ -58,13 +80,13 @@ export async function GET(req) {
   });
 }
 
+// POST - Crear una nueva orden quirúrgica intrauterina
 export async function POST(req) {
   return handleRequest(req, async () => {
     const {
       pacienteId,
       tipoCirugia,
       teniaDiagnostico,
-      evaluacionActualId,
       etapa,
       complicacionesQuirurgicas,
       estado,
@@ -93,22 +115,27 @@ export async function POST(req) {
           pacienteId,
           tipoCirugia,
           teniaDiagnostico,
-          evaluacionActualId,
           etapa,
           complicacionesQuirurgicas,
           estado,
         },
         include: {
           paciente: true,
-          evaluacionActual: true,
           diagnosticoPrenatal: true,
           resultadosPerinatales: true,
+          evaluacionActual: true,
+          intrauterinaPercutanea: true,
+          intrauterinaEndoscopica: true,
+          intrauterinaAbierta: true,
         },
       });
 
       const {
         diagnosticoPrenatal,
         resultadosPerinatales,
+        intrauterinaPercutanea,
+        intrauterinaEndoscopica,
+        intrauterinaAbierta,
         ...ordenSinDatosVacios
       } = nuevaOrden;
 
@@ -117,8 +144,23 @@ export async function POST(req) {
           message: "Orden quirúrgica creada exitosamente",
           orden: {
             ...ordenSinDatosVacios,
-            ...(diagnosticoPrenatal.length ? { diagnosticoPrenatal } : {}),
-            ...(resultadosPerinatales.length ? { resultadosPerinatales } : {}),
+            diagnosticoPrenatal: diagnosticoPrenatal.length
+              ? diagnosticoPrenatal
+              : undefined,
+            resultadosPerinatales: resultadosPerinatales.length
+              ? resultadosPerinatales
+              : undefined,
+            cirugiasIntrauterinas: {
+              percutanea: intrauterinaPercutanea.length
+                ? intrauterinaPercutanea
+                : undefined,
+              endoscopica: intrauterinaEndoscopica.length
+                ? intrauterinaEndoscopica
+                : undefined,
+              abierta: intrauterinaAbierta.length
+                ? intrauterinaAbierta
+                : undefined,
+            },
           },
         },
         { status: 201 }
