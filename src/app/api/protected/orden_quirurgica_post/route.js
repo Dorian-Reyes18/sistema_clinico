@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
-// Función para validar el ID
 const validateId = (id) => {
   const parsedId = parseInt(id);
   return !isNaN(parsedId) && parsedId > 0 ? parsedId : false;
@@ -93,7 +92,7 @@ export async function POST(req) {
     // Manejar errores de ID no encontrados
     const idErrors = [];
     if (!paciente) idErrors.push("El paciente no existe.");
-    if (!doctor) idErrors.push("El doctor no existe."); 
+    if (!doctor) idErrors.push("El doctor no existe.");
 
     if (idErrors.length) {
       return NextResponse.json({ error: idErrors.join(" ") }, { status: 400 });
@@ -105,17 +104,15 @@ export async function POST(req) {
         include: {
           paciente: true,
           doctor: true,
+          cirugiaNeonatal: true,
+          cirugiaNerviosoCentral: true,
         },
       });
-
-      // Excluir las relaciones CirugiaNeonatal y CirugiaNerviosoCentral en la respuesta si no se necesitan
-      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } =
-        nuevoRegistro;
 
       return NextResponse.json({
         message:
           "Registro de Orden Quirúrgica Postoperatoria creado exitosamente",
-        registro: resto,
+        registro: nuevoRegistro, 
       });
     } catch (error) {
       return handleError(

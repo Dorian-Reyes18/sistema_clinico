@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/libs/prisma";
 import { authenticateRequest } from "@/middlewares/authMiddleware";
 
+// Función para validar el ID
 const validateId = (id) => {
   const parsedId = parseInt(id);
   return !isNaN(parsedId) && parsedId > 0 ? parsedId : false;
 };
 
+// Manejo de errores
 const handleError = (error, message, status = 500) => {
   console.error(message, error);
   if (error.code === "P2025") {
@@ -18,6 +20,7 @@ const handleError = (error, message, status = 500) => {
   return NextResponse.json({ error: message }, { status });
 };
 
+// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -45,8 +48,8 @@ export async function GET(req, { params }) {
         include: {
           paciente: true,
           doctor: true,
-          cirugiaNeonatal: true, 
-          cirugiaNerviosoCentral: true,
+          cirugiaNeonatal: true, // Incluir el array de cirugías neonatales
+          cirugiaNerviosoCentral: true, // Incluir el array de cirugías del sistema nervioso central
         },
       });
 
@@ -57,10 +60,7 @@ export async function GET(req, { params }) {
         );
       }
 
-      // Excluir cirugiaNeonatal y cirugiaNerviosoCentral en la respuesta si no se quieren
-      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } = registro;
-
-      return NextResponse.json(resto);
+      return NextResponse.json(registro);
     } catch (error) {
       return handleError(
         error,
@@ -99,17 +99,15 @@ export async function PUT(req, { params }) {
         include: {
           paciente: true,
           doctor: true,
-          cirugiaNeonatal: true,
-          cirugiaNerviosoCentral: true,
+          cirugiaNeonatal: true, 
+          cirugiaNerviosoCentral: true, 
         },
       });
-
-      const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } = registro;
 
       return NextResponse.json({
         message:
           "Registro de Orden Quirúrgica Postoperatoria actualizado exitosamente",
-        registro: resto,
+        registro,
       });
     } catch (error) {
       return handleError(
