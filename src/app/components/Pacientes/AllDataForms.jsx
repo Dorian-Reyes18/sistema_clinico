@@ -460,7 +460,7 @@ const AllDataForms = ({ mode, id }) => {
             ? "Editar - Datos generales del paciente"
             : "Crear - Datos generales del paciente"}
         </h4>
-        {mode === isCreateMode ? (
+        {mode === "isCreateMode" ? (
           <p className="aviso">
             Los campos con un asterisco son obligatorios, Aseguerese de
             llenarlos todos
