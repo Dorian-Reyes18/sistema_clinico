@@ -8,10 +8,42 @@ import { usePathname } from "next/navigation";
 import RecentSurgeries from "../components/home/welcomeMessage";
 import TotalCardSurgeries from "../components/home/totalCardSurgeries";
 import SectionCalendar from "../components/home/sectionCalendar";
+import { useEffect, useState } from "react";
+import { fetchOrdenPrenatalCompleta } from "@/services/fetchAllData";
 
 const HomePage = () => {
   const currentPath = usePathname();
-  const { user, loading, error } = useAuth();
+  const {
+    user,
+    loading,
+    error,
+    prenatalSurgeries,
+    setPrenatalSurgeries,
+    token,
+  } = useAuth();
+
+  // Aqui solicitamos los datos completos de una cirugia intrauterina
+  const [hasFetched, setHasFetched] = useState(false);
+
+  useEffect(() => {
+    if (hasFetched || !token) return;
+
+    const fetchPrenatalSurgeries = async () => {
+      try {
+        const response = await fetchOrdenPrenatalCompleta(token);
+        setPrenatalSurgeries(response);
+        setHasFetched(true);
+      } catch (error) {
+        console.log("Error al obtener las cirugías prenatales", error);
+      }
+    };
+
+    fetchPrenatalSurgeries();
+  }, [token, hasFetched]);
+
+  useEffect(() => {
+    console.log(prenatalSurgeries);
+  }, [prenatalSurgeries]);
 
   if (loading) {
     return (

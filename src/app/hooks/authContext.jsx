@@ -10,13 +10,12 @@ import {
 
 const AuthContext = createContext();
 
-let isFetchingData = false; // Bandera global para evitar fetches duplicados
-
+let isFetchingData = false; 
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); // Almacena el token aquí
+  const [token, setToken] = useState(null); 
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
