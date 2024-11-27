@@ -1,16 +1,73 @@
+
+
 {
   "OrdenQuirurgicaIntrauterina": {
-    "pacienteId": 1, //primer tabla que se crea
+    "pacienteId": 1,
     "tipoCirugia": "Percutanea",
-    "fechaDeCreacion": "fecha en formato ISO",
+    "fechaDeCreacion": "2024-11-26T12:00:00Z",
     "teniaDiagnostico": true,
     "complicacionesQuirurgicas": "Descripcion",
-    "estado": true,
-    "diagnosticoPrenatal": 1,
-    "resultadosPerinatales": 1
+    "estado": true
   },
+  "DiagnosticoPrenatal": {
+    "categoriaId": 1,
+    "tipoDefectoId": 1,
+    "tipoCirugiaRealizada": "Percutanea",
+    "estudioGen": true,
+    "resultadoEstGen": "Descripcion",
+    "tipoEmbarazo": "Gemelos"
+  },
+  "Endoscopicas": [
+    {
+      "ubicacionPlacentaria": "Posterior",
+      "laserDeAnastomosisPlacentaria": true,
+      "coagulacionBipolarDeCordoneUmbilical": false,
+      "liberacionDeBandasAmnioticas": true,
+      "colocacionDeBalonEndotraqueal": false,
+      "retiroDeBalonEndotraqueal": true,
+      "reparacionDeMielomeningocele": false,
+      "cistoscopia": true,
+      "cistoscopiaMasLaserDeValvasUretralesPosteriores": false,
+      "intubacionEndotraquealIntrauterina": true,
+      "fechaCirugia": "2024-11-20T09:00:00Z",
+      "horaInicioAnestesia": "2024-11-20T08:30:00Z",
+      "tipoAnestesiaId": "General",
+      "complicacionesAnestesicas": "Ninguna",
+      "horaInicioCirugiaFetal": "2024-11-20T10:00:00Z",
+      "frecuenciaCardiacaFetalInicio": "130",
+      "bolsilloUnicoInicialDeLiquidoAmniotico": true,
+      "sangradoEstimado": "150 ml",
+      "frecuenciaCardiacaFetalFinalizacion": "125",
+      "complicacionesQuirurgicas": "Sin complicaciones",
+      "horaFinalizacionCirugia": "2024-11-20T12:00:00Z"
+    }
+    ,
+    {
+      "ubicacionPlacentaria": "Anterior",
+      "laserDeAnastomosisPlacentaria": false,
+      "coagulacionBipolarDeCordoneUmbilical": true,
+      "liberacionDeBandasAmnioticas": false,
+      "colocacionDeBalonEndotraqueal": true,
+      "retiroDeBalonEndotraqueal": false,
+      "reparacionDeMielomeningocele": true,
+      "cistoscopia": false,
+      "cistoscopiaMasLaserDeValvasUretralesPosteriores": true,
+      "intubacionEndotraquealIntrauterina": false,
+      "fechaCirugia": "2024-11-21T14:30:00Z",
+      "horaInicioAnestesia": "2024-11-21T14:00:00Z",
+      "tipoAnestesiaId": "Regional",
+      "complicacionesAnestesicas": "Hipotensión leve",
+      "horaInicioCirugiaFetal": "2024-11-21T15:00:00Z",
+      "frecuenciaCardiacaFetalInicio": "140",
+      "bolsilloUnicoInicialDeLiquidoAmniotico": false,
+      "sangradoEstimado": "200 ml",
+      "frecuenciaCardiacaFetalFinalizacion": "135",
+      "complicacionesQuirurgicas": "Sin complicaciones",
+      "horaFinalizacionCirugia": "2024-11-21T17:00:00Z"
+    }
+    
+  ],
   "IntrauterinaAbierta": {
-    "OrdenQuirurgicaIntrauterinaId": 1, //Requiere el registro de la orden creada
     "ubicacionPlacentaria": "descripcion",
     "fechaCirugia": "2024-10-01T10:00:00Z",
     "horaInicioAnestesia": "2024-10-01T09:30:00Z",
@@ -24,7 +81,7 @@
     "drenajeDeQuistesCoroideosUniOBilaterales": false,
     "tipoAnestesiaId": "3",
     "complicacionesAnestesicas": "Ninguna",
-    "frecuenciaCardiacaFetalInicio": 140.5,
+    "frecuenciaCardiacaFetalInicio": "140.5",
     "incisionEnPiel": true,
     "incisionEnUtero": true,
     "tamanoDelDefecto": "3cm",
@@ -32,37 +89,32 @@
     "nivelFuncional": "Nivel 1",
     "ilaInicialDeLiquidoAmniotico": "Normal",
     "ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico": false,
-    "frecuenciaCardiacaFetalFinalizacion": 140.0,
+    "frecuenciaCardiacaFetalFinalizacion": "140.0",
     "complicacionesQuirurgicas": "Ninguna"
   },
   "IntrauterinaPercutanea": {
-    //Requiere el registro de la orden creada
-    "OrdenQuirurgicaIntrauterina": 1,
     "ubicacionPlacentaria": "descripcion",
     "ablacionDeVasoTumoral": true,
     "ablacionDeVasoNutricioSistemico": true,
     "ablacionDeVasoNutricioFetal": true,
-    "fechaCirugia": true,
-    "horaInicioAnestesia": true,
-    "tipoAnestesiaId": true,
-    "complicacionesAnestesicas": "string",
-    "horaInicioCirugiaFetal": true,
-    "frecuenciaCardiacaFetalInicio": "string",
+    "fechaCirugia": "2024-10-01T10:00:00Z",
+    "horaInicioAnestesia": "2024-10-01T09:30:00Z",
+    "tipoAnestesiaId": "uno",
+    "complicacionesAnestesicas": "Ninguna",
+    "horaInicioCirugiaFetal": "2024-10-01T10:30:00Z",
+    "frecuenciaCardiacaFetalInicio": "140.5",
     "bolsilloUnicoInicialDeLiquidoAmniotico": true,
-    "sangradoEstimado": "string",
-    "frecuenciaCardiacaFetalFinalizacion": true,
-    "complicacionesQuirurgicas": true,
-    "horaFinalizacionCirugia": true,
-    "diagnosticoPrenatal": true
+    "sangradoEstimado": "Bajo",
+    "frecuenciaCardiacaFetalFinalizacion": "140.0",
+    "complicacionesQuirurgicas": "Ninguna",
+    "horaFinalizacionCirugia": "2024-10-01T11:30:00Z"
   },
   "ResultadosPerinatales": {
-    //Requiere el registro de la orden creada
-    "ordenQuirurgicaId": 1,
-    "tipoDeParto": "string",
-    "fechaNac": "fecha en formato iso",
-    "edadFinalizacion": "string",
-    "natalidad": "string",
-    "descripcionFetal": "string",
-    "pesoGramos": 25
+    "tipoDeParto": "César",
+    "fechaNac": "2024-10-01T12:00:00Z",
+    "edadFinalizacion": "Normal",
+    "natalidad": "Viva",
+    "descripcionFetal": "Descripción",
+    "pesoGramos": 2500
   }
 }

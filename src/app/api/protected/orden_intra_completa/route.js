@@ -46,7 +46,7 @@ export async function POST(req) {
       OrdenQuirurgicaIntrauterina,
       IntrauterinaAbierta,
       IntrauterinaPercutanea,
-      IntrauterinaEndoscopica,
+      Endoscopicas,
       ResultadosPerinatales,
       DiagnosticoPrenatal,
     } = data;
@@ -73,12 +73,24 @@ export async function POST(req) {
       if (DiagnosticoPrenatal) {
         await prisma.diagnosticoPrenatal.create({
           data: {
-            ordenQuirurgica: {
-              connect: { id: ordenQuirurgica.id },
-            },
+            cirugiaIntraId: ordenQuirurgica.id,
             ...DiagnosticoPrenatal,
           },
         });
+      }
+
+      // Crear los registros Endoscopicas, si existen
+      if (Endoscopicas && Endoscopicas.length > 0) {
+        for (let endoscopica of Endoscopicas) {
+          await prisma.intrauterinaEndoscopica.create({
+            data: {
+              ordenQuirurgica: {
+                connect: { id: ordenQuirurgica.id },
+              },
+              ...endoscopica,
+            },
+          });
+        }
       }
 
       // Crear el registro IntrauterinaAbierta, si existe
@@ -98,21 +110,9 @@ export async function POST(req) {
         await prisma.intrauterinaPercutanea.create({
           data: {
             ordenQuirurgica: {
-              connect: { id: ordenQuirurgica.id }, 
-            },
-            ...IntrauterinaPercutanea, 
-          },
-        });
-      }
-
-      // Crear el registro IntrauterinaEndoscopica, si existe
-      if (IntrauterinaEndoscopica) {
-        await prisma.intrauterinaEndoscopica.create({
-          data: {
-            ordenQuirurgica: {
               connect: { id: ordenQuirurgica.id },
             },
-            ...IntrauterinaEndoscopica,
+            ...IntrauterinaPercutanea,
           },
         });
       }
