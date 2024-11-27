@@ -108,7 +108,7 @@ const TableSurgeriesPost = () => {
             className="btn-edit"
             onClick={() => {
               router.push(
-                `/cirugias/gestionarCirugiaPosnatal?mode=isEditMode&id=${cirugia.id}`
+                `/cirugias/gestionarCirugiaPostnatal?mode=isEditMode&id=${cirugia.id}`
               );
             }}
           ></div>

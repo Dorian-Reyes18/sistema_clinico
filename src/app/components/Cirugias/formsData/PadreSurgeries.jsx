@@ -13,7 +13,7 @@ const PadreSurgeries = () => {
           <TabPane tab="Cirugías Intrauterinas" key="1">
             <TableSurgeriesIntra />
           </TabPane>
-          <TabPane tab="Cirugías Postoperatorias" key="2">
+          <TabPane tab="Cirugías PostNatales" key="2">
             <TableSurgeriesPost />
           </TabPane>
         </Tabs>
