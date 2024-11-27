@@ -5,10 +5,9 @@ import { authenticateRequest } from "@/middlewares/authMiddleware";
 // Función para validar el ID
 const validateId = (id) => {
   const parsedId = parseInt(id);
-  return !isNaN(parsedId) && parsedId > 0 ? parsedId : false; // Devuelve el ID válido o false
+  return !isNaN(parsedId) && parsedId > 0 ? parsedId : false;
 };
 
-// Manejo de errores
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
   if (error.code === "P2025") {
@@ -20,7 +19,6 @@ const handleError = (error, defaultMessage, status = 500) => {
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -46,7 +44,7 @@ export async function GET(req, { params }) {
       const registro = await prisma.intrauterinaPercutanea.findUnique({
         where: { id: parseInt(id) },
         include: {
-          diagnosticoPrenatal: true,
+          ordenQuirurgica: true,
         },
       });
 
@@ -57,8 +55,7 @@ export async function GET(req, { params }) {
         );
       }
 
-      const { diagnosticoPrenatalId, ...rest } = registro; // Eliminar el campo diagnosticoPrenatalId
-      return NextResponse.json(rest);
+      return NextResponse.json(registro);
     } catch (error) {
       return handleError(
         error,
@@ -80,33 +77,17 @@ export async function PUT(req, { params }) {
     }
 
     try {
-      // Validar que el ID de diagnóstico prenatal exista si se está actualizando
-      if (data.diagnosticoPrenatalId) {
-        const diagnosticoExists = await prisma.diagnosticoPrenatal.findUnique({
-          where: { id: data.diagnosticoPrenatalId },
-        });
-
-        if (!diagnosticoExists) {
-          return NextResponse.json(
-            { error: "El Diagnóstico Prenatal especificado no existe." },
-            { status: 404 }
-          );
-        }
-      }
-
       const registro = await prisma.intrauterinaPercutanea.update({
         where: { id: parseInt(id) },
         data,
         include: {
-          diagnosticoPrenatal: true,
+          ordenQuirurgica: true,
         },
       });
 
-      const { diagnosticoPrenatalId, ...rest } = registro; // Eliminar el campo diagnosticoPrenatalId
-
       return NextResponse.json({
         message: "Registro de Intrauterina Percutanea actualizado exitosamente",
-        registro: rest,
+        registro,
       });
     } catch (error) {
       return handleError(
@@ -138,24 +119,8 @@ export async function DELETE(req, { params }) {
         );
       }
 
-      // Comprobar si el registro está asociado a otros registros en DiagnosticoPrenatal
-      const asociado = await prisma.diagnosticoPrenatal.findFirst({
-        where: { intrauterinaPercutanea: { id: id } },
-      });
-
-      if (asociado) {
-        return NextResponse.json(
-          {
-            error:
-              "El registro no se puede eliminar porque tiene registros asociados.",
-          },
-          { status: 400 }
-        );
-      }
-
       await prisma.intrauterinaPercutanea.delete({ where: { id } });
 
-      // Respuesta exitosa
       return NextResponse.json(
         {
           message: "Registro de Intrauterina Percutanea eliminado exitosamente",
