@@ -8,7 +8,6 @@ const validateId = (id) => {
   return !isNaN(parsedId) && parsedId > 0 ? parsedId : false;
 };
 
-// Manejo de errores
 const handleError = (error, defaultMessage, status = 500) => {
   console.error(defaultMessage, error);
   if (error.code === "P2025") {
@@ -20,7 +19,6 @@ const handleError = (error, defaultMessage, status = 500) => {
   return NextResponse.json({ error: defaultMessage }, { status });
 };
 
-// Manejo de la solicitud
 const handleRequest = async (req, operation) => {
   const authResult = await authenticateRequest(req);
   if (authResult) return authResult;
@@ -39,8 +37,9 @@ export async function GET(req) {
       const registros = await prisma.ordenQuirurgicaPostoperacion.findMany({
         include: {
           paciente: true,
-          doctor: true, // Se refiere a Usuarios
-          // Excluir cirugiaNeonatal y cirugiaNerviosoCentral
+          doctor: true,
+          cirugiaNeonatal: true, 
+          cirugiaNerviosoCentral: true, 
         },
       });
 
@@ -70,7 +69,6 @@ export async function POST(req) {
       );
     }
 
-    // Validar campos necesarios
     const requiredFields = [
       "pacienteId",
       "doctorId",
@@ -89,13 +87,13 @@ export async function POST(req) {
     // Verificar existencia de IDs antes de crear
     const [paciente, doctor] = await Promise.all([
       prisma.paciente.findUnique({ where: { id: data.pacienteId } }),
-      prisma.usuarios.findUnique({ where: { id: data.doctorId } }), // Cambiado a usuarios
+      prisma.usuarios.findUnique({ where: { id: data.doctorId } }),
     ]);
 
     // Manejar errores de ID no encontrados
     const idErrors = [];
     if (!paciente) idErrors.push("El paciente no existe.");
-    if (!doctor) idErrors.push("El doctor no existe."); // Cambiado para reflejar que es un usuario
+    if (!doctor) idErrors.push("El doctor no existe."); 
 
     if (idErrors.length) {
       return NextResponse.json({ error: idErrors.join(" ") }, { status: 400 });
@@ -106,12 +104,11 @@ export async function POST(req) {
         data,
         include: {
           paciente: true,
-          doctor: true, // Se refiere a Usuarios
-          // Excluir cirugiaNeonatal y cirugiaNerviosoCentral
+          doctor: true,
         },
       });
 
-      // Excluir cirugiaNeonatal y cirugiaNerviosoCentral en la respuesta
+      // Excluir las relaciones CirugiaNeonatal y CirugiaNerviosoCentral en la respuesta si no se necesitan
       const { cirugiaNeonatal, cirugiaNerviosoCentral, ...resto } =
         nuevoRegistro;
 
