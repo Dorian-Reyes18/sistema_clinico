@@ -1,21 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import {
-  fetchRecentSurgeries, //intrauterinas
+  fetchRecentSurgeries,
   fetchUserData,
-  fetchSurgeriesPost, //PostOperatorias
+  fetchSurgeriesPost, 
   fetchPatients,
   fetchMetadata,
+  fetchOrdenPrenatalCompleta, 
 } from "@/services/fetchAllData";
 
 const AuthContext = createContext();
 
-let isFetchingData = false; 
+let isFetchingData = false;
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); 
+  const [token, setToken] = useState(null);
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         const decodedToken = jwt.decode(token);
         if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
           if (!user) {
-            setToken(token); // Establecer el token solo si no está configurado
+            setToken(token);
             loadData(decodedToken.id, token);
           }
         } else {
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       handleInvalidSession();
     }
-  }, []); // Sin dependencias adicionales para evitar loops
+  }, []);
 
   const handleInvalidSession = () => {
     setUser(null);
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadData = async (userId, token) => {
-    if (isFetchingData) return; // Evita fetches duplicados
+    if (isFetchingData) return;
     isFetchingData = true;
 
     setLoading(true);
@@ -90,12 +91,14 @@ export const AuthProvider = ({ children }) => {
         newSurgeriesPost,
         newPatients,
         newMetadata,
+        newPrenatalSurgeries,
       ] = await Promise.all([
         fetchUserData(userId, token),
         fetchRecentSurgeries(token),
         fetchSurgeriesPost(token),
         fetchPatients(token),
         fetchMetadata(token),
+        fetchOrdenPrenatalCompleta(token),
       ]);
 
       // Actualizamos los estados y la caché
@@ -104,6 +107,7 @@ export const AuthProvider = ({ children }) => {
       setSurgeriesPost(newSurgeriesPost);
       setPatients(newPatients);
       setMetadata(newMetadata);
+      setPrenatalSurgeries(newPrenatalSurgeries);
 
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
       sessionStorage.setItem(
@@ -116,12 +120,16 @@ export const AuthProvider = ({ children }) => {
       );
       sessionStorage.setItem("patientsData", JSON.stringify(newPatients));
       sessionStorage.setItem("metadataData", JSON.stringify(newMetadata));
+      sessionStorage.setItem(
+        "prenatalSurgeriesData",
+        JSON.stringify(newPrenatalSurgeries)
+      );
     } catch (error) {
       console.error("Error al actualizar los datos:", error);
       setError(error.message);
     } finally {
       setLoading(false);
-      isFetchingData = false; 
+      isFetchingData = false;
     }
   };
 

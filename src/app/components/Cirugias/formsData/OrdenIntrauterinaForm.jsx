@@ -17,7 +17,7 @@ const { Option } = Select;
 const OrdenIntrauterinaForm = ({
   onSubmit,
   mode,
-  initialValues = {},
+  initialValues,
   confirmButton,
 }) => {
   const { metadata } = useAuth();

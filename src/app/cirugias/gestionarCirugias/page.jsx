@@ -5,7 +5,7 @@ import Layout from "../../components/layout";
 import { Spin } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
 import HeaderUser from "../../components/headerUser";
-import FormulariosIntrauterinos from "@/app/components/Cirugias/formsData/formulariosIntrauterinos";
+import FormulariosIntrauterinos from "@/app/components/Cirugias/FormulariosIntrauterinos";
 
 const GestionarCirugias = () => {
   const currentPath = usePathname();

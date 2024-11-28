@@ -5,13 +5,16 @@ import { Modal, Spin, notification } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 // Formularios
-import OrdenIntrauterinaForm from "./OrdenIntrauterinaForm";
+import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 
 // Servicios
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
+  const { patients, prenatalSurgeries, token } = useAuth();
   const [confirmButton, setConfirmButton] = useState(false);
+  const [allOrders, setAllOrders] = useState([]);
+  const [currentOrder, setCurrentOrder] = useState({});
 
   const formConfig = [
     {
@@ -21,6 +24,8 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       initialValues: {},
     },
   ];
+
+  // Funciones
 
   const handleSave = () => {
     const modalTitle = "isCreateMode"
@@ -60,6 +65,10 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       },
     });
   };
+
+  useEffect(() => {
+    console.log("juana");
+  });
 
   return (
     <div className="prenatal-form-container">
