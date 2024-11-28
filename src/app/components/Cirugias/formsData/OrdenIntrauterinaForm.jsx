@@ -12,7 +12,7 @@ const OrdenIntrauterinaForm = ({
   initialValues,
   confirmButton,
 }) => {
-  const { metadata } = useAuth();
+  const { metadata, patients } = useAuth();
   const [localValues, setLocalValues] = useState({
     pacienteId: initialValues?.pacienteId || null,
     fechaDeCreacion: initialValues?.fechaDeCreacion || null,
@@ -31,6 +31,7 @@ const OrdenIntrauterinaForm = ({
       teniaDiagnostico: false,
       complicacionesQuirurgicas: "",
       estado: false,
+      pacienteId: initialValues?.pacienteId || "",
     },
     validationSchema: Yup.object({
       fechaDeCreacion: Yup.date().optional().notRequired(),
@@ -38,6 +39,7 @@ const OrdenIntrauterinaForm = ({
       teniaDiagnostico: Yup.boolean().optional().notRequired(),
       complicacionesQuirurgicas: Yup.string().optional().notRequired(),
       estado: Yup.boolean().required("*Requerido"),
+      pacienteId: Yup.string().required("*Requerido"),
     }),
     onSubmit: (values) => {
       onSubmit(values);
@@ -48,7 +50,7 @@ const OrdenIntrauterinaForm = ({
   // Sincroniza los valores locales con Formik solo en eventos clave
   const handleBlurAndSync = (e) => {
     const { name } = e.target;
-    formik.setFieldValue(name, localValues[name]); // Sincroniza con Formik
+    formik.setFieldValue(name, localValues[name]);
     formik.handleBlur(e);
   };
 
@@ -59,6 +61,44 @@ const OrdenIntrauterinaForm = ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handlePaciene = () => {
+    /* 
+      esta funcion debe:
+      1. Recibir el valor que el usuario escribe en expediente
+      2. En la prop patient es un array de objetros y cada objeto es un paciente, hay una clave llamada numeroExpediente, si el valor escrito en el input expediente hace match con algun expediente escribimos en dice paciente el primerNombre y primerApeliido del paciente(son claves del objeto paciente) (ojo solo debes mostrar una unica coincidencia aunque se encoentren varias solo una y la que haga match de lo contrario escribo no existe).
+      nota expediente no debe ser parte de los valores de formik ni del estado local, esto es algo que ocurre solo en el front
+
+      En el modo de creacion en la precarga, inicialmente en base al pacienteId que recibimos desde initialValues debemos buscar el match del paciente que matchee con el id, luego escribimos el nombre del paciente donde dice paciente y el expediente donde dice expedinte, si el user cambia los valores de epedoente debe funcionar como se descrivio antes
+      
+      */
+  };
+
+  const handlePaciente = (e) => {
+    const expediente = e.target.value;
+    const pacienteEncontrado = patients.find(
+      (paciente) => paciente.numeroExpediente === expediente
+    );
+
+    if (pacienteEncontrado) {
+      formik.setFieldValue("pacienteId", pacienteEncontrado.id);
+      setLocalValues((prev) => ({
+        ...prev,
+        expediente: expediente,
+        pacienteId: pacienteEncontrado.id,
+        edad: pacienteEncontrado.edad || "0",
+        paciente: `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`,
+      }));
+    } else {
+      formik.setFieldValue("pacienteId", "");
+      setLocalValues((prev) => ({
+        ...prev,
+        expediente: expediente,
+        paciente: "No existe",
+        edad: "0",
+      }));
+    }
   };
 
   useEffect(() => {
@@ -87,8 +127,11 @@ const OrdenIntrauterinaForm = ({
           id="expediente"
           name="expediente"
           value={localValues.expediente || ""}
-          onChange={handleLocalChange} // Cambia solo el estado local
-          onBlur={handleBlurAndSync} // Sincroniza con Formik
+          onChange={(e) => {
+            handleLocalChange(e);
+            handlePaciente(e);
+          }}
+          onBlur={handleBlurAndSync}
         />
       </div>
 
@@ -96,11 +139,11 @@ const OrdenIntrauterinaForm = ({
       <div className="item">
         <label htmlFor="edad">Paciente</label>
         <Input
-          className="text"
+          className="textarea"
           id="edad"
           name="edad"
           disabled={true}
-          value={localValues.edad || "0"} // Suponiendo que se guarda un valor de edad en localValues
+          value={localValues.paciente || "No existe"}
           style={{
             color: "#4b4b4b",
             backgroundColor: "#fff",
