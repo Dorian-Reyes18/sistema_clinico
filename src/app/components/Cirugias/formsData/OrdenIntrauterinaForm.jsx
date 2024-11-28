@@ -16,7 +16,7 @@ const OrdenIntrauterinaForm = ({
   const [localValues, setLocalValues] = useState({
     pacienteId: initialValues?.pacienteId || null,
     fechaDeCreacion: initialValues?.fechaDeCreacion || null,
-    tipoCirugia: initialValues?.tipoCirugia || "",
+    tipoCirugia: initialValues?.tipoCirugia || "", // Aseguramos que tipoCirugia se inicializa correctamente
     teniaDiagnostico: initialValues?.teniaDiagnostico || false,
     complicacionesQuirurgicas: initialValues?.complicacionesQuirurgicas || "",
     estado: initialValues?.estado || false,
@@ -29,10 +29,10 @@ const OrdenIntrauterinaForm = ({
   const formik = useFormik({
     initialValues: {
       fechaDeCreacion: null,
-      tipoCirugia: "",
-      teniaDiagnostico: false,
-      complicacionesQuirurgicas: "",
-      estado: false,
+      tipoCirugia: initialValues?.tipoCirugia || "", // Aseguramos que tipoCirugia se inicializa correctamente
+      teniaDiagnostico: initialValues?.teniaDiagnostico || false,
+      complicacionesQuirurgicas: initialValues?.complicacionesQuirurgicas || "",
+      estado: initialValues?.estado || false,
       pacienteId: initialValues?.pacienteId || "",
     },
     validationSchema: Yup.object({
@@ -101,6 +101,7 @@ const OrdenIntrauterinaForm = ({
           expediente: pacienteEncontrado.numeroExpediente,
           paciente: `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`,
         });
+        formik.setFieldValue("tipoCirugia", initialValues.tipoCirugia); // Precargamos tipoCirugia en Formik
       }
     }
   }, [mode, initialValues, patients]);
@@ -161,14 +162,9 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="tipoCirugia"
           name="tipoCirugia"
-          value={localValues.tipoCirugia || ""}
-          onChange={(value) =>
-            setLocalValues((prev) => ({
-              ...prev,
-              tipoCirugia: value,
-            }))
-          }
-          onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
+          value={formik.values.tipoCirugia} // Usamos Formik para este campo
+          onChange={(value) => formik.setFieldValue("tipoCirugia", value)} // Actualizamos directamente en Formik
+          onBlur={() => formik.setFieldTouched("tipoCirugia", true)} // Seguimos gestionando el toque
         >
           <Option value="Percutanea">Percutánea</Option>
           <Option value="Endoscopica">Endoscópica</Option>
