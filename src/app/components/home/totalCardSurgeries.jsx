@@ -8,10 +8,11 @@ import {
 import CardSurgeries from "./cardSurgeries";
 import DefaultIcon from "@images/home/cirugia.png";
 import TotalIcon from "@images/home/todas.png";
+import { Spin } from "antd";
 
 const TotalCardSurgeries = () => {
   const { surgeriesPost, error, token } = useAuth();
-  const [recentSurgeries, setRecentSurgeries] = useState([]); // Estado para las cirugías recientes
+  const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeryCounts, setSurgeryCounts] = useState({
     todas: 0,
     percutanea: 0,
@@ -115,7 +116,20 @@ const TotalCardSurgeries = () => {
   }, [recentSurgeries, surgeriesPost]);
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "40px 0",
+        }}
+      >
+        <div className="loading-message">
+          <Spin /> <span>Calculando cirugías...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {

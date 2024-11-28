@@ -3,14 +3,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
 import { useAuth } from "@/app/hooks/authContext";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-import utc from "dayjs/plugin/utc";
-
-dayjs.locale("es");
-dayjs.extend(utc);
 
 const { Option } = Select;
 
@@ -21,29 +13,25 @@ const OrdenIntrauterinaForm = ({
   confirmButton,
 }) => {
   const { metadata } = useAuth();
+  const [localValues, setLocalValues] = useState({
+    pacienteId: initialValues?.pacienteId || null,
+    fechaDeCreacion: initialValues?.fechaDeCreacion || null,
+    tipoCirugia: initialValues?.tipoCirugia || "",
+    teniaDiagnostico: initialValues?.teniaDiagnostico || false,
+    complicacionesQuirurgicas: initialValues?.complicacionesQuirurgicas || "",
+    estado: initialValues?.estado || false,
+  });
+
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  const initialFormikValues = {
-    pacienteId: initialValues?.ordenQuirurgica?.paciente?.id || null,
-    fechaDeCreacion: initialValues?.ordenQuirurgica?.fechaDeCreacion || null,
-    tipoCirugia: initialValues?.ordenQuirurgica?.tipoCirugia || "",
-    teniaDiagnostico: initialValues?.ordenQuirurgica?.teniaDiagnostico || false,
-    complicacionesQuirurgicas:
-      initialValues?.ordenQuirurgica?.complicacionesQuirurgicas || "",
-    estado: initialValues?.ordenQuirurgica?.estado || false,
-  };
-
   const formik = useFormik({
-    initialValues:
-      mode === "isEditMode"
-        ? initialFormikValues
-        : {
-            fechaDeCreacion: null,
-            tipoCirugia: "",
-            teniaDiagnostico: false,
-            complicacionesQuirurgicas: "",
-            estado: false,
-          },
+    initialValues: {
+      fechaDeCreacion: null,
+      tipoCirugia: "",
+      teniaDiagnostico: false,
+      complicacionesQuirurgicas: "",
+      estado: false,
+    },
     validationSchema: Yup.object({
       fechaDeCreacion: Yup.date().optional().notRequired(),
       tipoCirugia: Yup.string().required("*Requerido"),
@@ -52,18 +40,32 @@ const OrdenIntrauterinaForm = ({
       estado: Yup.boolean().required("*Requerido"),
     }),
     onSubmit: (values) => {
-      const pacienteData = {
-        ...values,
-        pacienteId: mode === "isEditMode" ? formik.values.pacienteId : null,
-      };
-      onSubmit(pacienteData);
+      onSubmit(values);
       setHasSubmitted(true);
     },
   });
 
-  const handleFieldBlur = (e) => {
+  // Sincroniza los valores locales con Formik solo en eventos clave
+  const handleBlurAndSync = (e) => {
+    const { name } = e.target;
+    formik.setFieldValue(name, localValues[name]); // Sincroniza con Formik
     formik.handleBlur(e);
   };
+
+  // Manejadores para los campos
+  const handleLocalChange = (e) => {
+    const { name, value } = e.target;
+    setLocalValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    if (mode === "isEditMode" && initialValues) {
+      setLocalValues(initialValues);
+    }
+  }, [initialValues, mode]);
 
   useEffect(() => {
     if (confirmButton && confirmButton !== hasSubmitted) {
@@ -84,21 +86,21 @@ const OrdenIntrauterinaForm = ({
           className="text"
           id="expediente"
           name="expediente"
-          value={formik.values.expediente || ""}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          value={localValues.expediente || ""}
+          onChange={handleLocalChange} // Cambia solo el estado local
+          onBlur={handleBlurAndSync} // Sincroniza con Formik
         />
       </div>
 
       {/* Campo de Paciente */}
       <div className="item">
-        <label htmlFor="Paciente">Paciente</label>
+        <label htmlFor="edad">Paciente</label>
         <Input
           className="text"
           id="edad"
           name="edad"
           disabled={true}
-          value={formik.values.edad || "0"}
+          value={localValues.edad || "0"} // Suponiendo que se guarda un valor de edad en localValues
           style={{
             color: "#4b4b4b",
             backgroundColor: "#fff",
@@ -118,14 +120,20 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="tipoCirugia"
           name="tipoCirugia"
-          onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
-          onBlur={handleFieldBlur}
-          value={formik.values.tipoCirugia || ""}
+          value={localValues.tipoCirugia || ""}
+          onChange={(value) =>
+            setLocalValues((prev) => ({
+              ...prev,
+              tipoCirugia: value,
+            }))
+          }
+          onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
         >
           <Option value="Percutanea">Percutánea</Option>
           <Option value="Endoscopica">Endoscópica</Option>
           <Option value="Abierta">Abierta</Option>
         </Select>
+
         {formik.touched.tipoCirugia && formik.errors.tipoCirugia && (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.tipoCirugia}
@@ -139,19 +147,22 @@ const OrdenIntrauterinaForm = ({
           Estado: <span className="señal-req"> *</span>
         </label>
         <Select
-          className="select"
           placeholder="Seleccione..."
           id="estado"
           name="estado"
+          value={localValues.estado ? "Activa" : "Finalizada"}
           onChange={(value) =>
-            formik.setFieldValue("estado", value === "Activa")
+            setLocalValues((prev) => ({
+              ...prev,
+              estado: value === "Activa",
+            }))
           }
-          onBlur={handleFieldBlur}
-          value={formik.values.estado ? "Activa" : "Finalizada"}
+          onBlur={() => formik.setFieldTouched("estado", true)}
         >
           <Option value="Activa">Activa</Option>
           <Option value="Finalizada">Finalizada</Option>
         </Select>
+
         {formik.touched.estado && formik.errors.estado && (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.estado}
@@ -167,14 +178,9 @@ const OrdenIntrauterinaForm = ({
           className="textarea"
           id="complicacionesQuirurgicas"
           name="complicacionesQuirurgicas"
-          onChange={(e) =>
-            formik.setFieldValue("complicacionesQuirurgicas", e.target.value)
-          }
-          value={formik.values.complicacionesQuirurgicas || ""}
-          onBlur={(e) => {
-            handleFieldBlur(e);
-            formik.validateField("complicacionesQuirurgicas");
-          }}
+          value={localValues.complicacionesQuirurgicas || ""}
+          onChange={handleLocalChange}
+          onBlur={handleBlurAndSync}
         />
         {formik.touched.complicacionesQuirurgicas &&
           formik.errors.complicacionesQuirurgicas && (

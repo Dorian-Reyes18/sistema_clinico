@@ -11,10 +11,10 @@ import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
-  const { patients, prenatalSurgeries, token } = useAuth();
+  const { patients, prenatalSurgeries, token } = useAuth(); //de un array de objeto y cada objeto es un paciente en el hay un id y un numeroExpediente
   const [confirmButton, setConfirmButton] = useState(false);
-  const [allOrders, setAllOrders] = useState([]);
-  const [currentOrder, setCurrentOrder] = useState({});
+  const [currentSurgery, setCurrentSurgery] = useState(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formConfig = [
     {
@@ -24,6 +24,19 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       initialValues: {},
     },
   ];
+
+  // Efectos
+
+  // Guardamos la cirugía actual si estamos en edición
+  useEffect(() => {
+    if (mode === "isEditMode") {
+      const data = prenatalSurgeries?.ordenesQuirurgicas;
+      const surgery = data.find((orden) => orden.id === parseInt(id));
+      setCurrentSurgery(surgery || null);
+      // console.log("Current Surgery asignado :", surgery);
+      // console.log("pacientes", patients);
+    }
+  }, [id, prenatalSurgeries]);
 
   // Funciones
 
@@ -66,10 +79,6 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     });
   };
 
-  useEffect(() => {
-    console.log("juana");
-  });
-
   return (
     <div className="prenatal-form-container">
       <div className="titleForm">
@@ -96,7 +105,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
               <div className="body">
                 <FormComponent
                   mode={mode}
-                  initialValues={initialValues}
+                  initialValues={currentSurgery}
                   id={id}
                 />
               </div>
