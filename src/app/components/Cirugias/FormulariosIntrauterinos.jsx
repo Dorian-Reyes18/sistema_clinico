@@ -8,6 +8,7 @@ import confirm from "antd/es/modal/confirm";
 // Formularios
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
+import CirugiaPercutanea1 from "./formsData/Percutanea1Form";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
@@ -96,6 +97,15 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       name: "DiagnosticoPrenatalForm",
       label: "Diagnóstico Prenatal",
       formComponent: DiagnosticoPrenatalForm,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.diagnosticoPrenatal || null,
+    },
+    {
+      name: "CirugiaPercutanea1",
+      label: "Cirigia - percutanea Feto 1",
+      formComponent: CirugiaPercutanea1,
       initialValues:
         mode === "isCreateMode"
           ? {}

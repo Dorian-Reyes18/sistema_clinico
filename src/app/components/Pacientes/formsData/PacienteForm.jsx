@@ -303,6 +303,7 @@ const PacienteForm = ({
       {renderField("segundoApellido", "Segundo Apellido", "text", "text")}
       {renderField("telefono1", "Teléfono 1", "number", "tlf", false, true)}
       {renderField("telefono2", "Teléfono 2", "number", "tlf")}
+      
       <div className="item">
         <label htmlFor="fechaNac">
           Fecha de Nacimiento:
