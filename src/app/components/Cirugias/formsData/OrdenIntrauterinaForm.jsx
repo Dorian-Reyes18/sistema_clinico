@@ -21,14 +21,13 @@ const OrdenIntrauterinaForm = ({
       tipoCirugia: "",
       teniaDiagnostico: false,
       complicacionesQuirurgicas: "",
-      estado: false,
+      estado: undefined,
       pacienteId: null,
     },
     validationSchema: Yup.object({
       tipoCirugia: Yup.string().required("*Requerido"),
       teniaDiagnostico: Yup.boolean().optional(),
       complicacionesQuirurgicas: Yup.string().optional(),
-      estado: Yup.boolean().required("*Requerido"),
       pacienteId: Yup.string().required("*Requerido"),
     }),
     onSubmit: (values) => {
@@ -51,7 +50,7 @@ const OrdenIntrauterinaForm = ({
         teniaDiagnostico: initialValues.teniaDiagnostico || false,
         complicacionesQuirurgicas:
           initialValues.complicacionesQuirurgicas || "",
-        estado: initialValues.estado || false,
+        estado: initialValues.estado || null,
         pacienteId: initialValues.pacienteId || "",
       });
 
@@ -170,7 +169,13 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="estado"
           name="estado"
-          value={formik.values.estado ? "Activa" : "Finalizada"}
+          value={
+            formik.values.estado !== undefined
+              ? formik.values.estado
+                ? "Activa"
+                : "Finalizada"
+              : undefined
+          }
           onChange={(value) =>
             formik.setFieldValue("estado", value === "Activa")
           }
