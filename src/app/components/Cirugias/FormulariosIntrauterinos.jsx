@@ -14,6 +14,11 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
   const { patients, prenatalSurgeries, token } = useAuth();
   const [confirmButton, setConfirmButton] = useState(false);
   const [currentSurgery, setCurrentSurgery] = useState(null);
+  const [cirugiaForm, setCirugiaForms] = useState({
+    cirugia1: false,
+    cirugia2: false,
+    cirugia3: false,
+  });
 
   useEffect(() => {
     if (mode === "isEditMode") {
