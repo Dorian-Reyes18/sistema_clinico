@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
-import { Modal, Spin, notification } from "antd";
+import { Modal, notification } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 // Formularios
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
+import confirm from "antd/es/modal/confirm";
 
 // Servicios
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
-  const { patients, prenatalSurgeries, token } = useAuth(); //de un array de objeto y cada objeto es un paciente en el hay un id y un numeroExpediente
+  const { patients, prenatalSurgeries, token } = useAuth();
   const [confirmButton, setConfirmButton] = useState(false);
   const [currentSurgery, setCurrentSurgery] = useState(null);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [dataFormsReceive, setDataFormsReceive] = useState([]);
 
   const formConfig = [
     {
@@ -27,26 +29,30 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
 
   // Efectos
 
-  // Guardamos la cirugía actual si estamos en edición
   useEffect(() => {
     if (mode === "isEditMode") {
       const data = prenatalSurgeries?.ordenesQuirurgicas;
       const surgery = data.find((orden) => orden.id === parseInt(id));
       setCurrentSurgery(surgery || null);
-      // console.log("Current Surgery asignado :", surgery);
-      // console.log("pacientes", patients);
     }
   }, [id, prenatalSurgeries]);
+
+  // Manejar el envío de cada formulario
+  const handleFormSubmit = (formName) => (data) => {
+    console.log("Datos recibidos en el padre:", data);
+  };
 
   // Funciones
 
   const handleSave = () => {
-    const modalTitle = "isCreateMode"
-      ? "¿Está seguro de crear la cirugía?"
-      : "¿Está seguro de guardar los cambios?";
-    const modalContent = "isCreateMode"
-      ? "Los datos se guardarán y se creará una nueva cirugía."
-      : "Los cambios serán guardados y no podrás deshacerlos.";
+    const modalTitle =
+      mode === "isCreateMode"
+        ? "¿Está seguro de crear la cirugía?"
+        : "¿Está seguro de guardar los cambios?";
+    const modalContent =
+      mode === "isCreateMode"
+        ? "Los datos se guardarán y se creará una nueva cirugía."
+        : "Los cambios serán guardados y no podrás deshacerlos.";
 
     Modal.confirm({
       title: modalTitle,
@@ -79,6 +85,18 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     });
   };
 
+  // Notificación de éxito
+  const notifySuccess = () => {
+    notification.success({
+      message: "Operación exitosa",
+      description:
+        mode === "isCreateMode"
+          ? "La cirugía fue creada con éxito"
+          : "Los cambios fueron guardados correctamente.",
+      icon: <CheckCircleOutlined style={{ color: "#108ee9" }} />,
+    });
+  };
+
   return (
     <div className="prenatal-form-container">
       <div className="titleForm">
@@ -96,26 +114,27 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       </div>
 
       <div className="forms-container">
-        {formConfig.map(
-          ({ name, label, formComponent: FormComponent, initialValues }) => (
-            <div className="group-form" key={name}>
-              <div className="header">
-                <strong>{label}</strong>
-              </div>
-              <div className="body">
-                <FormComponent
-                  mode={mode}
-                  initialValues={currentSurgery}
-                  id={id}
-                />
-              </div>
+        {formConfig.map(({ name, label, formComponent: FormComponent }) => (
+          <div className="group-form" key={name}>
+            <div className="header">
+              <strong>{label}</strong>
             </div>
-          )
-        )}
+            <div className="body">
+              <FormComponent
+                mode={mode}
+                initialValues={currentSurgery}
+                id={id}
+                confirmButton={confirmButton}
+                onSubmit={handleFormSubmit(name)}
+              />
+            </div>
+          </div>
+        ))}
       </div>
+
       <div className="btn-opt">
         <button className="btn btn-azul" onClick={handleSave}>
-          {mode === "isCreateMode" ? "Crear cirugia" : "Guardar Cambios"}
+          {mode === "isCreateMode" ? "Crear cirugía" : "Guardar Cambios"}
         </button>
         <button onClick={handleCancelBtn} className="btn btn-gris">
           Cancelar

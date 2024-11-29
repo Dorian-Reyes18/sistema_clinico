@@ -25,7 +25,7 @@ const AntecedentesFamiliaresForm = ({
         opcion: values.opcion,
         descripcion: values.descripcion,
       };
-      console.log("Datos enviados:", formData); // Debug
+      console.log("Datos enviados:", formData); 
       onSubmit(formData);
       setHasSubmitted(true);
     },

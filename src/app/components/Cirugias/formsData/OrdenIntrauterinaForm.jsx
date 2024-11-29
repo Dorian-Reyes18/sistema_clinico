@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
@@ -13,58 +13,94 @@ const OrdenIntrauterinaForm = ({
   confirmButton,
 }) => {
   const { patients } = useAuth();
-  const [localValues, setLocalValues] = useState({
-    pacienteId: initialValues?.pacienteId || null,
-    fechaDeCreacion: initialValues?.fechaDeCreacion || null,
-    tipoCirugia: initialValues?.tipoCirugia || "", // Aseguramos que tipoCirugia se inicializa correctamente
-    teniaDiagnostico: initialValues?.teniaDiagnostico || false,
-    complicacionesQuirurgicas: initialValues?.complicacionesQuirurgicas || "",
-    estado: initialValues?.estado || false,
-    expediente: "",
-    paciente: "",
-  });
-
-  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      fechaDeCreacion: null,
-      tipoCirugia: initialValues?.tipoCirugia || "", // Aseguramos que tipoCirugia se inicializa correctamente
-      teniaDiagnostico: initialValues?.teniaDiagnostico || false,
-      complicacionesQuirurgicas: initialValues?.complicacionesQuirurgicas || "",
-      estado: initialValues?.estado || false,
-      pacienteId: initialValues?.pacienteId || "",
+      expediente: "",
+      paciente: "",
+      fechaDeCreacion:
+        mode === "isEditMode" ? initialValues?.fechaDeCreacion || null : null,
+      tipoCirugia:
+        mode === "isEditMode" ? initialValues?.tipoCirugia || "" : "",
+      teniaDiagnostico:
+        mode === "isEditMode"
+          ? initialValues?.teniaDiagnostico || false
+          : false,
+      complicacionesQuirurgicas:
+        mode === "isEditMode"
+          ? initialValues?.complicacionesQuirurgicas || ""
+          : "",
+      estado: mode === "isEditMode" ? initialValues?.estado || false : false,
+      pacienteId:
+        mode === "isEditMode" ? initialValues?.pacienteId || "" : null,
     },
     validationSchema: Yup.object({
-      fechaDeCreacion: Yup.date().optional().notRequired(),
+      fechaDeCreacion: Yup.date().optional(),
       tipoCirugia: Yup.string().required("*Requerido"),
-      teniaDiagnostico: Yup.boolean().optional().notRequired(),
-      complicacionesQuirurgicas: Yup.string().optional().notRequired(),
+      teniaDiagnostico: Yup.boolean().optional(),
+      complicacionesQuirurgicas: Yup.string().optional(),
       estado: Yup.boolean().required("*Requerido"),
       pacienteId: Yup.string().required("*Requerido"),
     }),
     onSubmit: (values) => {
-      onSubmit(values);
-      setHasSubmitted(true);
+      const formData = {
+        ...values,
+        pacienteId:
+          mode === "isEditMode" ? formik.values.pacienteId || null : null,
+      };
+      console.log("Formulario enviado:", formData);
+      onSubmit(formData);
     },
   });
 
-  // Sincroniza los valores locales con Formik solo en eventos clave
-  const handleBlurAndSync = (e) => {
-    const { name } = e.target;
-    formik.setFieldValue(name, localValues[name]);
-    formik.handleBlur(e);
-  };
+  // Sincroniza todos los datos relacionados en un solo useEffect
+  useEffect(() => {
+    if (mode === "isEditMode") {
+      // Sincroniza los datos del paciente
+      if (initialValues?.pacienteId) {
+        const pacienteEncontrado = patients.find(
+          (paciente) => paciente.id === initialValues.pacienteId
+        );
+        if (pacienteEncontrado) {
+          formik.setFieldValue(
+            "expediente",
+            pacienteEncontrado.numeroExpediente
+          );
+          formik.setFieldValue(
+            "paciente",
+            `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`
+          );
+        }
+      }
 
-  // Manejadores para los campos
-  const handleLocalChange = (e) => {
-    const { name, value } = e.target;
-    setLocalValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+      // Sincroniza el tipo de cirugía
+      if (initialValues?.tipoCirugia) {
+        const opcionesValidas = ["Percutanea", "Endoscopica", "Abierta"];
+        const valorMapeado = opcionesValidas.find(
+          (opcion) =>
+            opcion.toLowerCase() === initialValues.tipoCirugia.toLowerCase()
+        );
+        formik.setFieldValue("tipoCirugia", valorMapeado || "");
+      }
 
+      // Sincroniza el estado
+      if (initialValues?.estado !== undefined) {
+        formik.setFieldValue(
+          "estado",
+          initialValues.estado ? "Activa" : "Finalizada"
+        );
+      }
+    }
+  }, [mode, initialValues, patients]);
+
+  // Enviar formulario automáticamente al cambiar confirmButton
+  useEffect(() => {
+    if (confirmButton) {
+      formik.submitForm();
+    }
+  }, [confirmButton]);
+
+  // Manejador para cambiar el expediente
   const handlePaciente = (e) => {
     const expediente = e.target.value;
     const pacienteEncontrado = patients.find(
@@ -73,45 +109,16 @@ const OrdenIntrauterinaForm = ({
 
     if (pacienteEncontrado) {
       formik.setFieldValue("pacienteId", pacienteEncontrado.id);
-      setLocalValues((prev) => ({
-        ...prev,
-        expediente: expediente,
-        pacienteId: pacienteEncontrado.id,
-        paciente: `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`,
-      }));
+      formik.setFieldValue(
+        "paciente",
+        `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`
+      );
     } else {
       formik.setFieldValue("pacienteId", "");
-      setLocalValues((prev) => ({
-        ...prev,
-        expediente: expediente,
-        paciente: expediente ? "No existe" : "", // Mostrar "No existe" solo si hay un expediente
-      }));
+      formik.setFieldValue("paciente", expediente ? "No existe" : "");
     }
+    formik.setFieldValue("expediente", expediente);
   };
-
-  // Sincroniza la información del paciente cuando entras en modo edición
-  useEffect(() => {
-    if (mode === "isEditMode" && initialValues?.pacienteId) {
-      const pacienteEncontrado = patients.find(
-        (paciente) => paciente.id === initialValues.pacienteId
-      );
-      if (pacienteEncontrado) {
-        setLocalValues({
-          ...initialValues,
-          expediente: pacienteEncontrado.numeroExpediente,
-          paciente: `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`,
-        });
-        formik.setFieldValue("tipoCirugia", initialValues.tipoCirugia); // Precargamos tipoCirugia en Formik
-      }
-    }
-  }, [mode, initialValues, patients]);
-
-  useEffect(() => {
-    if (confirmButton && confirmButton !== hasSubmitted) {
-      formik.submitForm();
-      setHasSubmitted(confirmButton);
-    }
-  }, [confirmButton, hasSubmitted, formik]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -125,12 +132,9 @@ const OrdenIntrauterinaForm = ({
           className="text"
           id="expediente"
           name="expediente"
-          value={localValues.expediente || ""}
-          onChange={(e) => {
-            handleLocalChange(e);
-            handlePaciente(e);
-          }}
-          onBlur={handleBlurAndSync}
+          value={formik.values.expediente}
+          onChange={handlePaciente}
+          onBlur={formik.handleBlur}
         />
       </div>
 
@@ -142,7 +146,7 @@ const OrdenIntrauterinaForm = ({
           id="paciente"
           name="paciente"
           disabled={true}
-          value={localValues.paciente || ""}
+          value={formik.values.paciente}
           style={{
             color: "#4b4b4b",
             backgroundColor: "#fff",
@@ -162,9 +166,9 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="tipoCirugia"
           name="tipoCirugia"
-          value={formik.values.tipoCirugia} // Usamos Formik para este campo
-          onChange={(value) => formik.setFieldValue("tipoCirugia", value)} // Actualizamos directamente en Formik
-          onBlur={() => formik.setFieldTouched("tipoCirugia", true)} // Seguimos gestionando el toque
+          value={formik.values.tipoCirugia || undefined}
+          onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
+          onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
         >
           <Option value="Percutanea">Percutánea</Option>
           <Option value="Endoscopica">Endoscópica</Option>
@@ -187,19 +191,15 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="estado"
           name="estado"
-          value={localValues.estado ? "Activa" : "Finalizada"}
+          value={formik.values.estado ? "Activa" : "Finalizada"}
           onChange={(value) =>
-            setLocalValues((prev) => ({
-              ...prev,
-              estado: value === "Activa",
-            }))
+            formik.setFieldValue("estado", value === "Activa")
           }
           onBlur={() => formik.setFieldTouched("estado", true)}
         >
           <Option value="Activa">Activa</Option>
           <Option value="Finalizada">Finalizada</Option>
         </Select>
-
         {formik.touched.estado && formik.errors.estado && (
           <div className="requerido" style={{ color: "red" }}>
             {formik.errors.estado}
@@ -215,9 +215,9 @@ const OrdenIntrauterinaForm = ({
           className="textarea"
           id="complicacionesQuirurgicas"
           name="complicacionesQuirurgicas"
-          value={localValues.complicacionesQuirurgicas || ""}
-          onChange={handleLocalChange}
-          onBlur={handleBlurAndSync}
+          value={formik.values.complicacionesQuirurgicas || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
         {formik.touched.complicacionesQuirurgicas &&
           formik.errors.complicacionesQuirurgicas && (
