@@ -121,9 +121,9 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
             </div>
             <div className="body">
               <FormComponent
-                mode={mode}
-                initialValues={currentSurgery}
                 id={id}
+                mode={mode}
+                initialValues={mode === "isCreateMode" ? {} : currentSurgery}
                 confirmButton={confirmButton}
                 onSubmit={handleFormSubmit(name)}
               />

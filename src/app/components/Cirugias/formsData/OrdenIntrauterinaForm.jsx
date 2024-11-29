@@ -18,24 +18,13 @@ const OrdenIntrauterinaForm = ({
     initialValues: {
       expediente: "",
       paciente: "",
-      fechaDeCreacion:
-        mode === "isEditMode" ? initialValues?.fechaDeCreacion || null : null,
-      tipoCirugia:
-        mode === "isEditMode" ? initialValues?.tipoCirugia || "" : "",
-      teniaDiagnostico:
-        mode === "isEditMode"
-          ? initialValues?.teniaDiagnostico || false
-          : false,
-      complicacionesQuirurgicas:
-        mode === "isEditMode"
-          ? initialValues?.complicacionesQuirurgicas || ""
-          : "",
-      estado: mode === "isEditMode" ? initialValues?.estado || false : false,
-      pacienteId:
-        mode === "isEditMode" ? initialValues?.pacienteId || "" : null,
+      tipoCirugia: "",
+      teniaDiagnostico: false,
+      complicacionesQuirurgicas: "",
+      estado: false,
+      pacienteId: null,
     },
     validationSchema: Yup.object({
-      fechaDeCreacion: Yup.date().optional(),
       tipoCirugia: Yup.string().required("*Requerido"),
       teniaDiagnostico: Yup.boolean().optional(),
       complicacionesQuirurgicas: Yup.string().optional(),
@@ -48,7 +37,6 @@ const OrdenIntrauterinaForm = ({
       formData.pacienteId =
         mode === "isEditMode" ? formik.values.pacienteId || null : null;
 
-      console.log("Formulario enviado:", formData);
       onSubmit(formData);
     },
   });
@@ -59,7 +47,6 @@ const OrdenIntrauterinaForm = ({
       formik.setValues({
         expediente: initialValues.expediente || "",
         paciente: initialValues.paciente || "",
-        fechaDeCreacion: initialValues.fechaDeCreacion || null,
         tipoCirugia: initialValues.tipoCirugia || "",
         teniaDiagnostico: initialValues.teniaDiagnostico || false,
         complicacionesQuirurgicas:
@@ -218,7 +205,6 @@ const OrdenIntrauterinaForm = ({
             </div>
           )}
       </div>
-      <div></div>
     </form>
   );
 };
