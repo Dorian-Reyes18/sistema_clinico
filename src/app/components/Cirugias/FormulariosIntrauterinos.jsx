@@ -91,7 +91,10 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       name: "DiagnosticoPrenatalForm",
       label: "Diagnóstico Prenatal",
       formComponent: DiagnosticoPrenatalForm,
-      initialValues: mode === "isCreateMode" ? {} : currentSurgery,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.diagnosticoPrenatal || null,
     },
   ];
 

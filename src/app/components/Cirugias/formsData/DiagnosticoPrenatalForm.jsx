@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Select, Input } from "antd";
+import { Select, Input, Switch } from "antd";
 import { useAuth } from "@/app/hooks/authContext";
 
 const { Option } = Select;
@@ -12,7 +11,7 @@ const DiagnosticoPrenatalForm = ({
   initialValues,
   confirmButton,
 }) => {
-  const { patients } = useAuth();
+  const { metadata } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -25,7 +24,7 @@ const DiagnosticoPrenatalForm = ({
       tipoEmbarazo: "",
     },
     onSubmit: (values) => {
-      formData = {
+      const formData = {
         cirugiaIntraId:
           mode === "isEditMode" ? formik.values.cirugiaIntraId || null : null,
         ...values,
@@ -37,35 +36,21 @@ const DiagnosticoPrenatalForm = ({
 
   // Sincronizar valores cuando initialValues cambian
   useEffect(() => {
-    if (mode === "isEditMode" && initialValues) {
-      formik.setValues({
-        expediente: initialValues.expediente || "",
-        paciente: initialValues.paciente || "",
-        tipoCirugia: initialValues.tipoCirugia || "",
-        teniaDiagnostico: initialValues.teniaDiagnostico || false,
-        complicacionesQuirurgicas:
-          initialValues.complicacionesQuirurgicas || "",
-        estado: initialValues.estado || null,
-        pacienteId: initialValues.pacienteId || "",
-      });
-
-      if (initialValues.pacienteId) {
-        const pacienteEncontrado = patients.find(
-          (paciente) => paciente.id === initialValues.pacienteId
-        );
-        if (pacienteEncontrado) {
-          formik.setFieldValue(
-            "expediente",
-            pacienteEncontrado.numeroExpediente
-          );
-          formik.setFieldValue(
-            "paciente",
-            `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`
-          );
-        }
+    if (initialValues?.length > 0) {
+      if (mode === "isEditMode") {
+        initialValues = initialValues[0];
+        formik.setValues({
+          cirugiaIntraId: initialValues.cirugiaIntraId || null,
+          categoriaId: initialValues.categoriaId || null,
+          tipoDefectoId: initialValues.tipoDefectoId || null,
+          tipoCirugiaRealizada: initialValues.tipoCirugiaRealizada || "",
+          estudioGen: initialValues.estudioGen || false,
+          resultadoEstGen: initialValues.resultadoEstGen || "",
+          tipoEmbarazo: initialValues.tipoEmbarazo || "",
+        });
       }
     }
-  }, [initialValues, mode, patients]);
+  }, [initialValues, mode]);
 
   useEffect(() => {
     if (confirmButton) {
@@ -73,137 +58,100 @@ const DiagnosticoPrenatalForm = ({
     }
   }, [confirmButton]);
 
-  // Manejador para cambiar el expediente
-  const handlePaciente = (e) => {
-    const expediente = e.target.value;
-    const pacienteEncontrado = patients.find(
-      (paciente) => paciente.numeroExpediente === expediente
-    );
-
-    if (pacienteEncontrado) {
-      formik.setFieldValue("pacienteId", pacienteEncontrado.id);
-      formik.setFieldValue(
-        "paciente",
-        `${pacienteEncontrado.primerNombre} ${pacienteEncontrado.segundoNombre} ${pacienteEncontrado.primerApellido} ${pacienteEncontrado.segundoApellido}`
-      );
-    } else {
-      formik.setFieldValue("pacienteId", "");
-      formik.setFieldValue("paciente", expediente ? "No existe" : "");
-    }
-    formik.setFieldValue("expediente", expediente);
+  const handleFieldBlur = (e) => {
+    formik.handleBlur(e);
   };
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {/* Campo de Expediente */}
+      {/* Campo de Categoría */}
       <div className="item">
-        <label htmlFor="expediente">
-          Expediente: <span className="señal-req"> *</span>
+        <label htmlFor="categoria">
+          Categoría: <span className="señal-req"> *</span>
         </label>
-        <Input
-          type="number"
-          className="text"
-          id="expediente"
-          name="expediente"
-          value={formik.values.expediente}
-          onChange={handlePaciente}
-          onBlur={formik.handleBlur}
-        />
+        <Select
+          className="select-lg"
+          placeholder="Seleccione la categoría"
+          id="categoria"
+          name="categoria"
+          value={formik?.values?.categoriaId || undefined}
+          onChange={(value) => formik.setFieldValue("categoriaId", value)}
+          onBlur={handleFieldBlur}
+        >
+          {metadata.categorias.map((cat) => (
+            <Select.Option key={cat.id} value={cat.id}>
+              {cat.opcion}
+            </Select.Option>
+          ))}
+        </Select>
       </div>
 
-      {/* Campo de Paciente */}
+      {/* Campo de tipo de Defecto */}
       <div className="item">
-        <label htmlFor="paciente">Paciente</label>
-        <Input
-          className="textarea"
-          id="paciente"
-          name="paciente"
-          disabled={true}
-          value={formik.values.paciente}
-          style={{
-            color: "#4b4b4b",
-            backgroundColor: "#fff",
-            opacity: 1,
-            cursor: "not-allowed",
-          }}
-        />
+        <label htmlFor="defecto">
+          Tipo de defecto: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-md"
+          placeholder="Seleccione el tipo de defecto."
+          id="defecto"
+          name="defecto"
+          value={formik?.values?.tipoDefectoId || undefined}
+          onChange={(value) => formik.setFieldValue("tipoDefectoId", value)}
+          onBlur={handleFieldBlur}
+        >
+          {metadata.tipoDefectos.map((def) => (
+            <Select.Option key={def.id} value={def.id}>
+              {def.nombreDefecto}
+            </Select.Option>
+          ))}
+        </Select>
       </div>
 
       {/* Campo de Tipo de Cirugía */}
       <div className="item">
-        <label htmlFor="tipoCirugia">
-          Cirugía: <span className="señal-req"> *</span>
+        <label htmlFor="tipoEmbarazo">
+          Embarazo: <span className="señal-req"> *</span>
         </label>
         <Select
           className="select"
           placeholder="Seleccione..."
-          id="tipoCirugia"
-          name="tipoCirugia"
-          value={formik?.values?.tipoCirugia || undefined}
-          onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
-          onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
+          id="tipoEmbarazo"
+          name="tipoEmbarazo"
+          value={formik?.values?.tipoEmbarazo || undefined}
+          onChange={(value) => formik.setFieldValue("tipoEmbarazo", value)}
+          onBlur={() => formik.setFieldTouched("tipoEmbarazo", true)}
         >
-          <Option value="Percutánea">Percutánea</Option>
-          <Option value="Endoscópica">Endoscópica</Option>
-          <Option value="Abierta">Abierta</Option>
+          <Option value="Único">Único</Option>
+          <Option value="Gemelos">Gemelos</Option>
+          <Option value="Triple">Triple</Option>
         </Select>
-
-        {formik.touched.tipoCirugia && formik.errors.tipoCirugia && (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.tipoCirugia}
-          </div>
-        )}
       </div>
 
-      {/* Campo de Estado */}
-      <div className="item">
-        <label htmlFor="estado">
-          Estado: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          placeholder="Seleccione..."
-          id="estado"
-          name="estado"
-          value={
-            formik.values.estado !== undefined
-              ? formik.values.estado
-                ? "Activa"
-                : "Finalizada"
-              : undefined
-          }
-          onChange={(value) =>
-            formik.setFieldValue("estado", value === "Activa")
-          }
-          onBlur={() => formik.setFieldTouched("estado", true)}
-        >
-          <Option value="Activa">Activa</Option>
-          <Option value="Finalizada">Finalizada</Option>
-        </Select>
-        {formik.touched.estado && formik.errors.estado && (
-          <div className="requerido" style={{ color: "red" }}>
-            {formik.errors.estado}
-          </div>
-        )}
+      {/* Campo de Resultados genéticos */}
+      <div className="item-switch">
+        <label htmlFor="estudioGen">Estudio genético</label>
+        <Switch
+          checked={formik.values.estudioGen}
+          onChange={(checked) => {
+            formik.setFieldValue("estudioGen", checked);
+            formik.setFieldTouched("estudioGen", true);
+          }}
+        />
       </div>
 
-      {/* Campo de Complicaciones */}
+      {/* Campo de Resultados geneticos */}
       <div className="item">
-        <label htmlFor="complicacionesQuirurgicas">Complicaciones</label>
+        <label htmlFor="resultadoEstGen">Resultados estudios geneticos</label>
         <Input.TextArea
           rows={1}
-          className="textarea"
-          id="complicacionesQuirurgicas"
-          name="complicacionesQuirurgicas"
-          value={formik.values.complicacionesQuirurgicas || ""}
+          className="textarea-lg"
+          id="resultadoEstGen"
+          name="resultadoEstGen"
+          value={formik.values.resultadoEstGen || ""}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        {formik.touched.complicacionesQuirurgicas &&
-          formik.errors.complicacionesQuirurgicas && (
-            <div className="requerido" style={{ color: "red" }}>
-              {formik.errors.complicacionesQuirurgicas}
-            </div>
-          )}
       </div>
     </form>
   );

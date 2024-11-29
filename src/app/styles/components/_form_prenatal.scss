@@ -129,9 +129,24 @@
               width: 540px;
             }
           }
-          .textarea-2 {
+          .select-md {
+            width: 350px;
+          }
+          .select-lg {
+            width: 500px;
+          }
+
+          .textarea {
             min-width: 220px;
-            width: fit-content;
+            width: 400px;
+
+            @include media(desktopXXL) {
+              width: 540px;
+            }
+          }
+          .textarea-lg {
+            min-width: 220px;
+            width: 525px;
 
             @include media(desktopXXL) {
               width: 540px;
