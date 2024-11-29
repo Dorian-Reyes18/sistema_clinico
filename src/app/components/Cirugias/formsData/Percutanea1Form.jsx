@@ -33,13 +33,23 @@ const CirugiaPercutanea1 = ({
       ablacionDeVasoTumoral: false,
       ablacionDeVasoNutricioSistemico: false,
       ablacionDeVasoNutricioFetal: false,
+      derivacionToracoAmnioticaUnilateral: false,
+      derivacionToracoAmnioticaBilateral: false,
+      cordocentesis: false,
+      drenajeDeMasaQuisticaRenal: false,
+      drenajeDeMasaQuisticaPulmonar: false,
+      toracocentesis: false,
+      cateterismoCardiaco: false,
       tipoAnestesiaId: "",
       frecuenciaCardiacaFetalInicio: "",
       bolsilloUnicoInicialDeLiquidoAmniotico: false,
+      diferenciaPorcentualDePeso: "",
       sangradoEstimado: "",
       frecuenciaCardiacaFetalFinalizacion: "",
       complicacionesQuirurgicas: "",
       complicacionesAnestesicas: "",
+      anastomosisCoaguladas: "",
+      proceso: "",
     },
     onSubmit: (values) => {
       const formData = {
@@ -65,23 +75,35 @@ const CirugiaPercutanea1 = ({
           horaInicioAnestesia: initialValues.horaInicioAnestesia,
           horaInicioCirugiaFetal: initialValues.horaInicioCirugiaFetal,
           horaFinalizacionCirugia: initialValues.horaFinalizacionCirugia,
-          ordenQuirurgicaId: initialValues.ordenQuirurgicaId,
-          ubicacionPlacentaria: initialValues.ubicacionPlacentaria,
+          tipoAnestesiaId: initialValues.tipoAnestesiaId,
+          complicacionesAnestesicas: initialValues.complicacionesAnestesicas,
+          anastomosisCoaguladas: initialValues.anastomosisCoaguladas,
+          sangradoEstimado: initialValues.sangradoEstimado,
+          complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
+          proceso: initialValues.proceso,
           ablacionDeVasoTumoral: initialValues.ablacionDeVasoTumoral,
-          ablacionDeVasoNutricioSistemico:
-            initialValues.ablacionDeVasoNutricioSistemico,
           ablacionDeVasoNutricioFetal:
             initialValues.ablacionDeVasoNutricioFetal,
-          tipoAnestesiaId: initialValues.tipoAnestesiaId,
-          frecuenciaCardiacaFetalInicio:
-            initialValues.frecuenciaCardiacaFetalInicio,
+          derivacionToracoAmnioticaUnilateral:
+            initialValues.derivacionToracoAmnioticaUnilateral,
+          derivacionToracoAmnioticaBilateral:
+            initialValues.derivacionToracoAmnioticaBilateral,
+          cordocentesis: initialValues.cordocentesis,
+          drenajeDeMasaQuisticaRenal: initialValues.drenajeDeMasaQuisticaRenal,
+          drenajeDeMasaQuisticaPulmonar:
+            initialValues.drenajeDeMasaQuisticaPulmonar,
+          toracocentesis: initialValues.toracocentesis,
+          cateterismoCardiaco: initialValues.cateterismoCardiaco,
+          ablacionDeVasoNutricioSistemico:
+            initialValues.ablacionDeVasoNutricioSistemico,
+          diferenciaPorcentualDePeso: initialValues.diferenciaPorcentualDePeso,
           bolsilloUnicoInicialDeLiquidoAmniotico:
             initialValues.bolsilloUnicoInicialDeLiquidoAmniotico,
-          sangradoEstimado: initialValues.sangradoEstimado,
+          frecuenciaCardiacaFetalInicio:
+            initialValues.frecuenciaCardiacaFetalInicio,
+          ubicacionPlacentaria: initialValues.ubicacionPlacentaria,
           frecuenciaCardiacaFetalFinalizacion:
             initialValues.frecuenciaCardiacaFetalFinalizacion,
-          complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
-          complicacionesAnestesicas: initialValues.complicacionesAnestesicas,
         });
       }
     }
