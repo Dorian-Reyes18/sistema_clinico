@@ -3,12 +3,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
 import { Modal, notification } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import confirm from "antd/es/modal/confirm";
 
 // Formularios
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
-import confirm from "antd/es/modal/confirm";
-
-// Servicios
+import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
@@ -16,33 +15,17 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
   const [confirmButton, setConfirmButton] = useState(false);
   const [currentSurgery, setCurrentSurgery] = useState(null);
 
-  const [dataFormsReceive, setDataFormsReceive] = useState([]);
-
-  const formConfig = [
-    {
-      name: "OrdenIntrauterinaForm",
-      label: "Datos generales",
-      formComponent: OrdenIntrauterinaForm,
-      initialValues: {},
-    },
-  ];
-
-  // Efectos
-
   useEffect(() => {
     if (mode === "isEditMode") {
       const data = prenatalSurgeries?.ordenesQuirurgicas;
-      const surgery = data.find((orden) => orden.id === parseInt(id));
+      const surgery = data?.find((orden) => orden.id === parseInt(id));
       setCurrentSurgery(surgery || null);
     }
   }, [id, prenatalSurgeries]);
 
-  // Manejar el envío de cada formulario
   const handleFormSubmit = (formName) => (data) => {
     console.log("Datos recibidos en el padre:", data);
   };
-
-  // Funciones
 
   const handleSave = () => {
     const modalTitle =
@@ -85,7 +68,6 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     });
   };
 
-  // Notificación de éxito
   const notifySuccess = () => {
     notification.success({
       message: "Operación exitosa",
@@ -96,6 +78,22 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       icon: <CheckCircleOutlined style={{ color: "#108ee9" }} />,
     });
   };
+
+  // Configuración de los formularios
+  const formConfig = [
+    {
+      name: "OrdenIntrauterinaForm",
+      label: "Datos generales",
+      formComponent: OrdenIntrauterinaForm,
+      initialValues: mode === "isCreateMode" ? {} : currentSurgery,
+    },
+    {
+      name: "DiagnosticoPrenatalForm",
+      label: "Diagnóstico Prenatal",
+      formComponent: DiagnosticoPrenatalForm,
+      initialValues: mode === "isCreateMode" ? {} : currentSurgery,
+    },
+  ];
 
   return (
     <div className="prenatal-form-container">
@@ -114,22 +112,24 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       </div>
 
       <div className="forms-container">
-        {formConfig.map(({ name, label, formComponent: FormComponent }) => (
-          <div className="group-form" key={name}>
-            <div className="header">
-              <strong>{label}</strong>
+        {formConfig.map(
+          ({ name, label, formComponent: FormComponent, initialValues }) => (
+            <div className="group-form" key={name}>
+              <div className="header">
+                <strong>{label}</strong>
+              </div>
+              <div className="body">
+                <FormComponent
+                  id={id}
+                  mode={mode}
+                  initialValues={initialValues}
+                  confirmButton={confirmButton}
+                  onSubmit={handleFormSubmit(name)}
+                />
+              </div>
             </div>
-            <div className="body">
-              <FormComponent
-                id={id}
-                mode={mode}
-                initialValues={mode === "isCreateMode" ? {} : currentSurgery}
-                confirmButton={confirmButton}
-                onSubmit={handleFormSubmit(name)}
-              />
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
 
       <div className="btn-opt">
