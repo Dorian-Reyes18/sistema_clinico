@@ -43,21 +43,32 @@ const OrdenIntrauterinaForm = ({
       pacienteId: Yup.string().required("*Requerido"),
     }),
     onSubmit: (values) => {
-      const formData = {
-        ...values,
-        pacienteId:
-          mode === "isEditMode" ? formik.values.pacienteId || null : null,
-      };
+      const { expediente, paciente, ...formData } = values;
+
+      formData.pacienteId =
+        mode === "isEditMode" ? formik.values.pacienteId || null : null;
+
       console.log("Formulario enviado:", formData);
       onSubmit(formData);
     },
   });
 
-  // Sincroniza todos los datos relacionados en un solo useEffect
+  // Sincronizar valores cuando initialValues cambian
   useEffect(() => {
-    if (mode === "isEditMode") {
-      // Sincroniza los datos del paciente
-      if (initialValues?.pacienteId) {
+    if (mode === "isEditMode" && initialValues) {
+      formik.setValues({
+        expediente: initialValues.expediente || "",
+        paciente: initialValues.paciente || "",
+        fechaDeCreacion: initialValues.fechaDeCreacion || null,
+        tipoCirugia: initialValues.tipoCirugia || "",
+        teniaDiagnostico: initialValues.teniaDiagnostico || false,
+        complicacionesQuirurgicas:
+          initialValues.complicacionesQuirurgicas || "",
+        estado: initialValues.estado || false,
+        pacienteId: initialValues.pacienteId || "",
+      });
+
+      if (initialValues.pacienteId) {
         const pacienteEncontrado = patients.find(
           (paciente) => paciente.id === initialValues.pacienteId
         );
@@ -72,28 +83,9 @@ const OrdenIntrauterinaForm = ({
           );
         }
       }
-
-      // Sincroniza el tipo de cirugía
-      if (initialValues?.tipoCirugia) {
-        const opcionesValidas = ["Percutanea", "Endoscopica", "Abierta"];
-        const valorMapeado = opcionesValidas.find(
-          (opcion) =>
-            opcion.toLowerCase() === initialValues.tipoCirugia.toLowerCase()
-        );
-        formik.setFieldValue("tipoCirugia", valorMapeado || "");
-      }
-
-      // Sincroniza el estado
-      if (initialValues?.estado !== undefined) {
-        formik.setFieldValue(
-          "estado",
-          initialValues.estado ? "Activa" : "Finalizada"
-        );
-      }
     }
-  }, [mode, initialValues, patients]);
+  }, [initialValues, mode, patients]);
 
-  // Enviar formulario automáticamente al cambiar confirmButton
   useEffect(() => {
     if (confirmButton) {
       formik.submitForm();
@@ -166,12 +158,12 @@ const OrdenIntrauterinaForm = ({
           placeholder="Seleccione..."
           id="tipoCirugia"
           name="tipoCirugia"
-          value={formik.values.tipoCirugia || undefined}
+          value={formik?.values?.tipoCirugia || undefined}
           onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
           onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
         >
-          <Option value="Percutanea">Percutánea</Option>
-          <Option value="Endoscopica">Endoscópica</Option>
+          <Option value="Percutánea">Percutánea</Option>
+          <Option value="Endoscópica">Endoscópica</Option>
           <Option value="Abierta">Abierta</Option>
         </Select>
 
@@ -226,6 +218,7 @@ const OrdenIntrauterinaForm = ({
             </div>
           )}
       </div>
+      <div></div>
     </form>
   );
 };
