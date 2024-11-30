@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Select, Input } from "antd";
@@ -11,8 +11,11 @@ const OrdenIntrauterinaForm = ({
   mode,
   initialValues,
   confirmButton,
+  setShowCirugiaForms,
+  showCirugiaForm,
 }) => {
   const { patients } = useAuth();
+  const [selectedCirugia, setSelectedCirugia] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -77,6 +80,71 @@ const OrdenIntrauterinaForm = ({
       formik.submitForm();
     }
   }, [confirmButton]);
+
+  useEffect(() => {
+    if (showCirugiaForm) {
+      if (mode === "isCreateMode") {
+        if (selectedCirugia === "Percutánea" && !showCirugiaForm.percutanea) {
+          setShowCirugiaForms({
+            percutanea: true,
+            endoscopica: false,
+            abierta: false,
+          });
+        } else if (
+          selectedCirugia === "Endoscópica" &&
+          !showCirugiaForm.endoscopica
+        ) {
+          setShowCirugiaForms({
+            percutanea: false,
+            endoscopica: true,
+            abierta: false,
+          });
+        } else {
+          setShowCirugiaForms({
+            percutanea: false,
+            endoscopica: false,
+            abierta: true,
+          });
+        }
+      }
+    }
+  }, [selectedCirugia]);
+
+  useEffect(() => {
+    if (mode === "isEditMode" && initialValues) {
+      console.log(initialValues);
+      if (
+        initialValues?.tipoCirugia === "Percutánea" &&
+        !showCirugiaForm.percutanea
+      ) {
+        setShowCirugiaForms({
+          percutanea: true,
+          endoscopica: false,
+          abierta: false,
+        });
+      } else if (
+        initialValues?.tipoCirugia === "Endoscópica" &&
+        !showCirugiaForm.endoscopica
+      ) {
+        setShowCirugiaForms({
+          percutanea: false,
+          endoscopica: true,
+          abierta: false,
+        });
+      } else {
+        setShowCirugiaForms({
+          percutanea: false,
+          endoscopica: false,
+          abierta: true,
+        });
+      }
+    }
+  }, [selectedCirugia, initialValues]);
+
+  const handleSelectChange = (value) => {
+    setSelectedCirugia(value);
+    formik.setFieldValue("tipoCirugia", value);
+  };
 
   // Manejador para cambiar el expediente
   const handlePaciente = (e) => {
@@ -145,7 +213,7 @@ const OrdenIntrauterinaForm = ({
           id="tipoCirugia"
           name="tipoCirugia"
           value={formik?.values?.tipoCirugia || undefined}
-          onChange={(value) => formik.setFieldValue("tipoCirugia", value)}
+          onChange={handleSelectChange}
           onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
         >
           <Option value="Percutánea">Percutánea</Option>

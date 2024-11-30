@@ -29,6 +29,7 @@ const CirugiaPercutanea1 = ({
   mode,
   initialValues,
   confirmButton,
+  setShowCirugiaForm,
 }) => {
   const { metadata } = useAuth();
 

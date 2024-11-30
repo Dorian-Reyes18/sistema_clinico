@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
 import { Modal, notification } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import confirm from "antd/es/modal/confirm";
 
 // Formularios
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
@@ -15,10 +14,10 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
   const { patients, prenatalSurgeries, token } = useAuth();
   const [confirmButton, setConfirmButton] = useState(false);
   const [currentSurgery, setCurrentSurgery] = useState(null);
-  const [cirugiaForm, setCirugiaForms] = useState({
-    cirugia1: false,
-    cirugia2: false,
-    cirugia3: false,
+  const [showCirugiaForm, setShowCirugiaForms] = useState({
+    percutanea: false,
+    endoscopica: false,
+    abierta: false,
   });
 
   useEffect(() => {
@@ -28,6 +27,10 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       setCurrentSurgery(surgery || null);
     }
   }, [id, prenatalSurgeries]);
+
+  useEffect(() => {
+    console.log("Estado de showCirugiaForms ha cambiado:", showCirugiaForm);
+  }, [showCirugiaForm]);
 
   const handleFormSubmit = (formName) => (data) => {
     console.log("Datos recibidos en el padre:", data);
@@ -92,6 +95,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       label: "Datos generales",
       formComponent: OrdenIntrauterinaForm,
       initialValues: mode === "isCreateMode" ? {} : currentSurgery,
+      isVisible: true,
     },
     {
       name: "DiagnosticoPrenatalForm",
@@ -101,6 +105,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
         mode === "isCreateMode"
           ? {}
           : currentSurgery?.diagnosticoPrenatal || null,
+      isVisible: true,
     },
     {
       name: "CirugiaPercutanea1",
@@ -110,6 +115,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
         mode === "isCreateMode"
           ? {}
           : currentSurgery?.intrauterinaPercutanea?.[0] || null,
+      isVisible: showCirugiaForm.percutanea,
     },
   ];
 
@@ -130,24 +136,28 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       </div>
 
       <div className="forms-container">
-        {formConfig.map(
-          ({ name, label, formComponent: FormComponent, initialValues }) => (
-            <div className="group-form" key={name}>
-              <div className="header">
-                <strong>{label}</strong>
+        {formConfig
+          .filter((form) => form.isVisible)
+          .map(
+            ({ name, label, formComponent: FormComponent, initialValues }) => (
+              <div className="group-form" key={name}>
+                <div className="header">
+                  <strong>{label}</strong>
+                </div>
+                <div className="body">
+                  <FormComponent
+                    showCirugiaForm={showCirugiaForm}
+                    setShowCirugiaForms={setShowCirugiaForms}
+                    id={id}
+                    mode={mode}
+                    initialValues={initialValues}
+                    confirmButton={confirmButton}
+                    onSubmit={handleFormSubmit(name)}
+                  />
+                </div>
               </div>
-              <div className="body">
-                <FormComponent
-                  id={id}
-                  mode={mode}
-                  initialValues={initialValues}
-                  confirmButton={confirmButton}
-                  onSubmit={handleFormSubmit(name)}
-                />
-              </div>
-            </div>
-          )
-        )}
+            )
+          )}
       </div>
 
       <div className="btn-opt">
