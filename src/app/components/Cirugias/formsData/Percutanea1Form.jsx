@@ -443,16 +443,7 @@ const CirugiaPercutanea1 = ({
           }}
         />
       </div>
-      <div className="item-switch">
-        <label htmlFor="cordocentesis">Transfusión sanguín. intraut.</label>
-        <Switch
-          checked={formik.values.cordocentesis}
-          onChange={(checked) => {
-            formik.setFieldValue("cordocentesis", checked);
-            formik.setFieldTouched("cordocentesis", true);
-          }}
-        />
-      </div>
+
       <div className="item-switch">
         <label htmlFor="drenajeDeMasaQuisticaRenal">
           Drenaje de masa quística renal
@@ -494,6 +485,26 @@ const CirugiaPercutanea1 = ({
           onChange={(checked) => {
             formik.setFieldValue("ablacionDeVasoNutricioPulmonar", checked);
             formik.setFieldTouched("ablacionDeVasoNutricioPulmonar", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="cordocentesis">Cordocentesis:</label>
+        <Switch
+          checked={formik.values.cordocentesis}
+          onChange={(checked) => {
+            formik.setFieldValue("cordocentesis", checked);
+            formik.setFieldTouched("cordocentesis", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="toracocentesis">Toracocentesis:</label>
+        <Switch
+          checked={formik.values.cordocentesis}
+          onChange={(checked) => {
+            formik.setFieldValue("cordocentesis", checked);
+            formik.setFieldTouched("cordocentesis", true);
           }}
         />
       </div>
