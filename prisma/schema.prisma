@@ -243,7 +243,6 @@ model IntrauterinaPercutanea {
   complicacionesQuirurgicas              String?
   proceso                                String? 
   ablacionDeVasoTumoral                  Boolean?
-  ablacionDeVasoNutricioFetal            Boolean?
   derivacionToracoAmnioticaUnilateral    Boolean?
   derivacionToracoAmnioticaBilateral     Boolean?
   cordocentesis                          Boolean?
@@ -252,6 +251,7 @@ model IntrauterinaPercutanea {
   toracocentesis                         Boolean?
   cateterismoCardiaco                    Boolean?
   ablacionDeVasoNutricioSistemico        Boolean?
+  ablacionDeVasoNutricioPulmonar         Boolean?
   diferenciaPorcentualDePeso             String?
   bolsilloUnicoInicialDeLiquidoAmniotico String?
   frecuenciaCardiacaFetalInicio          String?

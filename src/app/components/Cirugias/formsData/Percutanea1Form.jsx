@@ -15,6 +15,7 @@ import {
   optionsSE,
   optionsBUILA,
   optionsC,
+  optionsPC,
 } from "./PercutaneaData";
 
 dayjs.locale("es");
@@ -40,7 +41,7 @@ const CirugiaPercutanea1 = ({
       ubicacionPlacentaria: "",
       ablacionDeVasoTumoral: false,
       ablacionDeVasoNutricioSistemico: false,
-      ablacionDeVasoNutricioFetal: false,
+      ablacionDeVasoNutricioPulmonar: false,
       derivacionToracoAmnioticaUnilateral: false,
       derivacionToracoAmnioticaBilateral: false,
       cordocentesis: false,
@@ -90,8 +91,6 @@ const CirugiaPercutanea1 = ({
           complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
           proceso: initialValues.proceso,
           ablacionDeVasoTumoral: initialValues.ablacionDeVasoTumoral,
-          ablacionDeVasoNutricioFetal:
-            initialValues.ablacionDeVasoNutricioFetal,
           derivacionToracoAmnioticaUnilateral:
             initialValues.derivacionToracoAmnioticaUnilateral,
           derivacionToracoAmnioticaBilateral:
@@ -104,6 +103,8 @@ const CirugiaPercutanea1 = ({
           cateterismoCardiaco: initialValues.cateterismoCardiaco,
           ablacionDeVasoNutricioSistemico:
             initialValues.ablacionDeVasoNutricioSistemico,
+          ablacionDeVasoNutricioPulmonar:
+            initialValues.ablacionDeVasoNutricioPulmonar,
           diferenciaPorcentualDePeso: initialValues.diferenciaPorcentualDePeso,
           bolsilloUnicoInicialDeLiquidoAmniotico:
             initialValues.bolsilloUnicoInicialDeLiquidoAmniotico,
@@ -328,6 +329,27 @@ const CirugiaPercutanea1 = ({
       </div>
 
       <div className="item">
+        <label htmlFor="sangradoEstimado">
+          Sangrado estimado: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="sangradoEstimado"
+          name="sangradoEstimado"
+          value={formik?.values?.sangradoEstimado || undefined}
+          onChange={(value) => formik.setFieldValue("sangradoEstimado", value)}
+          onBlur={() => formik.setFieldTouched("sangradoEstimado", true)}
+        >
+          {optionsSE.map((option) => (
+            <Option key={option} value={option.toString()}>
+              {option}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <div className="item">
         <label htmlFor="complicacionesQuirurgicas">
           Complicaciones quirurgícas: <span className="señal-req"> *</span>
         </label>
@@ -345,6 +367,26 @@ const CirugiaPercutanea1 = ({
           }
         >
           {optionsC.map((option) => (
+            <Option key={option} value={option.toString()}>
+              {option}
+            </Option>
+          ))}
+        </Select>
+      </div>
+      <div className="item">
+        <label htmlFor="proceso">
+          Estado y proceso: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="proceso"
+          name="proceso"
+          value={formik?.values?.proceso || undefined}
+          onChange={(value) => formik.setFieldValue("proceso", value)}
+          onBlur={() => formik.setFieldTouched("proceso", true)}
+        >
+          {optionsPC.map((option) => (
             <Option key={option} value={option.toString()}>
               {option}
             </Option>
@@ -371,6 +413,87 @@ const CirugiaPercutanea1 = ({
           onChange={(checked) => {
             formik.setFieldValue("ablacionDeVasoNutricioSistemico", checked);
             formik.setFieldTouched("ablacionDeVasoNutricioSistemico", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="derivacionToracoAmnioticaUnilateral">
+          Derivación toraco amniótica unilateral
+        </label>
+        <Switch
+          checked={formik.values.derivacionToracoAmnioticaUnilateral}
+          onChange={(checked) => {
+            formik.setFieldValue(
+              "derivacionToracoAmnioticaUnilateral",
+              checked
+            );
+            formik.setFieldTouched("derivacionToracoAmnioticaUnilateral", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="derivacionToracoAmnioticaBilateral">
+          Derivación toraco amniótica bilateral
+        </label>
+        <Switch
+          checked={formik.values.derivacionToracoAmnioticaBilateral}
+          onChange={(checked) => {
+            formik.setFieldValue("derivacionToracoAmnioticaBilateral", checked);
+            formik.setFieldTouched("derivacionToracoAmnioticaBilateral", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="cordocentesis">Transfusión sanguín. intraut.</label>
+        <Switch
+          checked={formik.values.cordocentesis}
+          onChange={(checked) => {
+            formik.setFieldValue("cordocentesis", checked);
+            formik.setFieldTouched("cordocentesis", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="drenajeDeMasaQuisticaRenal">
+          Drenaje de masa quística renal
+        </label>
+        <Switch
+          checked={formik.values.drenajeDeMasaQuisticaRenal}
+          onChange={(checked) => {
+            formik.setFieldValue("drenajeDeMasaQuisticaRenal", checked);
+            formik.setFieldTouched("drenajeDeMasaQuisticaRenal", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="cateterismoCardiaco">Cateterismo cardíaco</label>
+        <Switch
+          checked={formik.values.cateterismoCardiaco}
+          onChange={(checked) => {
+            formik.setFieldValue("cateterismoCardiaco", checked);
+            formik.setFieldTouched("cateterismoCardiaco", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="cateterismoCardiaco">Cateterismo cardíaco</label>
+        <Switch
+          checked={formik.values.cateterismoCardiaco}
+          onChange={(checked) => {
+            formik.setFieldValue("cateterismoCardiaco", checked);
+            formik.setFieldTouched("cateterismoCardiaco", true);
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="ablacionDeVasoNutricioPulmonar">
+          Ablación de vaso nutricio pulmonar
+        </label>
+        <Switch
+          checked={formik.values.ablacionDeVasoNutricioPulmonar}
+          onChange={(checked) => {
+            formik.setFieldValue("ablacionDeVasoNutricioPulmonar", checked);
+            formik.setFieldTouched("ablacionDeVasoNutricioPulmonar", true);
           }}
         />
       </div>

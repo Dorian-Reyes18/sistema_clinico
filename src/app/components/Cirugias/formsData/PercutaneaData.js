@@ -30,7 +30,6 @@ export const optionsSE = [
 export const optionsBUILA = ["Menor de 2 cms", "De 2 a 8 cms", "Mayor a 8 cms"]; //Bolsillo único inicial de líquido amniótico
 
 export const optionsC = [
-  "Por favor seleccione",
   "No hubo",
   "Hemorragia",
   "Lesión Fetal",
@@ -41,4 +40,12 @@ export const optionsC = [
   "Histerctomía",
   "Hematoma placentario controlado",
   "Cesárea transprocedimiento",
-];
+]; //Complicaciones quirurgicas
+
+export const optionsPC = [
+  "En Progreso",
+  "Completada",
+  "Pospuesta",
+  "No completada",
+  "Cancelada",
+]; //Proceso
