@@ -8,6 +8,14 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import utc from "dayjs/plugin/utc";
+import {
+  numbers,
+  optionsTA,
+  optionsCA,
+  optionsSE,
+  optionsBUILA,
+  optionsC,
+} from "./PercutaneaData";
 
 dayjs.locale("es");
 dayjs.extend(utc);
@@ -144,7 +152,27 @@ const CirugiaPercutanea1 = ({
         </LocalizationProvider>
       </div>
 
-      {/* TimePicker para horaInicioAnestesia */}
+      <div className="item">
+        <label htmlFor="tipoAnestesiaId">
+          Tipo de Anestesía: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="tipoAnestesiaId"
+          name="tipoAnestesiaId"
+          value={formik?.values?.tipoAnestesiaId || undefined}
+          onChange={(value) => formik.setFieldValue("tipoAnestesiaId", value)}
+          onBlur={() => formik.setFieldTouched("tipoAnestesiaId", true)}
+        >
+          {optionsTA.map((option) => (
+            <Option key={option} value={option}>
+              {option}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
       <div className="item">
         <label htmlFor="horaInicioAnestesia">
           Hora inicio anestesia:
@@ -167,13 +195,12 @@ const CirugiaPercutanea1 = ({
               )
             }
             onBlur={handleFieldBlur}
-            format="hh:mm A" // 12 horas con AM/PM
+            format="hh:mm A"
             ampm
           />
         </LocalizationProvider>
       </div>
 
-      {/* TimePicker para horaInicioCirugiaFetal */}
       <div className="item">
         <label htmlFor="horaInicioCirugiaFetal">
           Hora inicio cirugía fetal:
@@ -202,7 +229,6 @@ const CirugiaPercutanea1 = ({
         </LocalizationProvider>
       </div>
 
-      {/* TimePicker para horaFinalizacionCirugia */}
       <div className="item">
         <label htmlFor="horaFinalizacionCirugia">
           Hora finalización cirugía:
@@ -245,34 +271,84 @@ const CirugiaPercutanea1 = ({
           onChange={(value) => formik.setFieldValue("tipoEmbarazo", value)}
           onBlur={() => formik.setFieldTouched("tipoEmbarazo", true)}
         >
-          <Option value="Menor de 2 cms">Menor de 2 cms</Option>
-          <Option value="De 2 a 8 cms">De 2 a 8 cms</Option>
-          <Option value="Mayor a 8 cms">Mayor a 8 cms</Option>
+          {optionsBUILA.map((option) => (
+            <Option key={option} value={option}>
+              {option}
+            </Option>
+          ))}
         </Select>
       </div>
 
       <div className="item">
-        <label htmlFor="tipoAnestesiaId">
-          Tipo de Anestesía: <span className="señal-req"> *</span>
+        <label htmlFor="complicacionesAnestesicas">
+          Complicaciones anestésicas : <span className="señal-req"> *</span>
         </label>
         <Select
           className="select-rg"
           placeholder="Seleccione..."
-          id="tipoAnestesiaId"
-          name="tipoAnestesiaId"
-          value={formik?.values?.tipoAnestesiaId || undefined}
-          onChange={(value) => formik.setFieldValue("tipoAnestesiaId", value)}
-          onBlur={() => formik.setFieldTouched("tipoAnestesiaId", true)}
+          id="complicacionesAnestesicas"
+          name="complicacionesAnestesicas"
+          value={formik?.values?.complicacionesAnestesicas || undefined}
+          onChange={(value) =>
+            formik.setFieldValue("complicacionesAnestesicas", value)
+          }
+          onBlur={() =>
+            formik.setFieldTouched("complicacionesAnestesicas", true)
+          }
         >
-          <Option value="General + Bloqueo regional">
-            General + Bloqueo regional
-          </Option>
-          <Option value="Bloqueo epidural">Bloqueo epidural</Option>
-          <Option value="Bloqueo espinal">Bloqueo espinal</Option>
-          <Option value="Sedación, Local + Sedación">
-            Sedación, Local + Sedación
-          </Option>
-          <Option value="Anestesia mixta">Anestesia mixta</Option>
+          {optionsCA.map((option) => (
+            <Option key={option} value={option}>
+              {option}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <div className="item">
+        <label htmlFor="anastomosisCoaguladas">
+          Anastomosis coaguladas: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="anastomosisCoaguladas"
+          name="anastomosisCoaguladas"
+          value={formik?.values?.anastomosisCoaguladas || undefined}
+          onChange={(value) =>
+            formik.setFieldValue("anastomosisCoaguladas", value)
+          }
+          onBlur={() => formik.setFieldTouched("anastomosisCoaguladas", true)}
+        >
+          {numbers.map((number) => (
+            <Option key={number} value={number.toString()}>
+              {number}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <div className="item">
+        <label htmlFor="complicacionesQuirurgicas">
+          Complicaciones quirurgícas: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="complicacionesQuirurgicas"
+          name="complicacionesQuirurgicas"
+          value={formik?.values?.complicacionesQuirurgicas || undefined}
+          onChange={(value) =>
+            formik.setFieldValue("complicacionesQuirurgicas", value)
+          }
+          onBlur={() =>
+            formik.setFieldTouched("complicacionesQuirurgicas", true)
+          }
+        >
+          {optionsC.map((option) => (
+            <Option key={option} value={option.toString()}>
+              {option}
+            </Option>
+          ))}
         </Select>
       </div>
 
@@ -295,24 +371,6 @@ const CirugiaPercutanea1 = ({
           onChange={(checked) => {
             formik.setFieldValue("ablacionDeVasoNutricioSistemico", checked);
             formik.setFieldTouched("ablacionDeVasoNutricioSistemico", true);
-          }}
-        />
-      </div>
-      <div className="item-switch">
-        <label htmlFor="ablacionDeVasoNutricioSistemico">
-          Ablación de vaso nutricio sistémico
-        </label>
-        <Switch
-          checked={formik.values.bolsilloUnicoInicialDeLiquidoAmniotico}
-          onChange={(checked) => {
-            formik.setFieldValue(
-              "bolsilloUnicoInicialDeLiquidoAmniotico",
-              checked
-            );
-            formik.setFieldTouched(
-              "bolsilloUnicoInicialDeLiquidoAmniotico",
-              true
-            );
           }}
         />
       </div>
