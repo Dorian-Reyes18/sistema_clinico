@@ -2,6 +2,7 @@
 import localFont from "next/font/local";
 import { AuthProvider } from "../app/hooks/authContext";
 import "./styles/app.styles.scss";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 const geistSans = localFont({
