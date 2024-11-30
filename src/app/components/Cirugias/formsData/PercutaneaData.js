@@ -49,3 +49,5 @@ export const optionsPC = [
   "No completada",
   "Cancelada",
 ]; //Proceso
+
+export const optionsUP = ["Anterior", "Fúndica", "Posterior"]; //Ubicacion placentaria

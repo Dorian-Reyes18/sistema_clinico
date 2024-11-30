@@ -104,7 +104,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     },
     {
       name: "CirugiaPercutanea1",
-      label: "Cirigia - percutanea Feto 1",
+      label: "Datos de la cirugía Percutánea",
       formComponent: CirugiaPercutanea1,
       initialValues:
         mode === "isCreateMode"

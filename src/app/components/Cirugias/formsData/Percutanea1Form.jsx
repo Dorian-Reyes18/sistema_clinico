@@ -16,6 +16,7 @@ import {
   optionsBUILA,
   optionsC,
   optionsPC,
+  optionsUP,
 } from "./PercutaneaData";
 
 dayjs.locale("es");
@@ -394,6 +395,74 @@ const CirugiaPercutanea1 = ({
         </Select>
       </div>
 
+      <div className="item">
+        <label htmlFor="ubicacionPlacentaria">
+          Ubicación placentaria: <span className="señal-req"> *</span>
+        </label>
+        <Select
+          className="select-rg"
+          placeholder="Seleccione..."
+          id="ubicacionPlacentaria"
+          name="ubicacionPlacentaria"
+          value={formik?.values?.ubicacionPlacentaria || undefined}
+          onChange={(value) =>
+            formik.setFieldValue("ubicacionPlacentaria", value)
+          }
+          onBlur={() => formik.setFieldTouched("ubicacionPlacentaria", true)}
+        >
+          {optionsUP.map((option) => (
+            <Option key={option} value={option.toString()}>
+              {option}
+            </Option>
+          ))}
+        </Select>
+      </div>
+
+      <div className="item">
+        <label htmlFor="diferenciaPorcentualDePeso">
+          Diferencia de peso (%): <span className="señal-req"> *</span>
+        </label>
+        <Input
+          className="text"
+          id="diferenciaPorcentualDePeso"
+          name="diferenciaPorcentualDePeso"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.diferenciaPorcentualDePeso}
+          onBlur={formik.handleBlur}
+        />
+      </div>
+
+      <div className="item">
+        <label htmlFor="frecuenciaCardiacaFetalInicio">
+          Frecuencia cardi. Inicio: <span className="señal-req"> *</span>
+        </label>
+        <Input
+          className="text"
+          id="frecuenciaCardiacaFetalInicio"
+          name="frecuenciaCardiacaFetalInicio"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.frecuenciaCardiacaFetalInicio}
+          onBlur={formik.handleBlur}
+        />
+      </div>
+
+      <div className="item">
+        <label htmlFor="frecuenciaCardiacaFetalFinalizacion">
+          Frecuencia cardi. Final: <span className="señal-req"> *</span>
+        </label>
+        <Input
+          className="text"
+          id="frecuenciaCardiacaFetalFinalizacion"
+          name="frecuenciaCardiacaFetalFinalizacion"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.frecuenciaCardiacaFetalFinalizacion}
+          onBlur={formik.handleBlur}
+        />
+      </div>
+
       <div className="item-switch">
         <label htmlFor="ablacionDeVasoTumoral">Ablación de vaso tumoral</label>
         <Switch
@@ -457,12 +526,14 @@ const CirugiaPercutanea1 = ({
         />
       </div>
       <div className="item-switch">
-        <label htmlFor="cateterismoCardiaco">Cateterismo cardíaco</label>
+        <label htmlFor="drenajeDeMasaQuisticaPulmonar">
+          Drenaje de masa quística pulmonar
+        </label>
         <Switch
-          checked={formik.values.cateterismoCardiaco}
+          checked={formik.values.drenajeDeMasaQuisticaPulmonar}
           onChange={(checked) => {
-            formik.setFieldValue("cateterismoCardiaco", checked);
-            formik.setFieldTouched("cateterismoCardiaco", true);
+            formik.setFieldValue("drenajeDeMasaQuisticaPulmonar", checked);
+            formik.setFieldTouched("drenajeDeMasaQuisticaPulmonar", true);
           }}
         />
       </div>
