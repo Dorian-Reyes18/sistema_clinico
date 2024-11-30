@@ -76,9 +76,9 @@ const CirugiaPercutanea1 = ({
 
   // Sincronizar valores cuando initialValues cambian
   useEffect(() => {
-    if (initialValues?.length > 0) {
+    if (initialValues !== null) {
       if (mode === "isEditMode") {
-        initialValues = initialValues[0];
+        console.log(initialValues);
         formik.setValues({
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId || null,
           fechaCirugia: initialValues.fechaCirugia,
@@ -260,18 +260,30 @@ const CirugiaPercutanea1 = ({
       </div>
 
       <div className="item-2">
-        <label htmlFor="tipoEmbarazo">
+        <label htmlFor="bolsilloUnicoInicialDeLiquidoAmniotico">
           Bolsillo único inicial de líquido amniótico:{" "}
           <span className="señal-req"> *</span>
         </label>
         <Select
           className="select-mdrg"
           placeholder="Seleccione..."
-          id="tipoEmbarazo"
-          name="tipoEmbarazo"
-          value={formik?.values?.tipoEmbarazo || undefined}
-          onChange={(value) => formik.setFieldValue("tipoEmbarazo", value)}
-          onBlur={() => formik.setFieldTouched("tipoEmbarazo", true)}
+          id="bolsilloUnicoInicialDeLiquidoAmniotico"
+          name="bolsilloUnicoInicialDeLiquidoAmniotico"
+          value={
+            formik?.values?.bolsilloUnicoInicialDeLiquidoAmniotico || undefined
+          }
+          onChange={(value) =>
+            formik.setFieldValue(
+              "bolsilloUnicoInicialDeLiquidoAmniotico",
+              value
+            )
+          }
+          onBlur={() =>
+            formik.setFieldTouched(
+              "bolsilloUnicoInicialDeLiquidoAmniotico",
+              true
+            )
+          }
         >
           {optionsBUILA.map((option) => (
             <Option key={option} value={option}>

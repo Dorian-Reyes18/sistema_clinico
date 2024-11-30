@@ -109,7 +109,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       initialValues:
         mode === "isCreateMode"
           ? {}
-          : currentSurgery?.diagnosticoPrenatal || null,
+          : currentSurgery?.intrauterinaPercutanea?.[0] || null,
     },
   ];
 
