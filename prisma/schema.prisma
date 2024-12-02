@@ -191,8 +191,7 @@ model DiagnosticoPrenatal {
 
 model EvaluacionActual {
   id                   Int          @id @default(autoincrement())
-  pacienteId           Int
-  ordenQuirurgicaId    Int
+  ordenQuirurgicaId    Int?       
   tipoDiabetesId       Int          @unique
   lupusEritematosoSist Boolean?
   obesidad             Boolean?
@@ -205,7 +204,7 @@ model EvaluacionActual {
   trombofilia          Boolean?
   epilepsia            Boolean?
   observaciones        String?
-  ordenQuirurgica      OrdenQuirurgicaIntrauterina @relation(fields: [ordenQuirurgicaId], references: [id])
+  ordenQuirurgica      OrdenQuirurgicaIntrauterina? @relation(fields: [ordenQuirurgicaId], references: [id])
   tipoDiabetes         TipoDiabetes @relation(fields: [tipoDiabetesId], references: [id])
 }
 

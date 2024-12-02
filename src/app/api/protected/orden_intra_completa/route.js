@@ -44,11 +44,11 @@ export async function POST(req) {
 
     const {
       OrdenQuirurgicaIntrauterina,
+      ResultadosPerinatales,
+      EvaluacionActual,
       IntrauterinaAbierta,
       IntrauterinaPercutanea,
       Endoscopicas,
-      ResultadosPerinatales,
-      EvaluacionActual,
       DiagnosticoPrenatal,
     } = data;
 
