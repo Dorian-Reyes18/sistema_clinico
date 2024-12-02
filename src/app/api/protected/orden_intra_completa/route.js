@@ -48,10 +48,10 @@ export async function POST(req) {
       IntrauterinaPercutanea,
       Endoscopicas,
       ResultadosPerinatales,
+      EvaluacionActual,
       DiagnosticoPrenatal,
     } = data;
 
-    
     console.log(
       "OrdenQuirurgicaIntrauterina recibido:",
       OrdenQuirurgicaIntrauterina
@@ -100,6 +100,17 @@ export async function POST(req) {
         });
       }
 
+      if (EvaluacionActual) {
+        await prisma.evaluacionActual.create({
+          data: {
+            ordenQuirurgica: {
+              connect: { id: ordenQuirurgica.id },
+            },
+            ...EvaluacionActual,
+          },
+        });
+      }
+
       if (IntrauterinaPercutanea) {
         await prisma.intrauterinaPercutanea.create({
           data: {
@@ -140,6 +151,7 @@ export async function GET(req) {
         await prisma.ordenQuirurgicaIntrauterina.findMany({
           include: {
             diagnosticoPrenatal: true,
+            evaluacionActual: true,
             intrauterinaAbierta: true,
             intrauterinaPercutanea: true,
             intrauterinaEndoscopica: true,

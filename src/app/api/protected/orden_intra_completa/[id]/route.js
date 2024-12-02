@@ -41,6 +41,11 @@ export async function DELETE(req, { params }) {
           cirugiaIntraId: idNumber,
         },
       });
+      await prisma.evaluacionActual.deleteMany({
+        where: {
+          ordenQuirurgicaId: idNumber,
+        },
+      });
 
       await prisma.intrauterinaEndoscopica.deleteMany({
         where: {
@@ -106,6 +111,7 @@ export async function GET(req, { params }) {
         where: { id: parseInt(id, 10) },
         include: {
           diagnosticoPrenatal: true,
+          evaluacionActual: true,
           intrauterinaAbierta: true,
           intrauterinaPercutanea: true,
           intrauterinaEndoscopica: true,
