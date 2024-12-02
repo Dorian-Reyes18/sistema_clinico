@@ -291,20 +291,20 @@ model IntrauterinaAbierta {
   id                                             Int                         @id @default(autoincrement())
   ordenQuirurgicaId                              Int?
   fechaCirugia                                   String?
+  tipoAnestesiaId                                String?
   horaInicioAnestesia                            String?
   horaInicioCirugiaMaterna                       String?
   horaInicioCirugiaFetal                         String?
   horaFinalizacionCirugia                        String?
-  tipoAnestesiaId                                String?
-  complicacionesAnestesicas                      String?
-  complicacionesQuirurgicas                      String?
-  ubicacionPlacentaria                           String?
   sangreEstimado                                 String?
   incisionEnPiel                                 String?
   incisionEnUtero                                String?
   nivelAnatomico                                 String?
-  tamanoDelDefecto                               String
   nivelFuncional                                 String?
+  ubicacionPlacentaria                           String?
+  complicacionesAnestesicas                      String?
+  complicacionesQuirurgicas                      String?
+  tamanoDelDefecto                               String
   ilaInicialDeLiquidoAmniotico                   String?
   ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico String?
   frecuenciaCardiacaFetalInicio                  String

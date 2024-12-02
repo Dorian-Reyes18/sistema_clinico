@@ -75,3 +75,33 @@ export const natalidad = [
   "Acuático",
   "Vertical",
 ];
+
+export const incisionPiel = ["Media longitudinal", "Pfannestiel"];
+export const incisionUtero = [
+  "Cara Anterior Alta",
+  "Cara Posterior Alta",
+  "Cara Posterior Baja",
+];
+
+export const nivelAnatomico = ["Lumbar", "Sacro", "Lumbosacro"];
+
+export const nivelFuncional = [
+  "T10",
+  "T11",
+  "T12",
+  "L1",
+  "L2",
+  "L3",
+  "L4",
+  "L5",
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "S5",
+];
+
+export const tamañoDefecto = ["Menor a 2cms", "2 a 5 cms", "Mayor a 5 cms"];
+
+export const ILAInicialFinal = ["Menor de 5 cms", "5 a 25 cms", "Mayor a 25 cms"];
+
