@@ -10,6 +10,8 @@ import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
 import CirugiaPercutanea from "./formsData/PercutaneaForm";
 import CirugiaAbierta from "./formsData/AbiertaForm";
 import CirugiaEndoscipica1 from "./formsData/EndoscopicaForm1";
+import CirugiaEndoscipica2 from "./formsData/EndoscopicaForm2";
+import CirugiaEndoscipica3 from "./formsData/EndoscopicaForm3";
 import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
@@ -140,16 +142,27 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
           : currentSurgery?.intrauterinaEndoscopica?.[0] || null,
       isVisible: showCirugiaForm.endoscopica,
     },
-    // {
-    //   name: "CirugiaEndoscipica1",
-    //   label: "Datos de la cirugía Percutánea",
-    //   formComponent: CirugiaEndoscipica1,
-    //   initialValues:
-    //     mode === "isCreateMode"
-    //       ? {}
-    //       : currentSurgery?.intrauterinaPercutanea?.[0] || null,
-    //   isVisible: showCirugiaForm.percutanea,
-    // },
+    {
+      name: "CirugiaEndoscipica2",
+      label: "Cirugía Endoscópica - Feto 2",
+      formComponent: CirugiaEndoscipica2,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.intrauterinaEndoscopica?.[1] || null,
+      isVisible: showCirugiaForm.endoscopica,
+    },
+    {
+      name: "CirugiaEndoscipica3",
+      label: "Cirugía Endoscópica - Feto 3",
+      formComponent: CirugiaEndoscipica3,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.intrauterinaEndoscopica?.[2] || null,
+      isVisible: showCirugiaForm.endoscopica,
+    },
+
     {
       name: "ResultadosPerinatales",
       label: "Resultados perinatales",
