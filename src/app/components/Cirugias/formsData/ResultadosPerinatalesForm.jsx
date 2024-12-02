@@ -34,11 +34,12 @@ const ResultadosPerinatales = ({
     },
     onSubmit: (values) => {
       const formData = {
+        ...values,
+        fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : null,
         cirugiaIntraId:
           mode === "isEditMode"
             ? formik.values.ordenQuirurgicaId || null
             : null,
-        ...values,
       };
 
       onSubmit(formData);

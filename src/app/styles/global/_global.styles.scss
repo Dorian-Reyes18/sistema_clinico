@@ -3,6 +3,7 @@ html {
   // overflow-y: hidden;
 
   body {
+    overflow: hidden;
     background: $color-gris;
     height: 100%;
     color: $color-letra-gris;
@@ -181,5 +182,37 @@ html {
         }
       }
     }
+  }
+
+  .MuiPaper-root
+    .MuiPaper-elevation
+    .MuiPaper-rounded
+    .MuiPaper-elevation8
+    .MuiPickersPopper-paper
+    .css-aj5au3-MuiPaper-root-MuiPickersPopper-paper {
+    transform: scale(0.8.5);
+    -webkit-transform: scale(0.8.5);
+    -moz-transform: scale(0.8.5);
+    -ms-transform: scale(0.8.5);
+    -o-transform: scale(0.8.5);
+  }
+
+  .css-6urtlo-MuiPaper-root-MuiPickersPopper-paper {
+    background-color: #fff5f5;
+    border: 1px solid $color-gris-v2;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+  }
+  .css-aj5au3-MuiPaper-root-MuiPickersPopper-paper {
+    background-color: #fff5f5;
+    border: 1px solid $color-gris-v2;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
   }
 }

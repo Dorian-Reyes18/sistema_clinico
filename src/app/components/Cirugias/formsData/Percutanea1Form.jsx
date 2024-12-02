@@ -64,11 +64,14 @@ const CirugiaPercutanea1 = ({
     },
     onSubmit: (values) => {
       const formData = {
+        ...values,
+        fechaCirugia: values.fechaCirugia
+          ? dayjs(values.fechaCirugia).toISOString()
+          : null,
         cirugiaIntraId:
           mode === "isEditMode"
             ? formik.values.ordenQuirurgicaId || null
             : null,
-        ...values,
       };
 
       onSubmit(formData);
@@ -584,10 +587,10 @@ const CirugiaPercutanea1 = ({
       <div className="item-switch">
         <label htmlFor="toracocentesis">Toracocentesis:</label>
         <Switch
-          checked={formik.values.cordocentesis}
+          checked={formik.values.toracocentesis}
           onChange={(checked) => {
-            formik.setFieldValue("cordocentesis", checked);
-            formik.setFieldTouched("cordocentesis", true);
+            formik.setFieldValue("toracocentesis", checked);
+            formik.setFieldTouched("toracocentesis", true);
           }}
         />
       </div>
