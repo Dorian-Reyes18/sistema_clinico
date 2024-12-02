@@ -1,0 +1,50 @@
+{
+  "OrdenQuirurgicaIntrauterina": {
+    "pacienteId": 1,
+    "tipoCirugia": "Abierta",
+    "teniaDiagnostico": true,
+    "complicacionesQuirurgicas": "Descripcion",
+    "estado": true
+  },
+  "DiagnosticoPrenatal": {
+    "categoriaId": 2,
+    "tipoDefectoId": 2,
+    "tipoCirugiaRealizada": "Abierta",
+    "estudioGen": true,
+    "resultadoEstGen": "Resultados positivos",
+    "tipoEmbarazo": "Unico"
+  },
+  "IntrauterinaAbierta": {
+    "fechaCirugia": "2024-10-01T12:00:00.000Z",
+    "tipoAnestesiaId": "Bloqueo espinal",
+    "horaInicioAnestesia": "08:00 PM",
+    "horaInicioCirugiaMaterna": "08:30 PM",
+    "horaInicioCirugiaFetal": "09:00 AM",
+    "horaFinalizacionCirugia": "11:30 AM",
+    "sangreEstimado": "200 a 400 ml",
+    "incisionEnPiel": "Media longitudinal",
+    "incisionEnUtero": "Cara Anterior Alta",
+    "nivelAnatomico": "Lumbar",
+    "nivelFuncional": "T12",
+    "ubicacionPlacentaria": "Posterior",
+    "complicacionesAnestesicas": "No hubo",
+    "complicacionesQuirurgicas": "Hemorragia",
+    "tamanoDelDefecto": "2 a 5 cms",
+    "ilaInicialDeLiquidoAmniotico": "Menor de 5 cms",
+    "ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico": "5 a 25 cms",
+    "frecuenciaCardiacaFetalInicio": "140bpm",
+    "frecuenciaCardiacaFetalFinalizacion": "145bpm",
+    "cierreDeMielomeningocele": true,
+    "derivacionVentriculoamniotica": false,
+    "cierreDeEncefalocele": false,
+    "drenajeDeQuistesCoroideosUniOBilaterales": false
+  },
+  "ResultadosPerinatales": {
+    "tipoDeParto": "Césarea",
+    "fechaNac": "2024-10-01T12:00:00Z",
+    "edadFinalizacion": "Normal",
+    "natalidad": "Viva",
+    "descripcionFetal": "Pendiente",
+    "pesoGramos": 2500
+  }
+}

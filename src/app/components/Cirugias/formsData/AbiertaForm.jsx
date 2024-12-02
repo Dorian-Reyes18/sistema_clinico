@@ -287,17 +287,17 @@ const CirugiaAbierta = ({
       </div>
 
       <div className="item">
-        <label htmlFor="sangradoEstimado">
+        <label htmlFor="sangreEstimado">
           Sangrado estimado: <span className="señal-req"> *</span>
         </label>
         <Select
           className="select"
           placeholder="Seleccione..."
-          id="sangradoEstimado"
-          name="sangradoEstimado"
-          value={formik?.values?.sangradoEstimado || undefined}
-          onChange={(value) => formik.setFieldValue("sangradoEstimado", value)}
-          onBlur={() => formik.setFieldTouched("sangradoEstimado", true)}
+          id="sangreEstimado"
+          name="sangreEstimado"
+          value={formik?.values?.sangreEstimado || undefined}
+          onChange={(value) => formik.setFieldValue("sangreEstimado", value)}
+          onBlur={() => formik.setFieldTouched("sangreEstimado", true)}
         >
           {optionsSE.map((option) => (
             <Option key={option} value={option.toString()}>
@@ -577,14 +577,14 @@ const CirugiaAbierta = ({
       </div>
 
       <div className="item-switch">
-        <label htmlFor="cierreDeEncefalocele">
+        <label htmlFor="cierreDeMielomeningocele">
           Cierre de Mielomeningocele:
         </label>
         <Switch
-          checked={formik.values.cierreDeEncefalocele}
+          checked={formik.values.cierreDeMielomeningocele}
           onChange={(checked) => {
-            formik.setFieldValue("cierreDeEncefalocele", checked);
-            formik.setFieldTouched("cierreDeEncefalocele", true);
+            formik.setFieldValue("cierreDeMielomeningocele", checked);
+            formik.setFieldTouched("cierreDeMielomeningocele", true);
           }}
         />
       </div>

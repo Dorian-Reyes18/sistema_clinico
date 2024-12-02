@@ -1,0 +1,52 @@
+{
+  "OrdenQuirurgicaIntrauterina": {
+    "pacienteId": 1,
+    "tipoCirugia": "Percutanea",
+    "fechaDeCreacion": "2024-11-26T12:00:00Z",
+    "teniaDiagnostico": true,
+    "complicacionesQuirurgicas": "Descripcion",
+    "estado": true
+  },
+  "DiagnosticoPrenatal": {
+    "categoriaId": 1,
+    "tipoDefectoId": 1,
+    "tipoCirugiaRealizada": "Percutanea",
+    "estudioGen": true,
+    "resultadoEstGen": "Buenos datos",
+    "tipoEmbarazo": "Único"
+  },
+  "IntrauterinaPercutanea": {
+    "horaInicioAnestesia": "12:00 PM",
+    "horaInicioCirugiaFetal": "12:00 AM",
+    "horaFinalizacionCirugia": "12:25 PM",
+    "tipoAnestesiaId": "Bloqueo Epidural",
+    "complicacionesAnestesicas": "No hubo",
+    "anastomosisCoaguladas": "1",
+    "sangradoEstimado": "Menor a 200 ml",
+    "complicacionesQuirurgicas": "No hubo",
+    "proceso": "Completada",
+    "ablacionDeVasoTumoral": true,
+    "derivacionToracoAmnioticaUnilateral": false,
+    "derivacionToracoAmnioticaBilateral": false,
+    "cordocentesis": true,
+    "drenajeDeMasaQuisticaRenal": true,
+    "drenajeDeMasaQuisticaPulmonar": true,
+    "toracocentesis": true,
+    "cateterismoCardiaco": false,
+    "ablacionDeVasoNutricioSistemico": false,
+    "ablacionDeVasoNutricioPulmonar": false,
+    "diferenciaPorcentualDePeso": "25%",
+    "bolsilloUnicoInicialDeLiquidoAmniotico": "Menor de 2 cms",
+    "frecuenciaCardiacaFetalInicio": "25.5",
+    "ubicacionPlacentaria": "Anterior",
+    "frecuenciaCardiacaFetalFinalizacion": "30"
+  },
+  "ResultadosPerinatales": {
+    "tipoDeParto": "César",
+    "fechaNac": "2024-10-01T12:00:00Z",
+    "edadFinalizacion": "Normal",
+    "natalidad": "Viva",
+    "descripcionFetal": "Descripción",
+    "pesoGramos": 2500
+  }
+}

@@ -99,7 +99,7 @@ const OrdenIntrauterinaForm = ({
             endoscopica: true,
             abierta: false,
           });
-        } else {
+        } else if (selectedCirugia === "Abierta") {
           setShowCirugiaForms({
             percutanea: false,
             endoscopica: false,
@@ -130,7 +130,10 @@ const OrdenIntrauterinaForm = ({
           endoscopica: true,
           abierta: false,
         });
-      } else {
+      } else if (
+        initialValues?.tipoCirugia === "Abierta" &&
+        !showCirugiaForm.abierta
+      ) {
         setShowCirugiaForms({
           percutanea: false,
           endoscopica: false,

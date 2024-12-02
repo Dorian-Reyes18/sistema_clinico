@@ -101,7 +101,7 @@ export const nivelFuncional = [
   "S5",
 ];
 
-export const tamañoDefecto = ["Menor a 2cms", "2 a 5 cms", "Mayor a 5 cms"];
+export const tamañoDefecto = ["Menor a 2 cms", "2 a 5 cms", "Mayor a 5 cms"];
 
 export const ILAInicialFinal = ["Menor de 5 cms", "5 a 25 cms", "Mayor a 25 cms"];
 
