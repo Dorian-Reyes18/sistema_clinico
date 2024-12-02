@@ -79,7 +79,6 @@ const CirugiaPercutanea1 = ({
   useEffect(() => {
     if (initialValues !== null) {
       if (mode === "isEditMode") {
-        console.log(initialValues);
         formik.setValues({
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId || null,
           fechaCirugia: initialValues.fechaCirugia,

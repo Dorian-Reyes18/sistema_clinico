@@ -8,17 +8,7 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import utc from "dayjs/plugin/utc";
-import {
-  numbers,
-  optionsCA,
-  optionsSE,
-  optionsC,
-  optionsPC,
-  optionsUP,
-  optionsPartos,
-  edadFinalización,
-  natalidad,
-} from "./PercutaneaData";
+import { optionsPartos, edadFinalización, natalidad } from "./PercutaneaData";
 
 dayjs.locale("es");
 dayjs.extend(utc);
@@ -35,10 +25,10 @@ const ResultadosPerinatales = ({
 
   const formik = useFormik({
     initialValues: {
-      tipoDeParto: "", //select
+      tipoDeParto: "",
       fechaNac: null,
       edadFinalizacion: "",
-      natalidad: "", //select
+      natalidad: "",
       descripcionFetal: "",
       pesoGramos: "",
     },

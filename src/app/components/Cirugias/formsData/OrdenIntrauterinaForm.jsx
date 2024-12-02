@@ -112,7 +112,6 @@ const OrdenIntrauterinaForm = ({
 
   useEffect(() => {
     if (mode === "isEditMode" && initialValues) {
-      console.log(initialValues);
       if (
         initialValues?.tipoCirugia === "Percutánea" &&
         !showCirugiaForm.percutanea

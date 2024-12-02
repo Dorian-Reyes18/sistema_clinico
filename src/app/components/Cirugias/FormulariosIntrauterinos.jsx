@@ -29,9 +29,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     }
   }, [id, prenatalSurgeries]);
 
-  useEffect(() => {
-    console.log("Estado de showCirugiaForms ha cambiado:", showCirugiaForm);
-  }, [showCirugiaForm]);
+  useEffect(() => {}, [showCirugiaForm]);
 
   const handleFormSubmit = (formName) => (data) => {
     console.log("Datos recibidos en el padre:", data);
@@ -125,7 +123,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       initialValues:
         mode === "isCreateMode"
           ? {}
-          : currentSurgery?.intrauterinaPercutanea?.[0] || null,
+          : currentSurgery?.resultadosPerinatales?.[0] || null,
       isVisible: true,
     },
   ];
