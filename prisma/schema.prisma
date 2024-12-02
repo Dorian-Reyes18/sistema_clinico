@@ -263,7 +263,18 @@ model IntrauterinaPercutanea {
 model IntrauterinaEndoscopica {
   id                                              Int                         @id @default(autoincrement())
   ordenQuirurgicaId                               Int? 
+  fechaCirugia                                    DateTime?
+  horaInicioAnestesia                             String?
+  horaInicioCirugiaFetal                          String?
+  horaFinalizacionCirugia                         String?
+  tipoAnestesiaId                                 String?
+  complicacionesAnestesicas                       String?
   ubicacionPlacentaria                            String
+  frecuenciaCardiacaFetalInicio                   String
+  sangradoEstimado                                String?
+  complicacionesQuirurgicas                       String?
+  frecuenciaCardiacaFetalFinalizacion             String
+  bolsilloUnicoInicialDeLiquidoAmniotico          String?
   laserDeAnastomosisPlacentaria                   Boolean?
   coagulacionBipolarDeCordoneUmbilical            Boolean?
   liberacionDeBandasAmnioticas                    Boolean?
@@ -273,17 +284,6 @@ model IntrauterinaEndoscopica {
   cistoscopia                                     Boolean?
   cistoscopiaMasLaserDeValvasUretralesPosteriores Boolean?
   intubacionEndotraquealIntrauterina              Boolean?
-  fechaCirugia                                    DateTime?
-  horaInicioAnestesia                             DateTime?
-  tipoAnestesiaId                                 String?
-  complicacionesAnestesicas                       String?
-  horaInicioCirugiaFetal                          DateTime?
-  frecuenciaCardiacaFetalInicio                   String
-  bolsilloUnicoInicialDeLiquidoAmniotico          Boolean?
-  sangradoEstimado                                String?
-  frecuenciaCardiacaFetalFinalizacion             String
-  complicacionesQuirurgicas                       String?
-  horaFinalizacionCirugia                         DateTime?
   ordenQuirurgica                                 OrdenQuirurgicaIntrauterina? @relation(fields: [ordenQuirurgicaId], references: [id])
 }
 
