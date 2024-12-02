@@ -33,34 +33,22 @@ const CirugiaEndoscipica1 = ({
   const formik = useFormik({
     initialValues: {
       ordenQuirurgicaId: null,
-      fechaCirugia: null,
-      horaInicioAnestesia: "",
-      horaInicioCirugiaFetal: "",
-      horaFinalizacionCirugia: "",
-      tipoAnestesiaId: "",
-      complicacionesAnestesicas: "",
-      ubicacionPlacentaria: "",
-      frecuenciaCardiacaFetalInicio: "",
-      sangradoEstimado: "",
-      complicacionesQuirurgicas: "",
-      frecuenciaCardiacaFetalFinalizacion: "",
-      bolsilloUnicoInicialDeLiquidoAmniotico: "",
-      laserDeAnastomosisPlacentaria: false,
-      coagulacionBipolarDeCordoneUmbilical: false,
-      liberacionDeBandasAmnioticas: false,
-      colocacionDeBalonEndotraqueal: false,
-      retiroDeBalonEndotraqueal: false,
-      reparacionDeMielomeningocele: false,
-      cistoscopia: false,
-      cistoscopiaMasLaserDeValvasUretralesPosteriores: false,
-      intubacionEndotraquealIntrauterina: false,
+      tipoDiabetesId: null,
+      lupusEritematosoSist: false,
+      obesidad: false,
+      hipertension: false,
+      sindromeAntifosfo: false,
+      cardiopatias: false,
+      artritis: false,
+      hipotiroidismo: false,
+      hipertiroidismo: false,
+      trombofilia: false,
+      epilepsia: false,
+      observaciones: false,
     },
     onSubmit: (values) => {
       const formData = {
         ...values,
-        fechaCirugia: values.fechaCirugia
-          ? dayjs(values.fechaCirugia).toISOString()
-          : null,
         ordenQuirurgicaId:
           mode === "isEditMode"
             ? formik.values.ordenQuirurgicaId || null
@@ -77,37 +65,18 @@ const CirugiaEndoscipica1 = ({
       if (mode === "isEditMode") {
         formik.setValues({
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId,
-          fechaCirugia: initialValues.fechaCirugia,
-          horaInicioAnestesia: initialValues.horaInicioAnestesia,
-          horaInicioCirugiaFetal: initialValues.horaInicioCirugiaFetal,
-          horaFinalizacionCirugia: initialValues.horaFinalizacionCirugia,
-          tipoAnestesiaId: initialValues.tipoAnestesiaId,
-          complicacionesAnestesicas: initialValues.complicacionesAnestesicas,
-          ubicacionPlacentaria: initialValues.ubicacionPlacentaria,
-          frecuenciaCardiacaFetalInicio:
-            initialValues.frecuenciaCardiacaFetalInicio,
-          sangradoEstimado: initialValues.sangradoEstimado,
-          complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
-          frecuenciaCardiacaFetalFinalizacion:
-            initialValues.frecuenciaCardiacaFetalFinalizacion,
-          bolsilloUnicoInicialDeLiquidoAmniotico:
-            initialValues.bolsilloUnicoInicialDeLiquidoAmniotico,
-          laserDeAnastomosisPlacentaria:
-            initialValues.laserDeAnastomosisPlacentaria,
-          coagulacionBipolarDeCordoneUmbilical:
-            initialValues.coagulacionBipolarDeCordoneUmbilical,
-          liberacionDeBandasAmnioticas:
-            initialValues.liberacionDeBandasAmnioticas,
-          colocacionDeBalonEndotraqueal:
-            initialValues.colocacionDeBalonEndotraqueal,
-          retiroDeBalonEndotraqueal: initialValues.retiroDeBalonEndotraqueal,
-          reparacionDeMielomeningocele:
-            initialValues.reparacionDeMielomeningocele,
-          cistoscopia: initialValues.cistoscopia,
-          cistoscopiaMasLaserDeValvasUretralesPosteriores:
-            initialValues.cistoscopiaMasLaserDeValvasUretralesPosteriores,
-          intubacionEndotraquealIntrauterina:
-            initialValues.intubacionEndotraquealIntrauterina,
+          tipoDiabetesId: initialValues.tipoDiabetesId,
+          lupusEritematosoSist: initialValues.lupusEritematosoSist,
+          obesidad: initialValues.obesidad,
+          hipertension: initialValues.hipertension,
+          sindromeAntifosfo: initialValues.sindromeAntifosfo,
+          cardiopatias: initialValues.cardiopatias,
+          artritis: initialValues.artritis,
+          hipotiroidismo: initialValues.hipotiroidismo,
+          hipertiroidismo: initialValues.hipertiroidismo,
+          trombofilia: initialValues.trombofilia,
+          epilepsia: initialValues.epilepsia,
+          observaciones: initialValues.observaciones,
         });
       }
     }

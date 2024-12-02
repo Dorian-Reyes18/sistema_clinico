@@ -61,7 +61,7 @@ const CirugiaEndoscipica3 = ({
         fechaCirugia: values.fechaCirugia
           ? dayjs(values.fechaCirugia).toISOString()
           : null,
-        cirugiaIntraId:
+        ordenQuirurgicaId:
           mode === "isEditMode"
             ? formik.values.ordenQuirurgicaId || null
             : null,
