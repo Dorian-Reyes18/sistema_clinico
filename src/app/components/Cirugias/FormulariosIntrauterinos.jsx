@@ -7,7 +7,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 // Formularios
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
-import CirugiaPercutanea1 from "./formsData/Percutanea1Form";
+import CirugiaPercutanea1 from "./formsData/PercutaneaForm";
 import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
