@@ -290,29 +290,29 @@ model IntrauterinaEndoscopica {
 model IntrauterinaAbierta {
   id                                             Int                         @id @default(autoincrement())
   ordenQuirurgicaId                              Int?
+  fechaCirugia                                   String?
+  horaInicioAnestesia                            String?
+  horaInicioCirugiaMaterna                       String?
+  horaInicioCirugiaFetal                         String?
+  horaFinalizacionCirugia                        String?
+  tipoAnestesiaId                                String?
+  complicacionesAnestesicas                      String?
+  complicacionesQuirurgicas                      String?
   ubicacionPlacentaria                           String?
-  sangreEstimado                                 Int?
+  sangreEstimado                                 String?
+  incisionEnPiel                                 String?
+  incisionEnUtero                                String?
+  nivelAnatomico                                 String?
+  tamanoDelDefecto                               String
+  nivelFuncional                                 String?
+  ilaInicialDeLiquidoAmniotico                   String?
+  ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico String?
+  frecuenciaCardiacaFetalInicio                  String
+  frecuenciaCardiacaFetalFinalizacion            String
   cierreDeMielomeningocele                       Boolean?
   derivacionVentriculoamniotica                  Boolean?
   cierreDeEncefalocele                           Boolean?
   drenajeDeQuistesCoroideosUniOBilaterales       Boolean?
-  fechaCirugia                                   DateTime?
-  horaInicioAnestesia                            DateTime?
-  tipoAnestesiaId                                String?
-  complicacionesAnestesicas                      String?
-  horaInicioCirugiaMaterna                       DateTime?
-  horaInicioCirugiaFetal                         DateTime?
-  frecuenciaCardiacaFetalInicio                  String
-  incisionEnPiel                                 Boolean?
-  incisionEnUtero                                Boolean?
-  tamanoDelDefecto                               String
-  nivelAnatomico                                 String?
-  nivelFuncional                                 String?
-  ilaInicialDeLiquidoAmniotico                   String?
-  ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico Boolean?
-  frecuenciaCardiacaFetalFinalizacion            String
-  complicacionesQuirurgicas                      String?
-  horaFinalizacionCirugia                        DateTime?
   ordenQuirurgica                                OrdenQuirurgicaIntrauterina? @relation(fields: [ordenQuirurgicaId], references: [id])
 }
 

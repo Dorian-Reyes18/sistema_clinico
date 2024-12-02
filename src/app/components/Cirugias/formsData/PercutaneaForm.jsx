@@ -17,7 +17,7 @@ import {
   optionsC,
   optionsPC,
   optionsUP,
-} from "./PercutaneaData";
+} from "./DataSurgerisObject";
 
 dayjs.locale("es");
 dayjs.extend(utc);

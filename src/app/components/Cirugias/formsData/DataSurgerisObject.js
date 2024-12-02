@@ -50,7 +50,12 @@ export const optionsPC = [
   "Cancelada",
 ]; //Proceso
 
-export const optionsUP = ["Anterior", "Fúndica", "Posterior"]; //Ubicacion placentaria
+export const optionsUP = [
+  "Anterior",
+  "Fúndica",
+  "Posterior",
+  "Placenta previa oclusiva total",
+]; //Ubicacion placentaria
 
 export const optionsPartos = ["Natural", "Cesárea", "Asistido"]; //tipo de parto
 
