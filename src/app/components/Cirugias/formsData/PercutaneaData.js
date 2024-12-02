@@ -51,3 +51,22 @@ export const optionsPC = [
 ]; //Proceso
 
 export const optionsUP = ["Anterior", "Fúndica", "Posterior"]; //Ubicacion placentaria
+
+export const optionsPartos = ["Natural", "Cesárea", "Asistido"]; //tipo de parto
+
+export const edadFinalización = [
+  "Menor a 32 semanas",
+  "33 semanas",
+  "34 semanas",
+  "35 semanas",
+  "36 semanas",
+  "Mayor a 37 semanas",
+];
+
+export const natalidad = [
+  "Espontáneo",
+  "Inducido",
+  "Asistido",
+  "Acuático",
+  "Vertical",
+];

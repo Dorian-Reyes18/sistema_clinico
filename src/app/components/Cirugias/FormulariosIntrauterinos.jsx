@@ -8,6 +8,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
 import CirugiaPercutanea1 from "./formsData/Percutanea1Form";
+import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
@@ -116,6 +117,16 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
           ? {}
           : currentSurgery?.intrauterinaPercutanea?.[0] || null,
       isVisible: showCirugiaForm.percutanea,
+    },
+    {
+      name: "ResultadosPerinatales",
+      label: "Resultados perinatales",
+      formComponent: ResultadosPerinatales,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.intrauterinaPercutanea?.[0] || null,
+      isVisible: true,
     },
   ];
 
