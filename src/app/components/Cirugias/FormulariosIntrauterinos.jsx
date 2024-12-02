@@ -8,8 +8,9 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
 import CirugiaPercutanea from "./formsData/PercutaneaForm";
-import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 import CirugiaAbierta from "./formsData/AbiertaForm";
+import CirugiaEndoscipica1 from "./formsData/EndoscopicaForm1";
+import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
@@ -129,6 +130,26 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
           : currentSurgery?.intrauterinaPercutanea?.[0] || null,
       isVisible: showCirugiaForm.percutanea,
     },
+    {
+      name: "CirugiaEndoscipica1",
+      label: "Cirugía Endoscópica - Feto 1",
+      formComponent: CirugiaEndoscipica1,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentSurgery?.intrauterinaEndoscopica?.[0] || null,
+      isVisible: showCirugiaForm.endoscopica,
+    },
+    // {
+    //   name: "CirugiaEndoscipica1",
+    //   label: "Datos de la cirugía Percutánea",
+    //   formComponent: CirugiaEndoscipica1,
+    //   initialValues:
+    //     mode === "isCreateMode"
+    //       ? {}
+    //       : currentSurgery?.intrauterinaPercutanea?.[0] || null,
+    //   isVisible: showCirugiaForm.percutanea,
+    // },
     {
       name: "ResultadosPerinatales",
       label: "Resultados perinatales",

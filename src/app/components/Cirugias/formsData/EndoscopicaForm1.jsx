@@ -14,12 +14,7 @@ import {
   optionsSE,
   optionsC,
   optionsUP,
-  incisionPiel,
-  incisionUtero,
-  nivelAnatomico,
-  nivelFuncional,
-  tamañoDefecto,
-  ILAInicialFinal,
+  optionsBUILA,
 } from "./DataSurgerisObject";
 
 dayjs.locale("es");
@@ -32,35 +27,33 @@ const CirugiaEndoscipica1 = ({
   mode,
   initialValues,
   confirmButton,
-  setShowCirugiaForm,
 }) => {
   const { metadata } = useAuth();
 
   const formik = useFormik({
     initialValues: {
-      fechaCirugia: "",
+      ordenQuirurgicaId: null,
+      fechaCirugia: null,
       horaInicioAnestesia: "",
-      horaInicioCirugiaMaterna: "",
       horaInicioCirugiaFetal: "",
       horaFinalizacionCirugia: "",
       tipoAnestesiaId: "",
       complicacionesAnestesicas: "",
-      complicacionesQuirurgicas: "",
       ubicacionPlacentaria: "",
-      sangreEstimado: "",
-      incisionEnPiel: "",
-      incisionEnUtero: "",
-      nivelAnatomico: "",
-      tamanoDelDefecto: "",
-      nivelFuncional: "",
-      ilaInicialDeLiquidoAmniotico: "",
-      ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico: "",
       frecuenciaCardiacaFetalInicio: "",
+      sangradoEstimado: "",
+      complicacionesQuirurgicas: "",
       frecuenciaCardiacaFetalFinalizacion: "",
-      cierreDeMielomeningocele: false,
-      derivacionVentriculoamniotica: false,
-      cierreDeEncefalocele: false,
-      drenajeDeQuistesCoroideosUniOBilaterales: false,
+      bolsilloUnicoInicialDeLiquidoAmniotico: "",
+      laserDeAnastomosisPlacentaria: false,
+      coagulacionBipolarDeCordoneUmbilical: false,
+      liberacionDeBandasAmnioticas: false,
+      colocacionDeBalonEndotraqueal: false,
+      retiroDeBalonEndotraqueal: false,
+      reparacionDeMielomeningocele: false,
+      cistoscopia: false,
+      cistoscopiaMasLaserDeValvasUretralesPosteriores: false,
+      intubacionEndotraquealIntrauterina: false,
     },
     onSubmit: (values) => {
       const formData = {
@@ -86,33 +79,35 @@ const CirugiaEndoscipica1 = ({
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId,
           fechaCirugia: initialValues.fechaCirugia,
           horaInicioAnestesia: initialValues.horaInicioAnestesia,
-          horaInicioCirugiaMaterna: initialValues.horaInicioCirugiaMaterna,
           horaInicioCirugiaFetal: initialValues.horaInicioCirugiaFetal,
           horaFinalizacionCirugia: initialValues.horaFinalizacionCirugia,
           tipoAnestesiaId: initialValues.tipoAnestesiaId,
           complicacionesAnestesicas: initialValues.complicacionesAnestesicas,
-          complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
           ubicacionPlacentaria: initialValues.ubicacionPlacentaria,
-          sangreEstimado: initialValues.sangreEstimado,
-          incisionEnPiel: initialValues.incisionEnPiel,
-          incisionEnUtero: initialValues.incisionEnUtero,
-          nivelAnatomico: initialValues.nivelAnatomico,
-          tamanoDelDefecto: initialValues.tamanoDelDefecto,
-          nivelFuncional: initialValues.nivelFuncional,
-          ilaInicialDeLiquidoAmniotico:
-            initialValues.ilaInicialDeLiquidoAmniotico,
-          ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico:
-            initialValues.ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico,
           frecuenciaCardiacaFetalInicio:
             initialValues.frecuenciaCardiacaFetalInicio,
+          sangradoEstimado: initialValues.sangradoEstimado,
+          complicacionesQuirurgicas: initialValues.complicacionesQuirurgicas,
           frecuenciaCardiacaFetalFinalizacion:
             initialValues.frecuenciaCardiacaFetalFinalizacion,
-          cierreDeMielomeningocele: initialValues.cierreDeMielomeningocele,
-          derivacionVentriculoamniotica:
-            initialValues.derivacionVentriculoamniotica,
-          cierreDeEncefalocele: initialValues.cierreDeEncefalocele,
-          drenajeDeQuistesCoroideosUniOBilaterales:
-            initialValues.drenajeDeQuistesCoroideosUniOBilaterales,
+          bolsilloUnicoInicialDeLiquidoAmniotico:
+            initialValues.bolsilloUnicoInicialDeLiquidoAmniotico,
+          laserDeAnastomosisPlacentaria:
+            initialValues.laserDeAnastomosisPlacentaria,
+          coagulacionBipolarDeCordoneUmbilical:
+            initialValues.coagulacionBipolarDeCordoneUmbilical,
+          liberacionDeBandasAmnioticas:
+            initialValues.liberacionDeBandasAmnioticas,
+          colocacionDeBalonEndotraqueal:
+            initialValues.colocacionDeBalonEndotraqueal,
+          retiroDeBalonEndotraqueal: initialValues.retiroDeBalonEndotraqueal,
+          reparacionDeMielomeningocele:
+            initialValues.reparacionDeMielomeningocele,
+          cistoscopia: initialValues.cistoscopia,
+          cistoscopiaMasLaserDeValvasUretralesPosteriores:
+            initialValues.cistoscopiaMasLaserDeValvasUretralesPosteriores,
+          intubacionEndotraquealIntrauterina:
+            initialValues.intubacionEndotraquealIntrauterina,
         });
       }
     }
@@ -203,34 +198,6 @@ const CirugiaEndoscipica1 = ({
       </div>
 
       <div className="item">
-        <label htmlFor="horaInicioCirugiaMaterna">
-          Hor.Inicio cirugía Materna:
-          <span className="señal-req"> *</span>
-        </label>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-          <TimePicker
-            className="timer-mui"
-            id="horaInicioCirugiaMaterna"
-            name="horaInicioCirugiaMaterna"
-            value={
-              formik.values.horaInicioCirugiaMaterna
-                ? dayjs(formik.values.horaInicioCirugiaMaterna, "hh:mm A")
-                : null
-            }
-            onChange={(time) =>
-              formik.setFieldValue(
-                "horaInicioCirugiaFetal",
-                time ? time.format("hh:mm A") : null
-              )
-            }
-            onBlur={handleFieldBlur}
-            format="hh:mm A"
-            ampm
-          />
-        </LocalizationProvider>
-      </div>
-
-      <div className="item">
         <label htmlFor="horaInicioCirugiaFetal">
           Hora inicio cirugía fetal:
           <span className="señal-req"> *</span>
@@ -286,21 +253,34 @@ const CirugiaEndoscipica1 = ({
         </LocalizationProvider>
       </div>
 
-      <div className="item">
-        <label htmlFor="sangreEstimado">
-          Sangrado estimado: <span className="señal-req"> *</span>
+      <div className="item-2">
+        <label htmlFor="bolsilloUnicoInicialDeLiquidoAmniotico">
+          Bolsillo único inicial de líquido amniótico:{" "}
+          <span className="señal-req"> *</span>
         </label>
         <Select
-          className="select"
+          className="select-mdrg"
           placeholder="Seleccione..."
-          id="sangreEstimado"
-          name="sangreEstimado"
-          value={formik?.values?.sangreEstimado || undefined}
-          onChange={(value) => formik.setFieldValue("sangreEstimado", value)}
-          onBlur={() => formik.setFieldTouched("sangreEstimado", true)}
+          id="bolsilloUnicoInicialDeLiquidoAmniotico"
+          name="bolsilloUnicoInicialDeLiquidoAmniotico"
+          value={
+            formik?.values?.bolsilloUnicoInicialDeLiquidoAmniotico || undefined
+          }
+          onChange={(value) =>
+            formik.setFieldValue(
+              "bolsilloUnicoInicialDeLiquidoAmniotico",
+              value
+            )
+          }
+          onBlur={() =>
+            formik.setFieldTouched(
+              "bolsilloUnicoInicialDeLiquidoAmniotico",
+              true
+            )
+          }
         >
-          {optionsSE.map((option) => (
-            <Option key={option} value={option.toString()}>
+          {optionsBUILA.map((option) => (
+            <Option key={option} value={option}>
               {option}
             </Option>
           ))}
@@ -356,86 +336,20 @@ const CirugiaEndoscipica1 = ({
           ))}
         </Select>
       </div>
-
       <div className="item">
-        <label htmlFor="incisionEnPiel">
-          Incisión en piel:
-          <span className="señal-req"> *</span>
+        <label htmlFor="sangradoEstimado">
+          Sangrado estimado: <span className="señal-req"> *</span>
         </label>
         <Select
           className="select"
           placeholder="Seleccione..."
-          id="incisionEnPiel"
-          name="incisionEnPiel"
-          value={formik?.values?.incisionEnPiel || undefined}
-          onChange={(value) => formik.setFieldValue("incisionEnPiel", value)}
-          onBlur={() => formik.setFieldTouched("incisionEnPiel", true)}
+          id="sangradoEstimado"
+          name="sangradoEstimado"
+          value={formik?.values?.sangradoEstimado || undefined}
+          onChange={(value) => formik.setFieldValue("sangradoEstimado", value)}
+          onBlur={() => formik.setFieldTouched("sangradoEstimado", true)}
         >
-          {incisionPiel.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="incisionEnUtero">
-          Incisión en Utero:
-          <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="incisionEnUtero"
-          name="incisionEnUtero"
-          value={formik?.values?.incisionEnUtero || undefined}
-          onChange={(value) => formik.setFieldValue("incisionEnUtero", value)}
-          onBlur={() => formik.setFieldTouched("incisionEnUtero", true)}
-        >
-          {incisionUtero.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="nivelAnatomico">
-          Nivel Anatómico: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="nivelAnatomico"
-          name="nivelAnatomico"
-          value={formik?.values?.nivelAnatomico || undefined}
-          onChange={(value) => formik.setFieldValue("nivelAnatomico", value)}
-          onBlur={() => formik.setFieldTouched("nivelAnatomico", true)}
-        >
-          {nivelAnatomico.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="nivelFuncional">
-          Nivel funcional: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="nivelFuncional"
-          name="nivelFuncional"
-          value={formik?.values?.nivelFuncional || undefined}
-          onChange={(value) => formik.setFieldValue("nivelFuncional", value)}
-          onBlur={() => formik.setFieldTouched("nivelFuncional", true)}
-        >
-          {nivelFuncional.map((option) => (
+          {optionsSE.map((option) => (
             <Option key={option} value={option.toString()}>
               {option}
             </Option>
@@ -459,86 +373,6 @@ const CirugiaEndoscipica1 = ({
           onBlur={() => formik.setFieldTouched("ubicacionPlacentaria", true)}
         >
           {optionsUP.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="tamanoDelDefecto">
-          Tamaño del defecto: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="tamanoDelDefecto"
-          name="tamanoDelDefecto"
-          value={formik?.values?.tamanoDelDefecto || undefined}
-          onChange={(value) => formik.setFieldValue("tamanoDelDefecto", value)}
-          onBlur={() => formik.setFieldTouched("tamanoDelDefecto", true)}
-        >
-          {tamañoDefecto.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="ilaInicialDeLiquidoAmniotico">
-          ILA Inicial: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="ilaInicialDeLiquidoAmniotico"
-          name="ilaInicialDeLiquidoAmniotico"
-          value={formik?.values?.ilaInicialDeLiquidoAmniotico || undefined}
-          onChange={(value) =>
-            formik.setFieldValue("ilaInicialDeLiquidoAmniotico", value)
-          }
-          onBlur={() =>
-            formik.setFieldTouched("ilaInicialDeLiquidoAmniotico", true)
-          }
-        >
-          {ILAInicialFinal.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico">
-          ILA Final: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico"
-          name="ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico"
-          value={
-            formik?.values?.ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico ||
-            undefined
-          }
-          onChange={(value) =>
-            formik.setFieldValue(
-              "ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico",
-              value
-            )
-          }
-          onBlur={() =>
-            formik.setFieldTouched(
-              "ilaFinalBolsilloUnicoInicialDeLiquidoAmniotico",
-              true
-            )
-          }
-        >
-          {ILAInicialFinal.map((option) => (
             <Option key={option} value={option.toString()}>
               {option}
             </Option>
@@ -577,54 +411,128 @@ const CirugiaEndoscipica1 = ({
       </div>
 
       <div className="item-switch">
-        <label htmlFor="cierreDeEncefalocele">
-          Cierre de Mielomeningocele:
+        <label htmlFor="intubacionEndotraquealIntrauterina">
+          Intubación endotraqueal fetal:
         </label>
         <Switch
-          checked={formik.values.cierreDeEncefalocele}
+          checked={formik.values.intubacionEndotraquealIntrauterina}
           onChange={(checked) => {
-            formik.setFieldValue("cierreDeEncefalocele", checked);
-            formik.setFieldTouched("cierreDeEncefalocele", true);
+            formik.setFieldValue("intubacionEndotraquealIntrauterina", checked);
+            formik.setFieldTouched("intubacionEndotraquealIntrauterina", true);
           }}
         />
       </div>
+
       <div className="item-switch">
-        <label htmlFor="derivacionVentriculoamniotica">
-          ventrículo-amniótica:
+        <label htmlFor="laserDeAnastomosisPlacentaria">
+          Laser anastomosis placentaria:
         </label>
         <Switch
-          checked={formik.values.derivacionVentriculoamniotica}
+          checked={formik.values.laserDeAnastomosisPlacentaria}
           onChange={(checked) => {
-            formik.setFieldValue("derivacionVentriculoamniotica", checked);
-            formik.setFieldTouched("derivacionVentriculoamniotica", true);
+            formik.setFieldValue("laserDeAnastomosisPlacentaria", checked);
+            formik.setFieldTouched("laserDeAnastomosisPlacentaria", true);
           }}
         />
       </div>
+
       <div className="item-switch">
-        <label htmlFor="cierreDeEncefalocele">Cierre de Encefalocele:</label>
-        <Switch
-          checked={formik.values.cierreDeEncefalocele}
-          onChange={(checked) => {
-            formik.setFieldValue("cierreDeEncefalocele", checked);
-            formik.setFieldTouched("cierreDeEncefalocele", true);
-          }}
-        />
-      </div>
-      <div className="item-switch">
-        <label htmlFor="drenajeDeQuistesCoroideosUniOBilaterales">
-          Drenaje de quistes coroideos:
+        <label htmlFor="coagulacionBipolarDeCordoneUmbilical">
+          Coagulación bipolar cordón umbilical:
         </label>
         <Switch
-          checked={formik.values.drenajeDeQuistesCoroideosUniOBilaterales}
+          checked={formik.values.coagulacionBipolarDeCordoneUmbilical}
           onChange={(checked) => {
             formik.setFieldValue(
-              "drenajeDeQuistesCoroideosUniOBilaterales",
+              "coagulacionBipolarDeCordoneUmbilical",
               checked
             );
             formik.setFieldTouched(
-              "drenajeDeQuistesCoroideosUniOBilaterales",
+              "coagulacionBipolarDeCordoneUmbilical",
               true
             );
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="liberacionDeBandasAmnioticas">
+          Liberación de bandas amnióticas:
+        </label>
+        <Switch
+          checked={formik.values.liberacionDeBandasAmnioticas}
+          onChange={(checked) => {
+            formik.setFieldValue("liberacionDeBandasAmnioticas", checked);
+            formik.setFieldTouched("liberacionDeBandasAmnioticas", true);
+          }}
+        />
+      </div>
+
+      <div className="item-switch">
+        <label htmlFor="colocacionDeBalonEndotraqueal">
+          Colocación de balón endotraqueal:
+        </label>
+        <Switch
+          checked={formik.values.colocacionDeBalonEndotraqueal}
+          onChange={(checked) => {
+            formik.setFieldValue("colocacionDeBalonEndotraqueal", checked);
+            formik.setFieldTouched("colocacionDeBalonEndotraqueal", true);
+          }}
+        />
+      </div>
+
+      <div className="item-switch">
+        <label htmlFor="retiroDeBalonEndotraqueal">
+          Retiro de balón endotraqueal:
+        </label>
+        <Switch
+          checked={formik.values.retiroDeBalonEndotraqueal}
+          onChange={(checked) => {
+            formik.setFieldValue("retiroDeBalonEndotraqueal", checked);
+            formik.setFieldTouched("retiroDeBalonEndotraqueal", true);
+          }}
+        />
+      </div>
+
+      <div className="item-switch">
+        <label htmlFor="reparacionDeMielomeningocele">
+          Reparación de Mielomeningocele:
+        </label>
+        <Switch
+          checked={formik.values.reparacionDeMielomeningocele}
+          onChange={(checked) => {
+            formik.setFieldValue("reparacionDeMielomeningocele", checked);
+            formik.setFieldTouched("reparacionDeMielomeningocele", true);
+          }}
+        />
+      </div>
+
+      <div className="item-switch">
+        <label htmlFor="cistoscopiaMasLaserDeValvasUretralesPosteriores">
+          Cistoscopia con láser uretral:
+        </label>
+        <Switch
+          checked={
+            formik.values.cistoscopiaMasLaserDeValvasUretralesPosteriores
+          }
+          onChange={(checked) => {
+            formik.setFieldValue(
+              "cistoscopiaMasLaserDeValvasUretralesPosteriores",
+              checked
+            );
+            formik.setFieldTouched(
+              "cistoscopiaMasLaserDeValvasUretralesPosteriores",
+              true
+            );
+          }}
+        />
+      </div>
+      <div className="item-switch">
+        <label htmlFor="cistoscopia">Cistoscopia:</label>
+        <Switch
+          checked={formik.values.cistoscopia}
+          onChange={(checked) => {
+            formik.setFieldValue("cistoscopia", checked);
+            formik.setFieldTouched("cistoscopia", true);
           }}
         />
       </div>
