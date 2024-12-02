@@ -1,0 +1,74 @@
+{
+  "OrdenQuirurgicaIntrauterina": {
+    "pacienteId": 5,
+    "tipoCirugia": "Endoscópica",
+    "fechaDeCreacion": "2024-11-26T12:00:00Z",
+    "teniaDiagnostico": true,
+    "complicacionesQuirurgicas": "Detalle de las complicaciones",
+    "estado": true
+  },
+  "DiagnosticoPrenatal": {
+    "categoriaId": 1,
+    "tipoDefectoId": 1,
+    "tipoCirugiaRealizada": "Endoscópica",
+    "estudioGen": true,
+    "resultadoEstGen": "Datos positivos",
+    "tipoEmbarazo": "Gemelos"
+  },
+  "Endoscopicas": [
+    {
+      "fechaCirugia": "2024-12-02T10:00:00.000Z",
+      "horaInicioAnestesia": "12:30 AM",
+      "horaInicioCirugiaFetal": "01:15:AM",
+      "horaFinalizacionCirugia": "12:00 PM",
+      "tipoAnestesiaId": "Anestesia mixta",
+      "complicacionesAnestesicas": "No hubo",
+      "ubicacionPlacentaria": "Anterior",
+      "frecuenciaCardiacaFetalInicio": "140 bpm",
+      "sangradoEstimado": "200 a 400 ml",
+      "complicacionesQuirurgicas": "No hubo",
+      "frecuenciaCardiacaFetalFinalizacion": "135 bpm",
+      "bolsilloUnicoInicialDeLiquidoAmniotico": "De 2 a 8 cms",
+      "laserDeAnastomosisPlacentaria": true,
+      "coagulacionBipolarDeCordoneUmbilical": false,
+      "liberacionDeBandasAmnioticas": true,
+      "colocacionDeBalonEndotraqueal": true,
+      "retiroDeBalonEndotraqueal": true,
+      "reparacionDeMielomeningocele": false,
+      "cistoscopia": true,
+      "cistoscopiaMasLaserDeValvasUretralesPosteriores": false,
+      "intubacionEndotraquealIntrauterina": true
+    },
+    {
+      "fechaCirugia": "2024-12-05T09:45:000Z",
+      "horaInicioAnestesia": "11:00 PM",
+      "horaInicioCirugiaFetal": "11:45 PM",
+      "horaFinalizacionCirugia": "01:30 AM",
+      "tipoAnestesiaId": "Bloqueo epidural",
+      "complicacionesAnestesicas": "Hipotensión",
+      "ubicacionPlacentaria": "Posterior",
+      "frecuenciaCardiacaFetalInicio": "145 bpm",
+      "sangradoEstimado": "300 a 500 ml",
+      "complicacionesQuirurgicas": "DPPNI",
+      "frecuenciaCardiacaFetalFinalizacion": "138 bpm",
+      "bolsilloUnicoInicialDeLiquidoAmniotico": "Mayor a 8 cms",
+      "laserDeAnastomosisPlacentaria": false,
+      "coagulacionBipolarDeCordoneUmbilical": true,
+      "liberacionDeBandasAmnioticas": false,
+      "colocacionDeBalonEndotraqueal": false,
+      "retiroDeBalonEndotraqueal": false,
+      "reparacionDeMielomeningocele": true,
+      "cistoscopia": false,
+      "cistoscopiaMasLaserDeValvasUretralesPosteriores": true,
+      "intubacionEndotraquealIntrauterina": false
+    }
+  ],
+  "ResultadosPerinatales": {
+    "tipoDeParto": "Natural",
+    "fechaNac": "2024-10-01T12:00:00Z",
+    "edadFinalizacion": "33 semanas",
+    "natalidad": "Inducido",
+    "descripcionFetal": "Faltan detalles",
+    "pesoGramos": 2500
+  }
+}
