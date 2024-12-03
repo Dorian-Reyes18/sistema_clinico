@@ -106,38 +106,85 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     if (hasValidData) {
       console.log("Valores de sendData:", JSON.stringify(sendData, null, 2));
 
-      // const createSurgery = async () => {
-      //   if (mode === "isCreateMode") {
-      //   } else {
-      //     startLoading();
+      const createSurgery = async () => {
+        if (mode === "isCreateMode") {
+          startLoading();
 
-      //     try {
-      //       const response = await postCirugiaIntraCompleta(sendData, token);
+          try {
+            const response = await postCirugiaIntraCompleta(sendData, token);
+            console.log(response);
 
-      //       if (response?.success) {
-      //         stopLoading();
-      //         notifySuccess();
-      //         router.push("/cirugias");
-      //       } else {
-      //         stopLoading();
-      //         notification.error({
-      //           message: "Error",
-      //           description: "Hubo un problema al crear la cirugía.",
-      //         });
-      //       }
-      //     } catch (error) {
-      //       stopLoading();
-      //       console.error("Error al crear la cirugía:", error);
-      //       notification.error({
-      //         message: "Error",
-      //         description:
-      //           error.message || "Hubo un error al crear la cirugía.",
-      //       });
-      //     }
-      //   }
-      // };
+            // Asegúrate de que la respuesta sea la esperada
+            if (response?.message && response?.ordenQuirurgica?.id) {
+              stopLoading();
 
-      // createSurgery();
+              // Modal de confirmación con icono de check y sin botón de cancelar
+              Modal.confirm({
+                title: "Cirugía creada exitosamente",
+                content:
+                  "La cirugía y todos sus datos relacionados se han registrado correctamente.",
+                icon: (
+                  <CheckCircleOutlined
+                    style={{ color: "#52c41a", fontSize: "32px" }}
+                  />
+                ),
+                okText: "Aceptar",
+                centered: true,
+                cancelButtonProps: { style: { display: "none" } },
+                onOk() {
+                  router.push("/cirugias");
+                },
+              });
+            } else {
+              stopLoading();
+              notification.error({
+                message: "Error",
+                description: "Hubo un problema al crear la cirugía.",
+              });
+            }
+          } catch (error) {
+            stopLoading();
+            console.error("Error al crear la cirugía:", error);
+            notification.error({
+              message: "Error",
+              description:
+                error.message || "Hubo un error al crear la cirugía.",
+            });
+            router.push("/cirugias");
+          }
+        } else {
+          startLoading();
+
+          try {
+            const response = await postCirugiaIntraCompleta(sendData, token);
+
+            // Verificar que la respuesta sea correcta para la actualización
+            if (response?.message && response?.ordenQuirurgica?.id) {
+              stopLoading();
+              notifySuccess();
+              router.push("/cirugias");
+            } else {
+              stopLoading();
+              notification.error({
+                message: "Error",
+                description: "Hubo un problema al actualizar la cirugía.",
+              });
+              router.push("/cirugias");
+            }
+          } catch (error) {
+            stopLoading();
+            console.error("Error al actualizar la cirugía:", error);
+            notification.error({
+              message: "Error",
+              description:
+                error.message || "Hubo un error al actualizar la cirugía.",
+            });
+            router.push("/cirugias");
+          }
+        }
+      };
+
+      createSurgery();
     }
   }, [sendData]);
 
@@ -192,17 +239,6 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       onCancel() {
         console.log("El usuario decidió no cancelar.");
       },
-    });
-  };
-
-  const notifySuccess = () => {
-    notification.success({
-      message: "Operación exitosa",
-      description:
-        mode === "isCreateMode"
-          ? "La cirugía fue creada con éxito"
-          : "Los cambios fueron guardados correctamente.",
-      icon: <CheckCircleOutlined style={{ color: "#108ee9" }} />,
     });
   };
 
@@ -290,6 +326,15 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
 
   return (
     <div className="prenatal-form-container">
+      <Modal
+        className="modal-confirm"
+        open={loading}
+        footer={null}
+        closable={false}
+        centered
+      >
+        <Spin size="large" />
+      </Modal>
       <div className="titleForm">
         <h4>
           {mode === "isEditMode"

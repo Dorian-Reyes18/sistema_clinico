@@ -215,6 +215,7 @@ const AllDataForms = ({ mode, id }) => {
                 "Hubo un problema al registrar los datos. Intente nuevamente.",
               duration: 10,
             });
+            router.push("/pacientes");
           }
         };
 

@@ -219,7 +219,7 @@ const CirugiaAbierta = ({
             }
             onChange={(time) =>
               formik.setFieldValue(
-                "horaInicioCirugiaFetal",
+                "horaInicioCirugiaMaterna",
                 time ? time.format("hh:mm A") : null
               )
             }
