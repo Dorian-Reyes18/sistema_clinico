@@ -9,9 +9,9 @@ import OrdenIntrauterinaForm from "./formsData/OrdenIntrauterinaForm";
 import DiagnosticoPrenatalForm from "./formsData/DiagnosticoPrenatalForm";
 import CirugiaPercutanea from "./formsData/PercutaneaForm";
 import CirugiaAbierta from "./formsData/AbiertaForm";
-import CirugiaEndoscipica1 from "./formsData/EndoscopicaForm1";
-import CirugiaEndoscipica2 from "./formsData/EndoscopicaForm2";
-import CirugiaEndoscipica3 from "./formsData/EndoscopicaForm3";
+import CirugiaEndoscopica1 from "./formsData/EndoscopicaForm1";
+import CirugiaEndoscopica2 from "./formsData/EndoscopicaForm2";
+import CirugiaEndoscopica3 from "./formsData/EndoscopicaForm3";
 import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
@@ -24,6 +24,14 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     endoscopica: false,
     abierta: false,
   });
+  const [sendData, setSendData] = useState({
+    OrdenQuirurgicaIntrauterina: {},
+    DiagnosticoPrenatal: {},
+    Endoscopicas: [],
+    IntrauterinaAbierta: {},
+    IntrauterinaPercutanea: {},
+    ResultadosPerinatales: {},
+  });
 
   useEffect(() => {
     if (mode === "isEditMode") {
@@ -33,12 +41,57 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     }
   }, [id, prenatalSurgeries]);
 
-  useEffect(() => {
-    // console.log("Estado de showModal", showCirugiaForm);
-  }, [showCirugiaForm]);
+  const expectedKeys = [
+    "OrdenQuirurgicaIntrauterina",
+    "DiagnosticoPrenatal",
+    "Endoscopicas",
+    "IntrauterinaAbierta",
+    "IntrauterinaPercutanea",
+    "ResultadosPerinatales",
+  ];
 
   const handleFormSubmit = (formName) => (data) => {
-    console.log("Datos recibidos en el padre:", data);
+    console.log(`Datos recibidos en el padre de ${formName}:`, data);
+
+    setSendData((prevState) => {
+      const updatedState = {
+        ...prevState,
+        ...(formName.startsWith("CirugiaEndoscopica")
+          ? { Endoscopicas: [...prevState.Endoscopicas, data] }
+          : { [getStateKey(formName)]: data }),
+      };
+
+      if (formName === "ResultadosPerinatales") {
+        const cleanedState = Object.fromEntries(
+          Object.entries(updatedState).filter(
+            ([, value]) =>
+              value &&
+              (Array.isArray(value)
+                ? value.length > 0
+                : Object.keys(value).length > 0)
+          )
+        );
+        console.log(
+          "Estado final de sendData:",
+          JSON.stringify(cleanedState, null, 2)
+        );
+      }
+
+      return updatedState;
+    });
+  };
+
+  const getStateKey = (formName) => {
+    const mapping = {
+      OrdenIntrauterinaForm: "OrdenQuirurgicaIntrauterina",
+      DiagnosticoPrenatalForm: "DiagnosticoPrenatal",
+      CirugiaAbierta: "IntrauterinaAbierta",
+      CirugiaPercutanea: "IntrauterinaPercutanea",
+      ResultadosPerinatales: "ResultadosPerinatale",
+    };
+    return (
+      mapping[formName] || console.warn(`Formulario desconocido: ${formName}`)
+    );
   };
 
   const handleSave = () => {
@@ -133,9 +186,9 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       isVisible: showCirugiaForm.percutanea,
     },
     {
-      name: "CirugiaEndoscipica1",
+      name: "CirugiaEndoscopica1",
       label: "Cirugía Endoscópica - Feto 1",
-      formComponent: CirugiaEndoscipica1,
+      formComponent: CirugiaEndoscopica1,
       initialValues:
         mode === "isCreateMode"
           ? {}
@@ -143,9 +196,9 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       isVisible: showCirugiaForm.endoscopica,
     },
     {
-      name: "CirugiaEndoscipica2",
+      name: "CirugiaEndoscopica2",
       label: "Cirugía Endoscópica - Feto 2",
-      formComponent: CirugiaEndoscipica2,
+      formComponent: CirugiaEndoscopica2,
       initialValues:
         mode === "isCreateMode"
           ? {}
@@ -153,9 +206,9 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
       isVisible: showCirugiaForm.endoscopica,
     },
     {
-      name: "CirugiaEndoscipica3",
+      name: "CirugiaEndoscopica3",
       label: "Cirugía Endoscópica - Feto 3",
-      formComponent: CirugiaEndoscipica3,
+      formComponent: CirugiaEndoscopica3,
       initialValues:
         mode === "isCreateMode"
           ? {}

@@ -22,7 +22,7 @@ dayjs.extend(utc);
 
 const { Option } = Select;
 
-const CirugiaEndoscipica1 = ({
+const CirugiaEndoscopica1 = ({
   onSubmit,
   mode,
   initialValues,
@@ -540,4 +540,4 @@ const CirugiaEndoscipica1 = ({
   );
 };
 
-export default CirugiaEndoscipica1;
+export default CirugiaEndoscopica1;
