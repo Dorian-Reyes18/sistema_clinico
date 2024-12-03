@@ -22,12 +22,7 @@ dayjs.extend(utc);
 
 const { Option } = Select;
 
-const CirugiaEndoscipica1 = ({
-  onSubmit,
-  mode,
-  initialValues,
-  confirmButton,
-}) => {
+const EvaluacionActual = ({ onSubmit, mode, initialValues, confirmButton }) => {
   const { metadata } = useAuth();
 
   const formik = useFormik({
@@ -64,19 +59,19 @@ const CirugiaEndoscipica1 = ({
     if (initialValues !== null) {
       if (mode === "isEditMode") {
         formik.setValues({
-          ordenQuirurgicaId: initialValues.ordenQuirurgicaId,
-          tipoDiabetesId: initialValues.tipoDiabetesId,
-          lupusEritematosoSist: initialValues.lupusEritematosoSist,
-          obesidad: initialValues.obesidad,
-          hipertension: initialValues.hipertension,
-          sindromeAntifosfo: initialValues.sindromeAntifosfo,
-          cardiopatias: initialValues.cardiopatias,
-          artritis: initialValues.artritis,
-          hipotiroidismo: initialValues.hipotiroidismo,
-          hipertiroidismo: initialValues.hipertiroidismo,
-          trombofilia: initialValues.trombofilia,
-          epilepsia: initialValues.epilepsia,
-          observaciones: initialValues.observaciones,
+          ordenQuirurgicaId: initialValues?.ordenQuirurgicaId,
+          tipoDiabetesId: initialValues?.tipoDiabetesId,
+          lupusEritematosoSist: initialValues?.lupusEritematosoSist,
+          obesidad: initialValues?.obesidad,
+          hipertension: initialValues?.hipertension,
+          sindromeAntifosfo: initialValues?.sindromeAntifosfo,
+          cardiopatias: initialValues?.cardiopatias,
+          artritis: initialValues?.artritis,
+          hipotiroidismo: initialValues?.hipotiroidismo,
+          hipertiroidismo: initialValues?.hipertiroidismo,
+          trombofilia: initialValues?.trombofilia,
+          epilepsia: initialValues?.epilepsia,
+          observaciones: initialValues?.observaciones,
         });
       }
     }
@@ -94,313 +89,15 @@ const CirugiaEndoscipica1 = ({
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="item">
-        <label htmlFor="fechaCirugia">
-          Fecha de cirugía:
-          <span className="señal-req"> *</span>
-        </label>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-          <DatePicker
-            id="fechaCirugia"
-            name="fechaCirugia"
-            className="calendar"
-            value={
-              formik.values.fechaCirugia
-                ? dayjs(formik.values.fechaCirugia)
-                : null
-            }
-            onChange={(date) => {
-              formik.setFieldValue("fechaCirugia", date);
-            }}
-            onBlur={handleFieldBlur}
-          />
-        </LocalizationProvider>
-      </div>
-
-      <div className="item">
-        <label htmlFor="tipoAnestesiaId">
-          Tipo de Anestesía: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select-rg"
-          placeholder="Seleccione..."
-          id="tipoAnestesiaId"
-          name="tipoAnestesiaId"
-          value={formik?.values?.tipoAnestesiaId || undefined}
-          onChange={(value) => formik.setFieldValue("tipoAnestesiaId", value)}
-          onBlur={() => formik.setFieldTouched("tipoAnestesiaId", true)}
-        >
-          {optionsTA.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="horaInicioAnestesia">
-          Hora inicio anestesia:
-          <span className="señal-req"> *</span>
-        </label>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-          <TimePicker
-            className="timer-mui"
-            id="horaInicioAnestesia"
-            name="horaInicioAnestesia"
-            value={
-              formik.values.horaInicioAnestesia
-                ? dayjs(formik.values.horaInicioAnestesia, "hh:mm A")
-                : null
-            }
-            onChange={(time) =>
-              formik.setFieldValue(
-                "horaInicioAnestesia",
-                time ? time.format("hh:mm A") : null
-              )
-            }
-            onBlur={handleFieldBlur}
-            format="hh:mm A"
-            ampm
-          />
-        </LocalizationProvider>
-      </div>
-
-      <div className="item">
-        <label htmlFor="horaInicioCirugiaFetal">
-          Hora inicio cirugía fetal:
-          <span className="señal-req"> *</span>
-        </label>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-          <TimePicker
-            className="timer-mui"
-            id="horaInicioCirugiaFetal"
-            name="horaInicioCirugiaFetal"
-            value={
-              formik.values.horaInicioCirugiaFetal
-                ? dayjs(formik.values.horaInicioCirugiaFetal, "hh:mm A")
-                : null
-            }
-            onChange={(time) =>
-              formik.setFieldValue(
-                "horaInicioCirugiaFetal",
-                time ? time.format("hh:mm A") : null
-              )
-            }
-            onBlur={handleFieldBlur}
-            format="hh:mm A"
-            ampm
-          />
-        </LocalizationProvider>
-      </div>
-
-      <div className="item">
-        <label htmlFor="horaFinalizacionCirugia">
-          Hora finalización cirugía:
-          <span className="señal-req"> *</span>
-        </label>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-          <TimePicker
-            className="timer-mui"
-            id="horaFinalizacionCirugia"
-            name="horaFinalizacionCirugia"
-            value={
-              formik.values.horaFinalizacionCirugia
-                ? dayjs(formik.values.horaFinalizacionCirugia, "hh:mm A")
-                : null
-            }
-            onChange={(time) =>
-              formik.setFieldValue(
-                "horaFinalizacionCirugia",
-                time ? time.format("hh:mm A") : null
-              )
-            }
-            onBlur={handleFieldBlur}
-            format="hh:mm A"
-            ampm
-          />
-        </LocalizationProvider>
-      </div>
-
-      <div className="item-2">
-        <label htmlFor="bolsilloUnicoInicialDeLiquidoAmniotico">
-          Bolsillo único inicial de líquido amniótico:{" "}
-          <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select-mdrg"
-          placeholder="Seleccione..."
-          id="bolsilloUnicoInicialDeLiquidoAmniotico"
-          name="bolsilloUnicoInicialDeLiquidoAmniotico"
-          value={
-            formik?.values?.bolsilloUnicoInicialDeLiquidoAmniotico || undefined
-          }
-          onChange={(value) =>
-            formik.setFieldValue(
-              "bolsilloUnicoInicialDeLiquidoAmniotico",
-              value
-            )
-          }
-          onBlur={() =>
-            formik.setFieldTouched(
-              "bolsilloUnicoInicialDeLiquidoAmniotico",
-              true
-            )
-          }
-        >
-          {optionsBUILA.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="complicacionesAnestesicas">
-          Complicaciones anestésicas : <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select-rg"
-          placeholder="Seleccione..."
-          id="complicacionesAnestesicas"
-          name="complicacionesAnestesicas"
-          value={formik?.values?.complicacionesAnestesicas || undefined}
-          onChange={(value) =>
-            formik.setFieldValue("complicacionesAnestesicas", value)
-          }
-          onBlur={() =>
-            formik.setFieldTouched("complicacionesAnestesicas", true)
-          }
-        >
-          {optionsCA.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="complicacionesQuirurgicas">
-          Complicaciones quirurgícas: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select-rg"
-          placeholder="Seleccione..."
-          id="complicacionesQuirurgicas"
-          name="complicacionesQuirurgicas"
-          value={formik?.values?.complicacionesQuirurgicas || undefined}
-          onChange={(value) =>
-            formik.setFieldValue("complicacionesQuirurgicas", value)
-          }
-          onBlur={() =>
-            formik.setFieldTouched("complicacionesQuirurgicas", true)
-          }
-        >
-          {optionsC.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-      <div className="item">
-        <label htmlFor="sangradoEstimado">
-          Sangrado estimado: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="sangradoEstimado"
-          name="sangradoEstimado"
-          value={formik?.values?.sangradoEstimado || undefined}
-          onChange={(value) => formik.setFieldValue("sangradoEstimado", value)}
-          onBlur={() => formik.setFieldTouched("sangradoEstimado", true)}
-        >
-          {optionsSE.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="ubicacionPlacentaria">
-          Ubicación placentaria: <span className="señal-req"> *</span>
-        </label>
-        <Select
-          className="select-rg"
-          placeholder="Seleccione..."
-          id="ubicacionPlacentaria"
-          name="ubicacionPlacentaria"
-          value={formik?.values?.ubicacionPlacentaria || undefined}
-          onChange={(value) =>
-            formik.setFieldValue("ubicacionPlacentaria", value)
-          }
-          onBlur={() => formik.setFieldTouched("ubicacionPlacentaria", true)}
-        >
-          {optionsUP.map((option) => (
-            <Option key={option} value={option.toString()}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="item">
-        <label htmlFor="frecuenciaCardiacaFetalInicio">
-          Frecuencia cardi. Inicio: <span className="señal-req"> *</span>
-        </label>
-        <Input
-          className="text"
-          id="frecuenciaCardiacaFetalInicio"
-          name="frecuenciaCardiacaFetalInicio"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.frecuenciaCardiacaFetalInicio}
-          onBlur={formik.handleBlur}
-        />
-      </div>
-
-      <div className="item">
-        <label htmlFor="frecuenciaCardiacaFetalFinalizacion">
-          Frecuencia cardi. Final: <span className="señal-req"> *</span>
-        </label>
-        <Input
-          className="text"
-          id="frecuenciaCardiacaFetalFinalizacion"
-          name="frecuenciaCardiacaFetalFinalizacion"
-          type="text"
-          onChange={formik.handleChange}
-          value={formik.values.frecuenciaCardiacaFetalFinalizacion}
-          onBlur={formik.handleBlur}
-        />
-      </div>
-
       <div className="item-switch">
-        <label htmlFor="intubacionEndotraquealIntrauterina">
-          Intubación endotraqueal fetal:
-        </label>
-        <Switch
-          checked={formik.values.intubacionEndotraquealIntrauterina}
-          onChange={(checked) => {
-            formik.setFieldValue("intubacionEndotraquealIntrauterina", checked);
-            formik.setFieldTouched("intubacionEndotraquealIntrauterina", true);
-          }}
-        />
-      </div>
-
-      <div className="item-switch">
-        <label htmlFor="laserDeAnastomosisPlacentaria">
+        <label htmlFor="lupusEritematosoSist">
           Laser anastomosis placentaria:
         </label>
         <Switch
-          checked={formik.values.laserDeAnastomosisPlacentaria}
+          checked={formik.values.lupusEritematosoSist}
           onChange={(checked) => {
-            formik.setFieldValue("laserDeAnastomosisPlacentaria", checked);
-            formik.setFieldTouched("laserDeAnastomosisPlacentaria", true);
+            formik.setFieldValue("lupusEritematosoSist", checked);
+            formik.setFieldTouched("lupusEritematosoSist", true);
           }}
         />
       </div>
@@ -509,4 +206,4 @@ const CirugiaEndoscipica1 = ({
   );
 };
 
-export default CirugiaEndoscipica1;
+export default EvaluacionActual;

@@ -577,14 +577,14 @@ const CirugiaAbierta = ({
       </div>
 
       <div className="item-switch">
-        <label htmlFor="cierreDeEncefalocele">
+        <label htmlFor="cierreDeMielomeningocele">
           Cierre de Mielomeningocele:
         </label>
         <Switch
-          checked={formik.values.cierreDeEncefalocele}
+          checked={formik.values.cierreDeMielomeningocele}
           onChange={(checked) => {
-            formik.setFieldValue("cierreDeEncefalocele", checked);
-            formik.setFieldTouched("cierreDeEncefalocele", true);
+            formik.setFieldValue("cierreDeMielomeningocele", checked);
+            formik.setFieldTouched("cierreDeMielomeningocele", true);
           }}
         />
       </div>

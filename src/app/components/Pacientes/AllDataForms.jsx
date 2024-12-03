@@ -57,7 +57,7 @@ const AllDataForms = ({ mode, id }) => {
     },
     {
       name: "EmbarazoActual",
-      label: "Embarazo actual",
+      label: "Evaluación",
       formComponent: EmbarazoActual,
       initialValues: isCreateMode ? {} : patientData?.embarazoActual?.[0] || {},
     },
