@@ -18,6 +18,108 @@ const handleRequest = async (req, operation) => {
   }
 };
 
+export async function PUT(req, { params }) {
+  const { id } = params;
+
+  if (!id || isNaN(parseInt(id, 10))) {
+    return NextResponse.json(
+      { error: "El ID proporcionado es inválido o está ausente" },
+      { status: 400 }
+    );
+  }
+
+  const idNumber = parseInt(id, 10);
+
+  return handleRequest(req, async () => {
+    try {
+      const body = await req.json();
+
+      // Filtrar valores vacíos en los datos recibidos
+      const filterEmpty = (data) => {
+        if (Array.isArray(data)) return data.length > 0 ? data : undefined;
+        if (typeof data === "object" && data !== null)
+          return Object.keys(data).length > 0 ? data : undefined;
+        return data;
+      };
+
+      const {
+        OrdenQuirurgicaIntrauterina,
+        DiagnosticoPrenatal,
+        IntrauterinaPercutanea,
+        ResultadosPerinatales,
+        Endoscopicas,
+      } = Object.fromEntries(
+        Object.entries(body).map(([key, value]) => [key, filterEmpty(value)])
+      );
+
+      let ordenActualizada;
+      // Actualizar la orden principal
+      if (OrdenQuirurgicaIntrauterina) {
+        ordenActualizada = await prisma.ordenQuirurgicaIntrauterina.update({
+          where: { id: idNumber },
+          data: {
+            tipoCirugia: OrdenQuirurgicaIntrauterina.tipoCirugia,
+            teniaDiagnostico: OrdenQuirurgicaIntrauterina.teniaDiagnostico,
+            complicacionesQuirurgicas:
+              OrdenQuirurgicaIntrauterina.complicacionesQuirurgicas,
+            estado: OrdenQuirurgicaIntrauterina.estado,
+            pacienteId: OrdenQuirurgicaIntrauterina.pacienteId,
+          },
+        });
+      }
+
+      // Actualizar o crear Diagnóstico Prenatal
+      if (DiagnosticoPrenatal) {
+        const existingDiagnostico = await prisma.diagnosticoPrenatal.findFirst({
+          where: { cirugiaIntraId: idNumber },
+        });
+
+        if (existingDiagnostico) {
+          await prisma.diagnosticoPrenatal.update({
+            where: { id: existingDiagnostico.id },
+            data: DiagnosticoPrenatal,
+          });
+        } else {
+          await prisma.diagnosticoPrenatal.create({
+            data: DiagnosticoPrenatal,
+          });
+        }
+      }
+
+      // Actualizar o crear Intrauterina Percutánea
+      if (IntrauterinaPercutanea) {
+        await prisma.intrauterinaPercutanea.upsert({
+          where: { ordenQuirurgicaId: idNumber },
+          create: IntrauterinaPercutanea,
+          update: IntrauterinaPercutanea,
+        });
+      }
+
+      // Actualizar o crear Resultados Perinatales
+      if (ResultadosPerinatales) {
+        await prisma.resultadosPerinatales.upsert({
+          where: { ordenQuirurgicaId: idNumber },
+          create: ResultadosPerinatales,
+          update: ResultadosPerinatales,
+        });
+      }
+
+      // Ignorar si Endoscopicas está vacío
+      if (Endoscopicas && Endoscopicas.length > 0) {
+        console.log("Endoscopicas:", Endoscopicas);
+      }
+
+      return NextResponse.json({
+        message: "Orden quirúrgica y datos asociados actualizados exitosamente",
+        ordenActualizada,
+      });
+    } catch (error) {
+      console.error("Error al actualizar la orden quirúrgica", error);
+      return handleError(error, "Error al actualizar la orden quirúrgica");
+    }
+  });
+}
+
 // DELETE: Eliminar la orden quirúrgica y sus registros asociados
 export async function DELETE(req, { params }) {
   const { id } = params;

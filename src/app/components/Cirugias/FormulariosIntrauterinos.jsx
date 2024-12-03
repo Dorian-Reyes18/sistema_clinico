@@ -16,6 +16,7 @@ import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
 // Servicios
 import { postCirugiaIntraCompleta } from "@/services/Post/cirugias/dataPostIntra";
+import { putCirugiaPrenatalCompleta } from "@/services/Put/cirugias/dataCirugiasIntra";
 
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
@@ -156,13 +157,33 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
           startLoading();
 
           try {
-            const response = await postCirugiaIntraCompleta(sendData, token);
+            const response = await putCirugiaPrenatalCompleta(
+              id,
+              sendData,
+              token
+            );
+            console.log(response);
 
             // Verificar que la respuesta sea correcta para la actualización
             if (response?.message && response?.ordenQuirurgica?.id) {
               stopLoading();
-              notifySuccess();
-              router.push("/cirugias");
+              // Modal de confirmación con icono de check y sin botón de cancelar
+              Modal.confirm({
+                title: "Cirugía actualizada exitosamente",
+                content:
+                  "La cirugía y todos sus datos relacionados se han actualizado correctamente.",
+                icon: (
+                  <CheckCircleOutlined
+                    style={{ color: "#52c41a", fontSize: "32px" }}
+                  />
+                ),
+                okText: "Aceptar",
+                centered: true,
+                cancelButtonProps: { style: { display: "none" } },
+                onOk() {
+                  router.push("/cirugias");
+                },
+              });
             } else {
               stopLoading();
               notification.error({
