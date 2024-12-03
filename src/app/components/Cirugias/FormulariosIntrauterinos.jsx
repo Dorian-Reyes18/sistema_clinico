@@ -24,14 +24,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     endoscopica: false,
     abierta: false,
   });
-  const [sendData, setSendData] = useState({
-    OrdenQuirurgicaIntrauterina: {},
-    DiagnosticoPrenatal: {},
-    Endoscopicas: [],
-    IntrauterinaAbierta: {},
-    IntrauterinaPercutanea: {},
-    ResultadosPerinatales: {},
-  });
+  const [sendData, setSendData] = useState({});
 
   useEffect(() => {
     if (mode === "isEditMode") {
@@ -41,18 +34,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     }
   }, [id, prenatalSurgeries]);
 
-  const expectedKeys = [
-    "OrdenQuirurgicaIntrauterina",
-    "DiagnosticoPrenatal",
-    "Endoscopicas",
-    "IntrauterinaAbierta",
-    "IntrauterinaPercutanea",
-    "ResultadosPerinatales",
-  ];
-
   const handleFormSubmit = (formName) => (data) => {
-    console.log(`Datos recibidos en el padre de ${formName}:`, data);
-
     setSendData((prevState) => {
       const updatedState = {
         ...prevState,
@@ -71,15 +53,25 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
                 : Object.keys(value).length > 0)
           )
         );
-        console.log(
-          "Estado final de sendData:",
-          JSON.stringify(cleanedState, null, 2)
-        );
       }
 
       return updatedState;
     });
   };
+
+  useEffect(() => {
+    const hasValidData = Object.values(sendData).some(
+      (value) =>
+        value &&
+        (Array.isArray(value)
+          ? value.length > 0
+          : Object.keys(value).length > 0)
+    );
+
+    if (hasValidData) {
+      console.log("Valores de sendData:", JSON.stringify(sendData, null, 2));
+    }
+  }, [sendData]);
 
   const getStateKey = (formName) => {
     const mapping = {

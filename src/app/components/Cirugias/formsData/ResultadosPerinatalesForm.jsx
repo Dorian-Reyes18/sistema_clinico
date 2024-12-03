@@ -54,7 +54,6 @@ const ResultadosPerinatales = ({
   useEffect(() => {
     if (initialValues !== null) {
       if (mode === "isEditMode") {
-        console.log(initialValues);
         formik.setValues({
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId || null,
           tipoDeParto: initialValues.tipoDeParto,
