@@ -3,12 +3,20 @@ import { Popover, Pagination, Spin } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SearchIntra from "../SearchIntra";
-import { fetchRecentSurgeries } from "@/services/fetchAllData";
+import {
+  fetchRecentSurgeries,
+  fetchOrdenPrenatalCompleta,
+} from "@/services/fetchAllData";
 import CreateIntraButton from "../CreateIntraButton";
-import CrearPaciente from "@/app/pacientes/crearPaciente/page";
 
 const TableSurgeriesIntra = () => {
-  const { recentSurgeries, setRecentSurgeries, token } = useAuth();
+  const {
+    prenatalSurgeries,
+    setPrenatalSurgeries,
+    recentSurgeries,
+    setRecentSurgeries,
+    token,
+  } = useAuth();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [surgeriesPerPage] = useState(20);
@@ -20,6 +28,8 @@ const TableSurgeriesIntra = () => {
       setLoading(true);
       try {
         const data = await fetchRecentSurgeries(token);
+        const dataPosnatal = await fetchOrdenPrenatalCompleta(token);
+        setPrenatalSurgeries(dataPosnatal);
         setRecentSurgeries(data);
         setFilteredSurgeries(data);
       } catch (error) {
@@ -30,7 +40,7 @@ const TableSurgeriesIntra = () => {
     };
 
     fetchSurgeries();
-  }, [setRecentSurgeries, token]);
+  }, [setRecentSurgeries, setPrenatalSurgeries, token]);
 
   const paginatedSurgeries = useMemo(() => {
     const startIndex = (currentPage - 1) * surgeriesPerPage;
