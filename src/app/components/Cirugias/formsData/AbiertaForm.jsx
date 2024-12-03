@@ -68,10 +68,10 @@ const CirugiaAbierta = ({
         fechaCirugia: values.fechaCirugia
           ? dayjs(values.fechaCirugia).toISOString()
           : null,
-        cirugiaIntraId:
-          mode === "isEditMode"
-            ? formik.values.ordenQuirurgicaId || null
-            : null,
+        ordenQuirurgicaId:
+          mode === "isEditMode" && formik.values.ordenQuirurgicaId
+            ? formik.values.ordenQuirurgicaId
+            : undefined,
       };
 
       onSubmit(formData);

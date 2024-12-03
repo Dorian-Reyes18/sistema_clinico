@@ -322,7 +322,7 @@ model ResultadosPerinatales {
   edadFinalizacion  String?
   natalidad         String?
   descripcionFetal  String?
-  pesoGramos        Int?
+  pesoGramos        String?
   ordenQuirurgica   OrdenQuirurgicaIntrauterina? @relation(fields: [ordenQuirurgicaId], references: [id])
 }
 

@@ -15,7 +15,6 @@ const DiagnosticoPrenatalForm = ({
 
   const formik = useFormik({
     initialValues: {
-      cirugiaIntraId: null,
       categoriaId: null,
       tipoDefectoId: null,
       tipoCirugiaRealizada: "",
@@ -25,8 +24,9 @@ const DiagnosticoPrenatalForm = ({
     },
     onSubmit: (values) => {
       const formData = {
-        cirugiaIntraId:
-          mode === "isEditMode" ? formik.values.cirugiaIntraId || null : null,
+        ...(mode === "isEditMode" && initialValues?.cirugiaIntraId != null
+          ? { cirugiaIntraId: initialValues.cirugiaIntraId }
+          : {}),
         ...values,
       };
 
@@ -40,7 +40,7 @@ const DiagnosticoPrenatalForm = ({
       if (mode === "isEditMode") {
         initialValues = initialValues[0];
         formik.setValues({
-          cirugiaIntraId: initialValues.cirugiaIntraId || null,
+          cirugiaIntraId: initialValues.cirugiaIntraId || undefined,
           categoriaId: initialValues.categoriaId || null,
           tipoDefectoId: initialValues.tipoDefectoId || null,
           tipoCirugiaRealizada: initialValues.tipoCirugiaRealizada || "",

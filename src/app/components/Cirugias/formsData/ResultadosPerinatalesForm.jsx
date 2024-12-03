@@ -40,10 +40,10 @@ const ResultadosPerinatales = ({
       const formData = {
         ...values,
         fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : null,
-        cirugiaIntraId:
-          mode === "isEditMode"
-            ? formik.values.ordenQuirurgicaId || null
-            : null,
+        ordenQuirurgicaId:
+          mode === "isEditMode" && formik.values.ordenQuirurgicaId
+            ? formik.values.ordenQuirurgicaId
+            : undefined,
       };
 
       onSubmit(formData);

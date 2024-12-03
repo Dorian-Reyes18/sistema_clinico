@@ -62,9 +62,9 @@ const CirugiaEndoscopica1 = ({
           ? dayjs(values.fechaCirugia).toISOString()
           : null,
         ordenQuirurgicaId:
-          mode === "isEditMode"
-            ? formik.values.ordenQuirurgicaId || null
-            : null,
+          mode === "isEditMode" && formik.values.ordenQuirurgicaId
+            ? formik.values.ordenQuirurgicaId
+            : undefined,
       };
 
       onSubmit(formData);

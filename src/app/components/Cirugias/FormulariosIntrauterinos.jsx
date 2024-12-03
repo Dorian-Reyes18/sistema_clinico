@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/authContext";
-import { Modal, notification } from "antd";
+import { Modal, notification, Spin } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 // Formularios
@@ -14,6 +14,9 @@ import CirugiaEndoscopica2 from "./formsData/EndoscopicaForm2";
 import CirugiaEndoscopica3 from "./formsData/EndoscopicaForm3";
 import ResultadosPerinatales from "./formsData/ResultadosPerinatalesForm";
 
+// Servicios
+import { postCirugiaIntraCompleta } from "@/services/Post/cirugias/dataPostIntra";
+
 const FormulariosIntrauterinos = ({ mode, id }) => {
   const router = useRouter();
   const { patients, prenatalSurgeries, token } = useAuth();
@@ -24,7 +27,13 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     endoscopica: false,
     abierta: false,
   });
-  const [sendData, setSendData] = useState({});
+  const [sendData, setSendData] = useState({
+    Endoscopicas: [],
+  });
+  const [loading, setLoading] = useState(false);
+
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
 
   useEffect(() => {
     if (mode === "isEditMode") {
@@ -36,23 +45,49 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
 
   const handleFormSubmit = (formName) => (data) => {
     setSendData((prevState) => {
-      const updatedState = {
-        ...prevState,
-        ...(formName.startsWith("CirugiaEndoscopica")
-          ? { Endoscopicas: [...prevState.Endoscopicas, data] }
-          : { [getStateKey(formName)]: data }),
-      };
+      const updatedState = { ...prevState };
 
-      if (formName === "ResultadosPerinatales") {
-        const cleanedState = Object.fromEntries(
-          Object.entries(updatedState).filter(
-            ([, value]) =>
-              value &&
-              (Array.isArray(value)
-                ? value.length > 0
-                : Object.keys(value).length > 0)
-          )
-        );
+      // Actualizamos según el formulario
+      switch (formName) {
+        case "OrdenIntrauterinaForm":
+          updatedState.OrdenQuirurgicaIntrauterina = data;
+          break;
+
+        case "DiagnosticoPrenatalForm":
+          updatedState.DiagnosticoPrenatal = data;
+          break;
+
+        case "CirugiaAbierta":
+          updatedState.IntrauterinaAbierta = data;
+          break;
+
+        case "CirugiaPercutanea":
+          updatedState.IntrauterinaPercutanea = data;
+          break;
+
+        case "CirugiaEndoscopica1":
+        case "CirugiaEndoscopica2":
+        case "CirugiaEndoscopica3":
+          updatedState.Endoscopicas = [...updatedState.Endoscopicas, data];
+          break;
+
+        case "ResultadosPerinatales":
+          updatedState.ResultadosPerinatales = data;
+
+          const cleanedState = Object.fromEntries(
+            Object.entries(updatedState).filter(
+              ([, value]) =>
+                value &&
+                (Array.isArray(value)
+                  ? value.length > 0
+                  : Object.keys(value).length > 0)
+            )
+          );
+          break;
+
+        default:
+          console.warn(`Formulario desconocido: ${formName}`);
+          break;
       }
 
       return updatedState;
@@ -70,6 +105,39 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
 
     if (hasValidData) {
       console.log("Valores de sendData:", JSON.stringify(sendData, null, 2));
+
+      // const createSurgery = async () => {
+      //   if (mode === "isCreateMode") {
+      //   } else {
+      //     startLoading();
+
+      //     try {
+      //       const response = await postCirugiaIntraCompleta(sendData, token);
+
+      //       if (response?.success) {
+      //         stopLoading();
+      //         notifySuccess();
+      //         router.push("/cirugias");
+      //       } else {
+      //         stopLoading();
+      //         notification.error({
+      //           message: "Error",
+      //           description: "Hubo un problema al crear la cirugía.",
+      //         });
+      //       }
+      //     } catch (error) {
+      //       stopLoading();
+      //       console.error("Error al crear la cirugía:", error);
+      //       notification.error({
+      //         message: "Error",
+      //         description:
+      //           error.message || "Hubo un error al crear la cirugía.",
+      //       });
+      //     }
+      //   }
+      // };
+
+      // createSurgery();
     }
   }, [sendData]);
 

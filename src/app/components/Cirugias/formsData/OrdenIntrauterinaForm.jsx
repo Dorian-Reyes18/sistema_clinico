@@ -37,7 +37,9 @@ const OrdenIntrauterinaForm = ({
       const { expediente, paciente, ...formData } = values;
 
       formData.pacienteId =
-        mode === "isEditMode" ? formik.values.pacienteId || null : null;
+        mode === "isEditMode" && initialValues?.pacienteId
+          ? initialValues?.pacienteId
+          : formik.values.pacienteId;
 
       onSubmit(formData);
     },
