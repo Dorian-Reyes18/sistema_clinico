@@ -7,6 +7,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 // Formularios
 import OrdenPosnatalForm from "./formsData/OrdenPostnatalForm";
 import CirugiaNeonatalForm from "./formsData/NeonatalForm";
+import CirugiaNerviosoCentralForm from "./formsData/NerviosoCentralForm";
 
 // Servicios
 import { postCirugiaIntraCompleta } from "@/services/Post/cirugias/dataPostIntra";
@@ -216,6 +217,16 @@ const FormulariosPostNatales = ({ mode, id }) => {
           ? {}
           : currentOrderSurgery?.cirugiaNeonatal?.[0],
       isVisible: showCirugiaForm.neonatal,
+    },
+    {
+      name: "CirugiaNerviosoCentralForm",
+      label: "Datos de la cirugía Nervioso Central",
+      formComponent: CirugiaNerviosoCentralForm,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentOrderSurgery?.cirugiaNerviosoCentral?.[0],
+      isVisible: showCirugiaForm.nerviosoCentral,
     },
   ];
 
