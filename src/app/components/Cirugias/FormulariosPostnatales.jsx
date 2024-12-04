@@ -10,8 +10,11 @@ import CirugiaNeonatalForm from "./formsData/NeonatalForm";
 import CirugiaNerviosoCentralForm from "./formsData/NerviosoCentralForm";
 
 // Servicios
-import { postCirugiaIntraCompleta } from "@/services/Post/cirugias/dataPostIntra";
-import { putCirugiaPrenatalCompleta } from "@/services/Put/cirugias/dataCirugiasIntra";
+import {
+  postOrdenQuirugica,
+  postNeonatal,
+  postNerviosoCentral,
+} from "@/services/Post/cirugias/dataPostPostNatal";
 
 const FormulariosPostNatales = ({ mode, id }) => {
   const router = useRouter();
@@ -22,9 +25,7 @@ const FormulariosPostNatales = ({ mode, id }) => {
     nerviosoCentral: false,
     neonatal: false,
   });
-  const [sendData, setSendData] = useState({
-    Endoscopicas: [],
-  });
+  const [sendData, setSendData] = useState({});
   const [loading, setLoading] = useState(false);
 
   const startLoading = () => setLoading(true);
@@ -39,37 +40,61 @@ const FormulariosPostNatales = ({ mode, id }) => {
   }, [id, surgeriesPost]);
 
   const handleFormSubmit = (formName) => (data) => {
-    console.log(`data recibida de`, formName, data);
+    setSendData((prevSendData) => {
+      const updatedSendData = { ...prevSendData };
+
+      if (formName === "OrdenPosnatalForm") {
+        updatedSendData.ordenPrenatalForm = data;
+      } else if (formName === "CirugiaNeonatalForm") {
+        updatedSendData.cirugiaNeonatalForm = data;
+      } else if (formName === "CirugiaNerviosoCentralForm") {
+        updatedSendData.cirugiaNerviosoCentralForm = data;
+      } else {
+        console.error(`Formulario no reconocido: ${formName}`);
+      }
+      return updatedSendData;
+    });
   };
 
   useEffect(() => {
-    if (showCirugiaForm) {
-      console.log("Valores de ", showCirugiaForm);
-    }
-  }, [showCirugiaForm]);
+    if (sendData && Object.keys(sendData).length > 0) {
+      console.log("valores de sendData", sendData);
 
-  useEffect(() => {
-    const hasValidData = Object.values(sendData).some(
-      (value) =>
-        value &&
-        (Array.isArray(value)
-          ? value.length > 0
-          : Object.keys(value).length > 0)
-    );
+      const ordenData = JSON.stringify(sendData?.ordenPrenatalForm, null, 2);
+      const cirugiaNCentral = JSON.stringify(
+        sendData?.cirugiaNerviosoCentralForm,
+        null,
+        2
+      );
+      const cirugiaNeonatal = JSON.stringify(
+        sendData?.cirugiaNeonatalForm,
+        null,
+        2
+      );
 
-    if (hasValidData) {
-      console.log("Valores de sendData:", JSON.stringify(sendData, null, 2));
+      console.log(
+        "log desde el efecto de creacion, estado de showsurgeri",
+        showCirugiaForm
+      );
 
-      const createSurgery = async () => {
-        if (mode === "isCreateMode") {
-          startLoading();
-
+      if (mode === "isCreateMode") {
+        // startLoading();
+        const createCompleteSurgery = async () => {
           try {
-            const response = await postCirugiaIntraCompleta(sendData, token);
-            console.log(response);
+            // crear primero la orden quirurgica
+            const responseOrder = await postOrdenQuirugica(ordenData, token);
+            console.log(responseOrder);
+            const orderId = responseOrder?.registro?.id;
 
-            if (response?.message && response?.ordenQuirurgica?.id) {
+            // crear la cirugia
+            if (showCirugiaForm.neonatal) {
+              cirugiaNeonatal.cirugiaId = orderId;
+              const data = cirugiaNeonatal;
+              const response = await postNeonatal(data, token);
+              console.log(response);
+
               stopLoading();
+
               Modal.confirm({
                 title: "Cirugía creada exitosamente",
                 content:
@@ -83,44 +108,22 @@ const FormulariosPostNatales = ({ mode, id }) => {
                 centered: true,
                 cancelButtonProps: { style: { display: "none" } },
                 onOk() {
-                  router.push("/cirugias");
+                  router.push("/pacientes");
                 },
               });
-            } else {
-              stopLoading();
-              notification.error({
-                message: "Error",
-                description: "Hubo un problema al crear la cirugía.",
-              });
             }
-          } catch (error) {
-            stopLoading();
-            console.error("Error al crear la cirugía:", error);
-            notification.error({
-              message: "Error",
-              description:
-                error.message || "Hubo un error al crear la cirugía.",
-            });
-            router.push("/cirugias");
-          }
-        } else {
-          startLoading();
+            if (showCirugiaForm.neonatal) {
+              cirugiaNCentral.cirugiaId = orderId;
+              const data = cirugiaNeonatal;
+              const response = await postNeonatal(data, token);
+              console.log(response);
 
-          try {
-            const response = await putCirugiaPrenatalCompleta(
-              id,
-              sendData,
-              token
-            );
-            console.log(response);
-
-            // Verificar que la respuesta sea correcta para la actualización
-            if (response?.message && response?.ordenActualizada?.id) {
               stopLoading();
+
               Modal.confirm({
-                title: "Cirugía actualizada exitosamente",
+                title: "Cirugía creada exitosamente",
                 content:
-                  "La cirugía y todos sus datos relacionados se han actualizado correctamente.",
+                  "La cirugía y todos sus datos relacionados se han registrado correctamente.",
                 icon: (
                   <CheckCircleOutlined
                     style={{ color: "#52c41a", fontSize: "32px" }}
@@ -130,31 +133,39 @@ const FormulariosPostNatales = ({ mode, id }) => {
                 centered: true,
                 cancelButtonProps: { style: { display: "none" } },
                 onOk() {
-                  router.push("/cirugias");
+                  router.push("/pacientes");
                 },
               });
-            } else {
-              stopLoading();
-              notification.error({
-                message: "Error",
-                description: "Hubo un problema al actualizar la cirugía.",
-              });
-              router.push("/cirugias");
-            }
-          } catch (error) {
-            stopLoading();
-            console.error("Error al actualizar la cirugía:", error);
-            notification.error({
-              message: "Error",
-              description:
-                error.message || "Hubo un error al actualizar la cirugía.",
-            });
-            router.push("/cirugias");
-          }
-        }
-      };
+            } else if (showCirugiaForm.nerviosoCentral) {
+              cirugiaNeonatal.cirugiaId = orderId;
+              const data = cirugiaNeonatal;
+              const response = await postNeonatal(data, token);
+              console.log(response);
 
-      createSurgery();
+              stopLoading();
+
+              Modal.confirm({
+                title: "Cirugía creada exitosamente",
+                content:
+                  "La cirugía y todos sus datos relacionados se han registrado correctamente.",
+                icon: (
+                  <CheckCircleOutlined
+                    style={{ color: "#52c41a", fontSize: "32px" }}
+                  />
+                ),
+                okText: "Aceptar",
+                centered: true,
+                cancelButtonProps: { style: { display: "none" } },
+                onOk() {
+                  router.push("/pacientes");
+                },
+              });
+            }
+          } catch (error) {}
+          // Creación para la cirugia neonatal
+        };
+        // createCompleteSurgery();
+      }
     }
   }, [sendData]);
 

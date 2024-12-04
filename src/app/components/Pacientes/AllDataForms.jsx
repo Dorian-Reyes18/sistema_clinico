@@ -116,7 +116,6 @@ const AllDataForms = ({ mode, id }) => {
   // Creación o edición en el backend
   useEffect(() => {
     if (completeData) {
-      console.log("data completa", completeData);
 
       const getFormData = (formName) =>
         completeData.find((f) => f.formName === formName)?.data || null;
@@ -250,8 +249,6 @@ const AllDataForms = ({ mode, id }) => {
             patientData?.antecedentesObstetricos?.[0]?.id || null,
           embActualId: patientData?.embarazoActual?.[0]?.id || null,
         };
-
-        console.log(dataEditIds);
 
         // Modo de Edición (PUT)
         startLoading();

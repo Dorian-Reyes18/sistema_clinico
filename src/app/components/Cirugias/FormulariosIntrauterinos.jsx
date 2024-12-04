@@ -48,7 +48,6 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
     setSendData((prevState) => {
       const updatedState = { ...prevState };
 
-      // Actualizamos según el formulario
       switch (formName) {
         case "OrdenIntrauterinaForm":
           updatedState.OrdenQuirurgicaIntrauterina = data;

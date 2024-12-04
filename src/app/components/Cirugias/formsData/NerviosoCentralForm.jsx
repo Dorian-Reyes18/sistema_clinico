@@ -74,7 +74,6 @@ const CirugiaNerviosoCentralForm = ({
   // Sincronizar valores cuando initialValues cambian
   useEffect(() => {
     if (initialValues !== null) {
-      console.log(initialValues);
       if (mode === "isEditMode") {
         formik.setValues({
           id: initialValues?.id,
