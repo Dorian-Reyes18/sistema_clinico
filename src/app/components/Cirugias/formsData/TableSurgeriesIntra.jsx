@@ -1,13 +1,14 @@
-import { useAuth } from "@/app/hooks/authContext";
-import { Popover, Pagination, Spin } from "antd";
-import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import SearchIntra from "../SearchIntra";
+import { useState, useMemo } from "react";
+import { Spin } from "antd";
+import { useAuth } from "@/app/hooks/authContext";
 import {
   fetchRecentSurgeries,
   fetchOrdenPrenatalCompleta,
 } from "@/services/fetchAllData";
 import CreateIntraButton from "../CreateIntraButton";
+import SearchIntra from "../SearchIntra";
+import Pagination from "antd/es/pagination";
 
 const TableSurgeriesIntra = () => {
   const {
@@ -22,8 +23,9 @@ const TableSurgeriesIntra = () => {
   const [surgeriesPerPage] = useState(20);
   const [loading, setLoading] = useState(false);
   const [filteredSurgeries, setFilteredSurgeries] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchSurgeries = async () => {
       setLoading(true);
       try {
@@ -56,44 +58,43 @@ const TableSurgeriesIntra = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const renderPatientrowIntra = (cirugia) => {
-    return (
-      <tr key={cirugia.id}>
-        <td className="center">
-          <strong>{cirugia?.paciente?.numeroExpediente}</strong>
-        </td>
-        <td className="center">{formatDate(cirugia?.fechaDeCreacion)}</td>
-        <td className="center">
-          {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
-        </td>
-        <td className="center">{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
-        <td className="center">
-          {cirugia.diagnosticoPrenatal?.length > 0 ? "Sí" : "No"}
-        </td>
-        <td className="center">{cirugia.evaluacionActual ? "Sí" : "No"}</td>
-        <td className="center">{cirugia.tipoCirugia || "No especificado"}</td>
-        <td className="center">
-          {cirugia.complicacionesQuirurgicas ? "Si" : "No" || "No"}
-        </td>
-        <td
-          className="center"
-          style={cirugia.estado ? { color: "#02A81D" } : { color: "#BD3548" }}
-        >
-          <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
-        </td>
-        <td className="place">
-          <div
-            className="btn-edit "
-            onClick={() => {
-              router.push(
-                `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
-              );
-            }}
-          ></div>
-        </td>
-      </tr>
-    );
-  };
+  const renderPatientrowIntra = (cirugia) => (
+    <tr key={cirugia.id}>
+      <td className="center">
+        <strong>{cirugia?.paciente?.numeroExpediente}</strong>
+      </td>
+      <td className="center">{formatDate(cirugia?.fechaDeCreacion)}</td>
+      <td className="center">
+        {cirugia?.paciente?.primerNombre} {cirugia?.paciente?.primerApellido}
+      </td>
+      <td className="center">{cirugia.teniaDiagnostico ? "Sí" : "No"}</td>
+      <td className="center">
+        {cirugia.diagnosticoPrenatal?.length > 0 ? "Sí" : "No"}
+      </td>
+      <td className="center">{cirugia.evaluacionActual ? "Sí" : "No"}</td>
+      <td className="center">{cirugia.tipoCirugia || "No especificado"}</td>
+      <td className="center">
+        {cirugia.complicacionesQuirurgicas ? "Si" : "No" || "No"}
+      </td>
+      <td
+        className="center"
+        style={cirugia.estado ? { color: "#02A81D" } : { color: "#BD3548" }}
+      >
+        <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
+      </td>
+      <td className="place">
+        <div
+          className="btn-edit"
+          onClick={() => {
+            setIsLoading(true);
+            router.push(
+              `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
+            );
+          }}
+        ></div>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="base">
@@ -102,9 +103,23 @@ const TableSurgeriesIntra = () => {
         <SearchIntra data={recentSurgeries} onSearch={setFilteredSurgeries} />
       </div>
 
-      {loading ? (
-        <div className="loading-message">
-          <Spin /> <span>Consultando datos...</span>
+      {loading || isLoading ? (
+        <div
+          style={{
+            background: "rgba(0, 0, 0, 0.3)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        >
+          <Spin size="large" />
         </div>
       ) : filteredSurgeries.length > 0 ? (
         <>
@@ -135,11 +150,7 @@ const TableSurgeriesIntra = () => {
                     <th className="co">Acción</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {paginatedSurgeries.map((cirugia) =>
-                    renderPatientrowIntra(cirugia)
-                  )}
-                </tbody>
+                <tbody>{paginatedSurgeries.map(renderPatientrowIntra)}</tbody>
               </table>
             </div>
           </div>

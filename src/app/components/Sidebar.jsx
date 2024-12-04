@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Layout, Menu, Button, notification } from "antd";
+import { Layout, Menu, Button, notification, Spin } from "antd"; 
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -19,6 +19,7 @@ const { Sider } = Layout;
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
   const router = useRouter();
   const pathname = usePathname();
   const { setToken, setUser } = useAuth();
@@ -42,6 +43,11 @@ const Sidebar = () => {
 
   const toggleMenu = () => {
     setCollapsed((prevState) => !prevState);
+  };
+
+  const handleMenuClick = (e) => {
+    setIsLoading(true); // Activar el spinner de carga al hacer clic en un enlace del menú
+    router.push(e.key); // Navegar a la ruta seleccionada
   };
 
   const menuItems = [
@@ -141,6 +147,7 @@ const Sidebar = () => {
         mode="inline"
         selectedKeys={[getSelectedKey()]}
         items={menuItems}
+        onClick={handleMenuClick} // Asignar el manejador del clic
         style={{
           display: "flex",
           flexDirection: "column",
@@ -149,6 +156,27 @@ const Sidebar = () => {
         }}
         inlineCollapsed={collapsed}
       />
+
+      {/* Pantalla de carga */}
+      {isLoading && (
+        <div
+          style={{
+            background: "rgba(0, 0, 0, 0.3)", // Fondo con opacidad
+            position: "fixed", // Fijado en toda la pantalla
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999, // Aseguramos que el modal esté encima
+            pointerEvents: "none", // Desactivamos la interacción con el contenido debajo
+          }}
+        >
+          <Spin size="large" className="spinLayout" />
+        </div>
+      )}
     </Sider>
   );
 };
