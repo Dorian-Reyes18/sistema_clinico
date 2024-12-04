@@ -165,7 +165,7 @@ const FormulariosIntrauterinos = ({ mode, id }) => {
             console.log(response);
 
             // Verificar que la respuesta sea correcta para la actualización
-            if (response?.message && response?.ordenQuirurgica?.id) {
+            if (response?.message && response?.ordenActualizada?.id) {
               stopLoading();
               // Modal de confirmación con icono de check y sin botón de cancelar
               Modal.confirm({

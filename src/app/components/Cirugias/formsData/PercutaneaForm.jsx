@@ -65,6 +65,9 @@ const CirugiaPercutanea = ({
     onSubmit: (values) => {
       const formData = {
         ...values,
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         fechaCirugia: values.fechaCirugia
           ? dayjs(values.fechaCirugia).toISOString()
           : null,
@@ -83,6 +86,7 @@ const CirugiaPercutanea = ({
     if (initialValues !== null) {
       if (mode === "isEditMode") {
         formik.setValues({
+          id: initialValues?.id || null,
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId || null,
           fechaCirugia: initialValues.fechaCirugia,
           horaInicioAnestesia: initialValues.horaInicioAnestesia,

@@ -39,6 +39,9 @@ const ResultadosPerinatales = ({
     onSubmit: (values) => {
       const formData = {
         ...values,
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         fechaNac: values.fechaNac ? dayjs(values.fechaNac).toISOString() : null,
         ordenQuirurgicaId:
           mode === "isEditMode" && formik.values.ordenQuirurgicaId
@@ -55,6 +58,7 @@ const ResultadosPerinatales = ({
     if (initialValues !== null) {
       if (mode === "isEditMode") {
         formik.setValues({
+          id: initialValues.id || null,
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId || null,
           tipoDeParto: initialValues.tipoDeParto,
           fechaNac: initialValues.fechaNac,

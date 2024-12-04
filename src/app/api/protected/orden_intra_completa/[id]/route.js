@@ -21,6 +21,7 @@ const handleRequest = async (req, operation) => {
 export async function PUT(req, { params }) {
   const { id } = params;
 
+  // Validar que el ID sea un número válido
   if (!id || isNaN(parseInt(id, 10))) {
     return NextResponse.json(
       { error: "El ID proporcionado es inválido o está ausente" },
@@ -34,7 +35,7 @@ export async function PUT(req, { params }) {
     try {
       const body = await req.json();
 
-      // Filtrar valores vacíos en los datos recibidos
+      // Función para filtrar valores vacíos de los datos recibidos
       const filterEmpty = (data) => {
         if (Array.isArray(data)) return data.length > 0 ? data : undefined;
         if (typeof data === "object" && data !== null)
@@ -42,6 +43,7 @@ export async function PUT(req, { params }) {
         return data;
       };
 
+      // Desestructuramos los datos del cuerpo de la solicitud
       const {
         OrdenQuirurgicaIntrauterina,
         DiagnosticoPrenatal,
@@ -53,7 +55,8 @@ export async function PUT(req, { params }) {
       );
 
       let ordenActualizada;
-      // Actualizar la orden principal
+
+      // Actualizar la orden quirúrgica si existe
       if (OrdenQuirurgicaIntrauterina) {
         ordenActualizada = await prisma.ordenQuirurgicaIntrauterina.update({
           where: { id: idNumber },
@@ -88,23 +91,46 @@ export async function PUT(req, { params }) {
 
       // Actualizar o crear Intrauterina Percutánea
       if (IntrauterinaPercutanea) {
-        await prisma.intrauterinaPercutanea.upsert({
-          where: { ordenQuirurgicaId: idNumber },
-          create: IntrauterinaPercutanea,
-          update: IntrauterinaPercutanea,
-        });
+        const existingIntrauterina =
+          await prisma.intrauterinaPercutanea.findUnique({
+            where: { id: IntrauterinaPercutanea.id },
+          });
+
+        if (existingIntrauterina) {
+          // Si existe, actualizamos
+          await prisma.intrauterinaPercutanea.update({
+            where: { id: IntrauterinaPercutanea.id },
+            data: IntrauterinaPercutanea,
+          });
+        } else {
+          // Si no existe, lo creamos
+          await prisma.intrauterinaPercutanea.create({
+            data: IntrauterinaPercutanea,
+          });
+        }
       }
 
       // Actualizar o crear Resultados Perinatales
       if (ResultadosPerinatales) {
-        await prisma.resultadosPerinatales.upsert({
-          where: { ordenQuirurgicaId: idNumber },
-          create: ResultadosPerinatales,
-          update: ResultadosPerinatales,
-        });
+        const existingResultados =
+          await prisma.resultadosPerinatales.findUnique({
+            where: { id: ResultadosPerinatales.id },
+          });
+
+        if (existingResultados) {
+          // Si existe, actualizamos
+          await prisma.resultadosPerinatales.update({
+            where: { id: ResultadosPerinatales.id },
+            data: ResultadosPerinatales,
+          });
+        } else {
+          // Si no existe, lo creamos
+          await prisma.resultadosPerinatales.create({
+            data: ResultadosPerinatales,
+          });
+        }
       }
 
-      // Ignorar si Endoscopicas está vacío
       if (Endoscopicas && Endoscopicas.length > 0) {
         console.log("Endoscopicas:", Endoscopicas);
       }

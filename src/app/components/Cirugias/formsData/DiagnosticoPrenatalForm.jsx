@@ -27,6 +27,9 @@ const DiagnosticoPrenatalForm = ({
         ...(mode === "isEditMode" && initialValues?.cirugiaIntraId != null
           ? { cirugiaIntraId: initialValues.cirugiaIntraId }
           : {}),
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         ...values,
       };
 
@@ -40,6 +43,7 @@ const DiagnosticoPrenatalForm = ({
       if (mode === "isEditMode") {
         initialValues = initialValues[0];
         formik.setValues({
+          id: initialValues?.id || undefined,
           cirugiaIntraId: initialValues.cirugiaIntraId || undefined,
           categoriaId: initialValues.categoriaId || null,
           tipoDefectoId: initialValues.tipoDefectoId || null,

@@ -58,6 +58,9 @@ const CirugiaEndoscopica2 = ({
     onSubmit: (values) => {
       const formData = {
         ...values,
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         fechaCirugia: values.fechaCirugia
           ? dayjs(values.fechaCirugia).toISOString()
           : null,
@@ -76,6 +79,7 @@ const CirugiaEndoscopica2 = ({
     if (initialValues !== null) {
       if (mode === "isEditMode") {
         formik.setValues({
+          id: initialValues?.id,
           ordenQuirurgicaId: initialValues.ordenQuirurgicaId,
           fechaCirugia: initialValues.fechaCirugia,
           horaInicioAnestesia: initialValues.horaInicioAnestesia,
