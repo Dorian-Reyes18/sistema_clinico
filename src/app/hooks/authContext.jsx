@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 import {
   fetchRecentSurgeries,
   fetchUserData,
-  fetchSurgeriesPost, 
+  fetchSurgeriesPost,
   fetchPatients,
   fetchMetadata,
-  fetchOrdenPrenatalCompleta, 
+  fetchOrdenPrenatalCompleta,
 } from "@/services/fetchAllData";
 
 const AuthContext = createContext();
@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const [patients, setPatients] = useState([]);
   const [metadata, setMetadata] = useState([]);
   const [prenatalSurgeries, setPrenatalSurgeries] = useState([]);
-  const [postnatalSurgeries, setPostnatalSurgeries] = useState([]);
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -145,10 +144,8 @@ export const AuthProvider = ({ children }) => {
         recentSurgeries,
         surgeriesPost,
         prenatalSurgeries,
-        postnatalSurgeries,
         setRecentSurgeries,
         setSurgeriesPost,
-        setPostnatalSurgeries,
         setPrenatalSurgeries,
         patients,
         metadata,
