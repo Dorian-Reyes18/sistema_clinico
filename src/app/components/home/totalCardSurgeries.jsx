@@ -56,22 +56,20 @@ const TotalCardSurgeries = () => {
       };
 
       cirugias.forEach((cirugia) => {
-        const tipoCirugia = cirugia.tipoCirugia.toLowerCase();
-
-        switch (tipoCirugia) {
-          case "percutanea":
+        switch (cirugia.tipoCirugia) {
+          case "Percutánea":
             counts.percutanea++;
             break;
-          case "abierta":
+          case "Abierta":
             counts.abierta++;
             break;
-          case "endoscopica":
+          case "Endoscópica":
             counts.endoscopica++;
             break;
-          case "neonatal":
+          case "Neonatal":
             counts.neonatal++;
             break;
-          case "nervioso central":
+          case "Nervioso central":
             counts.nerviosoCentral++;
             break;
           default:

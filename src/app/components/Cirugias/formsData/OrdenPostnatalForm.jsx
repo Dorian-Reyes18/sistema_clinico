@@ -39,7 +39,7 @@ const OrdenPosnatalForm = ({
     }),
     onSubmit: (values) => {
       const { expediente, paciente, fechaDeCreacion, ...formData } = values;
-      
+
       const finalData = {
         ...formData,
         pacienteId:
@@ -100,7 +100,7 @@ const OrdenPosnatalForm = ({
     if (showCirugiaForm) {
       if (mode === "isCreateMode") {
         if (
-          selectedCirugia === "Nervioso Central" &&
+          selectedCirugia === "Nervioso central" &&
           !showCirugiaForm.nerviosoCentral
         ) {
           setShowCirugiaForms({
@@ -123,7 +123,7 @@ const OrdenPosnatalForm = ({
   useEffect(() => {
     if (mode === "isEditMode" && initialValues) {
       if (
-        initialValues?.tipoCirugia === "Nervioso Central" &&
+        initialValues?.tipoCirugia === "Nervioso central" &&
         !showCirugiaForm.nerviosoCentral
       ) {
         setShowCirugiaForms({
@@ -135,8 +135,8 @@ const OrdenPosnatalForm = ({
         !showCirugiaForm.neonatal
       ) {
         setShowCirugiaForms({
-          nerviosoCentral: true,
-          neonatal: false,
+          nerviosoCentral: false,
+          neonatal: true,
         });
       }
     }
@@ -261,7 +261,7 @@ const OrdenPosnatalForm = ({
             onChange={handleSelectChange}
             onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
           >
-            <Option value="Nervioso Central">Nervioso Central</Option>
+            <Option value="Nervioso central">Nervioso central</Option>
             <Option value="Neonatal">Neonatal</Option>
           </Select>
         )}
