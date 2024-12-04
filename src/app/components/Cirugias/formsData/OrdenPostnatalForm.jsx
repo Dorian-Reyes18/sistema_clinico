@@ -39,8 +39,7 @@ const OrdenPosnatalForm = ({
     }),
     onSubmit: (values) => {
       const { expediente, paciente, fechaDeCreacion, ...formData } = values;
-
-      // Agregar el id con spread
+      
       const finalData = {
         ...formData,
         pacienteId:

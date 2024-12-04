@@ -162,6 +162,13 @@
               width: 540px;
             }
           }
+          .textarea-md {
+            min-width: 337px;
+
+            @include media(desktopXXL) {
+              width: 540px;
+            }
+          }
           .textarea-lg {
             min-width: 220px;
             width: 490px;

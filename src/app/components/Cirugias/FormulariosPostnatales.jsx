@@ -6,6 +6,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 
 // Formularios
 import OrdenPosnatalForm from "./formsData/OrdenPostnatalForm";
+import CirugiaNeonatalForm from "./formsData/NeonatalForm";
 
 // Servicios
 import { postCirugiaIntraCompleta } from "@/services/Post/cirugias/dataPostIntra";
@@ -15,7 +16,7 @@ const FormulariosPostNatales = ({ mode, id }) => {
   const router = useRouter();
   const { patients, surgeriesPost, token } = useAuth();
   const [confirmButton, setConfirmButton] = useState(false);
-  const [currentSurgery, setCurrentSurgery] = useState(null);
+  const [currentOrderSurgery, setCurrentOrderSurgery] = useState(null);
   const [showCirugiaForm, setShowCirugiaForms] = useState({
     nerviosoCentral: false,
     neonatal: false,
@@ -32,7 +33,7 @@ const FormulariosPostNatales = ({ mode, id }) => {
     if (mode === "isEditMode") {
       const data = surgeriesPost?.registros;
       const surgery = data?.find((orden) => orden.id === parseInt(id));
-      setCurrentSurgery(surgery || null);
+      setCurrentOrderSurgery(surgery || null);
     }
   }, [id, surgeriesPost]);
 
@@ -200,11 +201,21 @@ const FormulariosPostNatales = ({ mode, id }) => {
   // Configuración de los formularios
   const formConfig = [
     {
-      name: "OrdenPosnatalFormm",
+      name: "OrdenPosnatalForm",
       label: "Datos generales",
       formComponent: OrdenPosnatalForm,
-      initialValues: mode === "isCreateMode" ? {} : currentSurgery,
+      initialValues: mode === "isCreateMode" ? {} : currentOrderSurgery,
       isVisible: true,
+    },
+    {
+      name: "CirugiaNeonatalForm",
+      label: "Datos de la cirugía Neonatal",
+      formComponent: CirugiaNeonatalForm,
+      initialValues:
+        mode === "isCreateMode"
+          ? {}
+          : currentOrderSurgery?.cirugiaNeonatal?.[0],
+      isVisible: showCirugiaForm.neonatal,
     },
   ];
 

@@ -343,23 +343,23 @@ model OrdenQuirurgicaPostoperacion {
 model CirugiaNeonatal {
   id                                      Int                          @id @default(autoincrement())
   cirugiaId                               Int
-  minimaInvasion                          Boolean
-  cirugiaConvencional                     Boolean
-  malformacionesBroncoPulmonares          Boolean
-  enfisemaLobarCongenito                  Boolean
-  lesionesQuisticasDupliacionEsesofagicas Boolean
-  atresiaEsofagica                        Boolean
-  herniaDiafragmatica                     Boolean
-  estomago                                Boolean
-  estenosisAtresiaDuodenal                Boolean
-  estenosisAtresiaIntestinales            Boolean
-  malRotacionIntestinal                   Boolean
-  enfermedadMeconial                      Boolean
-  enterocolitisNecrotizante               Boolean
-  enfermedadDeHirschsprung                Boolean
-  defectosParedAbdominalGastrosquisis     Boolean
-  defectosParedabdominalOnfalocele        Boolean
-  tumorDeOvario                           Boolean
+  malformacionesBroncoPulmonares          String?
+  estomago                                String?
+  minimaInvasion                          Boolean?
+  cirugiaConvencional                     Boolean?
+  enfisemaLobarCongenito                  Boolean?
+  lesionesQuisticasDupliacionEsesofagicas Boolean?
+  atresiaEsofagica                        Boolean?
+  herniaDiafragmatica                     Boolean?
+  estenosisAtresiaDuodenal                Boolean?
+  estenosisAtresiaIntestinales            Boolean?
+  malRotacionIntestinal                   Boolean?
+  enfermedadMeconial                      Boolean?
+  enterocolitisNecrotizante               Boolean?
+  enfermedadDeHirschsprung                Boolean?
+  defectosParedAbdominalGastrosquisis     Boolean?
+  defectosParedabdominalOnfalocele        Boolean?
+  tumorDeOvario                           Boolean?
   Otros                                   String?
   ordenQuirurgicaPostoperacion            OrdenQuirurgicaPostoperacion @relation(fields: [cirugiaId], references: [id])
 }
