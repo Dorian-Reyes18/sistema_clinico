@@ -114,9 +114,12 @@ const TablePatients = () => {
         <div
           className="btn-edit "
           onClick={() => {
-            router.push(
-              `/pacientes/crearPaciente?mode=isEditMode&id=${paciente.id}`
-            );
+            setLoading(true);
+            setTimeout(() => {
+              router.push(
+                `/pacientes/crearPaciente?mode=isEditMode&id=${paciente.id}`
+              );
+            }, 300);
           }}
         ></div>
       </td>
@@ -140,6 +143,26 @@ const TablePatients = () => {
 
   return (
     <div className="base">
+      {loading && (
+        <div
+          style={{
+            background: "rgba(0, 0, 0, 0.3)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
+
       <div className="actions-inputs">
         <CreatePatientButton />
         <SearchBar data={patients} onSearch={setFilteredPatients} />
@@ -147,7 +170,7 @@ const TablePatients = () => {
 
       {loading ? (
         <div className="loading-message">
-          <Spin /> <span>Consultando datos...</span>
+          {/* <Spin /> <span>Consultando datos...</span> */}
         </div>
       ) : paginatedPatients.length > 0 ? (
         <div className="month-container">

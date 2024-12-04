@@ -22,6 +22,9 @@ const TableSurgeriesPost = () => {
   const [showNerviosoCentral, setShowNerviosoCentral] = useState(true);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
+  // Estado para el spinner de carga al hacer clic en el botón de edición
+  const [isEditing, setIsEditing] = useState(false);
+
   useEffect(() => {
     const fetchSurgeries = async () => {
       setLoading(true);
@@ -107,9 +110,12 @@ const TableSurgeriesPost = () => {
           <div
             className="btn-edit"
             onClick={() => {
-              router.push(
-                `/cirugias/gestionarCirugiaPostnatal?mode=isEditMode&id=${cirugia.id}`
-              );
+              setLoading(true);
+              setTimeout(() => {
+                router.push(
+                  `/cirugias/gestionarCirugiaPostnatal?mode=isEditMode&id=${cirugia.id}`
+                );
+              }, 300);
             }}
           ></div>
         </td>
@@ -127,6 +133,27 @@ const TableSurgeriesPost = () => {
 
   return (
     <div className="base">
+      {/* Spinner de carga global */}
+      {loading && (
+        <div
+          style={{
+            background: "rgba(0, 0, 0, 0.3)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
+
       <div className="actions-inputs">
         <CreatePosnatalButtons />
         {/* Componente de búsqueda */}
@@ -140,9 +167,9 @@ const TableSurgeriesPost = () => {
         />
       </div>
 
-      {loading ? (
+      {loading || isEditing ? (
         <div className="loading-message">
-          <Spin /> <span>Consultando datos...</span>
+          {/* <Spin /> <span>Consultando datos...</span> */}
         </div>
       ) : isSearchActive ? (
         // Mostrar resultados de búsqueda como una única tabla
@@ -220,7 +247,7 @@ const TableSurgeriesPost = () => {
                   pageSize={surgeriesPerPage}
                   total={neonatalSurgeries.length}
                   onChange={(page) => setCurrentPageNeonatal(page)}
-                  style={{ marginTop: "20px" }}
+                  showSizeChanger={false}
                 />
               </div>
             )}
@@ -269,7 +296,7 @@ const TableSurgeriesPost = () => {
                   pageSize={surgeriesPerPage}
                   total={nerviosoCentralSurgeries.length}
                   onChange={(page) => setCurrentPageNervioso(page)}
-                  style={{ marginTop: "20px" }}
+                  showSizeChanger={false}
                 />
               </div>
             )}
