@@ -34,6 +34,7 @@ export async function POST(req) {
     const data = await req.json();
     console.log("Datos recibidos en la solicitud:", data);
 
+    // Validación de campos requeridos
     if (!data.OrdenQuirurgicaIntrauterina) {
       console.log("Falta el campo 'OrdenQuirurgicaIntrauterina'");
       return NextResponse.json(
@@ -57,25 +58,13 @@ export async function POST(req) {
       OrdenQuirurgicaIntrauterina
     );
 
-    console.log(
-      "Datos para crear la orden quirúrgica:",
-      OrdenQuirurgicaIntrauterina
-    );
-
     try {
+      // Crear la orden quirúrgica
       const ordenQuirurgica = await prisma.ordenQuirurgicaIntrauterina.create({
         data: OrdenQuirurgicaIntrauterina,
       });
 
-      if (DiagnosticoPrenatal) {
-        await prisma.diagnosticoPrenatal.create({
-          data: {
-            cirugiaIntraId: ordenQuirurgica.id,
-            ...DiagnosticoPrenatal,
-          },
-        });
-      }
-
+      // Asignar el id de ordenQuirurgica a los objetos de Endoscopicas
       if (Endoscopicas && Endoscopicas.length > 0) {
         for (let endoscopica of Endoscopicas) {
           await prisma.intrauterinaEndoscopica.create({
@@ -83,10 +72,20 @@ export async function POST(req) {
               ordenQuirurgica: {
                 connect: { id: ordenQuirurgica.id },
               },
-              ...endoscopica,
+              ...endoscopica, 
             },
           });
         }
+      }
+
+      // Crear registros adicionales si existen
+      if (DiagnosticoPrenatal) {
+        await prisma.diagnosticoPrenatal.create({
+          data: {
+            cirugiaIntraId: ordenQuirurgica.id,
+            ...DiagnosticoPrenatal,
+          },
+        });
       }
 
       if (IntrauterinaAbierta) {

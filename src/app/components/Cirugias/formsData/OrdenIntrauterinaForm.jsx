@@ -211,19 +211,37 @@ const OrdenIntrauterinaForm = ({
         <label htmlFor="tipoCirugia">
           Cirugía: <span className="señal-req"> *</span>
         </label>
-        <Select
-          className="select"
-          placeholder="Seleccione..."
-          id="tipoCirugia"
-          name="tipoCirugia"
-          value={formik?.values?.tipoCirugia || undefined}
-          onChange={handleSelectChange}
-          onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
-        >
-          <Option value="Percutánea">Percutánea</Option>
-          <Option value="Endoscópica">Endoscópica</Option>
-          <Option value="Abierta">Abierta</Option>
-        </Select>
+        {mode === "isEditMode" ? (
+          // Modo de edición, solo mostrar el valor seleccionado, sin opción de cambiar
+          <Input
+            className="text"
+            id="tipoCirugia"
+            name="tipoCirugia"
+            value={formik.values.tipoCirugia || "Seleccionar..."}
+            disabled={true}
+            style={{
+              color: "#4b4b4b",
+              backgroundColor: "#fff",
+              opacity: 1,
+              cursor: "not-allowed",
+            }}
+          />
+        ) : (
+          // Modo de creación, permitir selección
+          <Select
+            className="select"
+            placeholder="Seleccione..."
+            id="tipoCirugia"
+            name="tipoCirugia"
+            value={formik?.values?.tipoCirugia || undefined}
+            onChange={handleSelectChange}
+            onBlur={() => formik.setFieldTouched("tipoCirugia", true)}
+          >
+            <Option value="Percutánea">Percutánea</Option>
+            <Option value="Endoscópica">Endoscópica</Option>
+            <Option value="Abierta">Abierta</Option>
+          </Select>
+        )}
 
         {formik.touched.tipoCirugia && formik.errors.tipoCirugia && (
           <div className="requerido" style={{ color: "red" }}>

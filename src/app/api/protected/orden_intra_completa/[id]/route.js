@@ -54,6 +54,9 @@ export async function PUT(req, { params }) {
         Object.entries(body).map(([key, value]) => [key, filterEmpty(value)])
       );
 
+      // Validación adicional para los objetos
+      console.log("Datos recibidos:", body);
+
       let ordenActualizada;
 
       // Actualizar la orden quirúrgica si existe
@@ -84,7 +87,10 @@ export async function PUT(req, { params }) {
           });
         } else {
           await prisma.diagnosticoPrenatal.create({
-            data: DiagnosticoPrenatal,
+            data: {
+              cirugiaIntraId: idNumber,
+              ...DiagnosticoPrenatal,
+            },
           });
         }
       }
@@ -97,15 +103,16 @@ export async function PUT(req, { params }) {
           });
 
         if (existingIntrauterina) {
-          // Si existe, actualizamos
           await prisma.intrauterinaPercutanea.update({
             where: { id: IntrauterinaPercutanea.id },
             data: IntrauterinaPercutanea,
           });
         } else {
-          // Si no existe, lo creamos
           await prisma.intrauterinaPercutanea.create({
-            data: IntrauterinaPercutanea,
+            data: {
+              ordenQuirurgicaId: idNumber,
+              ...IntrauterinaPercutanea,
+            },
           });
         }
       }
@@ -118,21 +125,42 @@ export async function PUT(req, { params }) {
           });
 
         if (existingResultados) {
-          // Si existe, actualizamos
           await prisma.resultadosPerinatales.update({
             where: { id: ResultadosPerinatales.id },
             data: ResultadosPerinatales,
           });
         } else {
-          // Si no existe, lo creamos
           await prisma.resultadosPerinatales.create({
-            data: ResultadosPerinatales,
+            data: {
+              ordenQuirurgicaId: idNumber,
+              ...ResultadosPerinatales,
+            },
           });
         }
       }
 
+      // Actualizar o crear Endoscópicas
       if (Endoscopicas && Endoscopicas.length > 0) {
-        console.log("Endoscopicas:", Endoscopicas);
+        for (const endoscopica of Endoscopicas) {
+          const existingEndoscopica =
+            await prisma.intrauterinaEndoscopica.findUnique({
+              where: { id: endoscopica.id },
+            });
+
+          if (existingEndoscopica) {
+            await prisma.intrauterinaEndoscopica.update({
+              where: { id: endoscopica.id },
+              data: endoscopica,
+            });
+          } else {
+            await prisma.intrauterinaEndoscopica.create({
+              data: {
+                ordenQuirurgicaId: idNumber,
+                ...endoscopica,
+              },
+            });
+          }
+        }
       }
 
       return NextResponse.json({
