@@ -4,7 +4,15 @@
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  
+
+  @include media(desktop) {
+    width: 85%;
+  }
+
+  @include media(desktopXXL) {
+    width: 100%;
+  }
+
   .card-surgeries {
     background: $color-blanco;
     padding: 20px;

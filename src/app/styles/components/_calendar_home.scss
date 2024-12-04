@@ -52,7 +52,7 @@
     -o-border-radius: 8px;
 
     @include media(desktop) {
-      height: 100%;
+      height: auto;
     }
     @include media(desktopXXL) {
       height: 383px;

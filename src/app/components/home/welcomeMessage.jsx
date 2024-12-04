@@ -15,22 +15,17 @@ const getGreetingMessage = (user) => {
 };
 
 const RecentSurgeries = () => {
-  const { user, loading, recentSurgeries, surgeriesPost, error } = useAuth();
+  const { user, loading, recentSurgeries, error } = useAuth();
   const [surgeryCount, setSurgeryCount] = useState(0);
   const [recentSurgery, setRecentSurgery] = useState(null);
 
   useEffect(() => {
     if (!loading && user) {
-      const validSurgeriesPost = Array.isArray(surgeriesPost)
-        ? surgeriesPost
-        : [];
-
-      const allSurgeries = [...recentSurgeries, ...validSurgeriesPost];
-
-      if (allSurgeries.length > 0) {
+      // Filtrar las cirugías recientes que fueron agregadas en los últimos 5 días
+      if (recentSurgeries.length > 0) {
         const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
 
-        const recentSurgeryList = allSurgeries.filter((surgery) => {
+        const recentSurgeryList = recentSurgeries.filter((surgery) => {
           const surgeryDate = new Date(surgery.fechaDeCreacion);
           return surgeryDate >= fiveDaysAgo;
         });
@@ -38,20 +33,20 @@ const RecentSurgeries = () => {
         setSurgeryCount(recentSurgeryList.length);
 
         if (recentSurgeryList.length > 0) {
-          setRecentSurgery(recentSurgeryList[0]);
-        } else {
-          setRecentSurgery(
-            allSurgeries.reduce((latest, surgery) => {
-              return new Date(surgery.fechaDeCreacion) >
-                new Date(latest.fechaDeCreacion)
-                ? surgery
-                : latest;
-            }, allSurgeries[0])
+          // Buscar la cirugía más reciente
+          const mostRecentSurgery = recentSurgeryList.reduce(
+            (latest, surgery) => {
+              const currentSurgeryDate = new Date(surgery.fechaDeCreacion);
+              const latestSurgeryDate = new Date(latest.fechaDeCreacion);
+              return currentSurgeryDate > latestSurgeryDate ? surgery : latest;
+            }
           );
+
+          setRecentSurgery(mostRecentSurgery);
         }
       }
     }
-  }, [loading, user, recentSurgeries, surgeriesPost]);
+  }, [loading, user, recentSurgeries]);
 
   const formatDate = (dateString) => {
     const options = { day: "numeric", month: "long", year: "numeric" };
@@ -80,7 +75,8 @@ const RecentSurgeries = () => {
                 </span>
               ) : (
                 <span>
-                  Se agregaron <strong>{surgeryCount} cirugías nuevas</strong>
+                  Se han agregado{" "}
+                  <strong>{surgeryCount} cirugías Fetales Intrauterinas</strong>
                 </span>
               )}{" "}
               en los últimos 5 días.
@@ -88,9 +84,9 @@ const RecentSurgeries = () => {
             {recentSurgery && (
               <div>
                 <p>
-                  La cirugía más reciente fue de la paciente con{" "}
+                  La cirugía más reciente fue de la paciente con el numero de{" "}
                   <strong>
-                    N° de expd. ({recentSurgery.paciente.numeroExpediente}){" "}
+                    Expediente: ({recentSurgery.paciente.numeroExpediente}){" "}
                     {recentSurgery.paciente.primerNombre}{" "}
                     {recentSurgery.paciente.primerApellido}
                   </strong>{" "}
