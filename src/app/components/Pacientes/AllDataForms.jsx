@@ -136,56 +136,74 @@ const AllDataForms = ({ mode, id }) => {
           try {
             // 1. Crear Conyuge
             const dataConyuge = getFormData("ConyugeForm");
-            const respConyuge = await postData(dataConyuge, postConyuge);
+            const createConyuge = postData(dataConyuge, postConyuge);
+
+            // Espera que el cónyuge se cree
+            const respConyuge = await createConyuge;
             const conyugeId = respConyuge?.conyuge.id;
 
-            // 2. Crear Paciente
+            // 2. Crear Paciente (depende del conyugeId)
             const dataPatient = getFormData("PacienteForm");
             dataPatient.conyugeId = conyugeId;
-            const respPaciente = await postData(dataPatient, postPaciente);
-            const pacienteId = respPaciente?.paciente.id;
+            const createPaciente = postData(dataPatient, postPaciente);
 
-            // 3. Crear Diabetes
+            // 3. Crear Diabetes (depende del pacienteId)
+            const respPaciente = await createPaciente;
+            const pacienteId = respPaciente?.paciente.id;
             const dataDiabetes = getFormData("DiabetesForm");
             dataDiabetes.pacienteid = pacienteId;
-            const respDiabetes = await postData(dataDiabetes, postDiabetes);
-            const diabetesId = respDiabetes?.tipoDiabetes.id;
+            const createDiabetes = postData(dataDiabetes, postDiabetes);
 
-            // 4. Crear Antecedentes Personales
+            // 4. Crear Antecedentes Personales (depende de diabetesId y pacienteId)
             const dataAntecedentesPersonales = getFormData(
               "AntecedentePersonalesForm"
             );
-            dataAntecedentesPersonales.diabetesId = diabetesId;
+            dataAntecedentesPersonales.diabetesId = await createDiabetes?.then(
+              (resp) => resp?.tipoDiabetes.id
+            );
             dataAntecedentesPersonales.pacienteId = pacienteId;
-            await postData(
+            const createAntecedentesPersonales = postData(
               dataAntecedentesPersonales,
               postAntecedentesPersonales
             );
 
-            // 5. Crear Antecedentes Familiares
+            // 5. Crear Antecedentes Familiares (depende de pacienteId)
             const dataAntecedentesFamiliares = getFormData(
               "AntecedentesFamiliaresForm"
             );
             dataAntecedentesFamiliares.pacienteId = pacienteId;
-            await postData(
+            const createAntecedentesFamiliares = postData(
               dataAntecedentesFamiliares,
               postAntecedentesFamiliares
             );
 
-            // 6. Crear Antecedentes Obstétricos
+            // 6. Crear Antecedentes Obstétricos (depende de pacienteId)
             const dataAntecedentesObstetricos = getFormData(
               "AntecedentesObstForm"
             );
             dataAntecedentesObstetricos.pacienteId = pacienteId;
-            await postData(
+            const createAntecedentesObstetricos = postData(
               dataAntecedentesObstetricos,
               postAntecedentesObstetricos
             );
 
-            // 7. Crear Embarazo Actual
+            // 7. Crear Embarazo Actual (depende de pacienteId)
             const dataEmbarazoActual = getFormData("EmbarazoActual");
             dataEmbarazoActual.pacienteId = pacienteId;
-            await postData(dataEmbarazoActual, postEmbarazoActual);
+            const createEmbarazoActual = postData(
+              dataEmbarazoActual,
+              postEmbarazoActual
+            );
+
+            // Espera a que todas las promesas se resuelvan en paralelo
+            await Promise.all([
+              createPaciente,
+              createDiabetes,
+              createAntecedentesPersonales,
+              createAntecedentesFamiliares,
+              createAntecedentesObstetricos,
+              createEmbarazoActual,
+            ]);
 
             stopLoading();
 
@@ -283,72 +301,73 @@ const AllDataForms = ({ mode, id }) => {
               await putData(dataPatient, putPaciente, pacienteId);
             }
 
+            // Ahora que tenemos los IDs de Conyuge y Paciente, podemos hacer las demás actualizaciones en paralelo
+
             // 3. Actualizar Diabetes
             const diabetesId = dataEditIds.diabetesId;
-            if (!diabetesId) {
-              dataDiabetes.pacienteid = pacienteId;
-              await postData(dataDiabetes, postDiabetes);
-            } else {
-              await putData(dataDiabetes, putDiabetes, diabetesId);
-            }
+            const diabetesUpdate = diabetesId
+              ? putData(dataDiabetes, putDiabetes, diabetesId)
+              : postData(
+                  { ...dataDiabetes, pacienteid: pacienteId },
+                  postDiabetes
+                );
 
             // 4. Actualizar Antecedentes Personales
             const antPersonalesId = dataEditIds.antPersonalesId;
-            if (!antPersonalesId) {
-              dataAntecedentesPersonales.pacienteId = dataEditIds.patientId;
-              dataAntecedentesPersonales.diabetesId = diabetesId;
-              await postData(
-                dataAntecedentesPersonales,
-                postAntecedentesPersonales
-              );
-            } else {
-              await putData(
-                dataAntecedentesPersonales,
-                putAntecedentesPersonales,
-                antPersonalesId
-              );
-            }
+            const antPersonalesUpdate = antPersonalesId
+              ? putData(
+                  dataAntecedentesPersonales,
+                  putAntecedentesPersonales,
+                  antPersonalesId
+                )
+              : postData(
+                  { ...dataAntecedentesPersonales, pacienteId, diabetesId },
+                  postAntecedentesPersonales
+                );
 
             // 5. Actualizar Antecedentes Familiares
             const antFamiliaresId = dataEditIds.antFamiliaresId;
-            if (!antFamiliaresId) {
-              dataAntecedentesFamiliares.pacienteId = dataEditIds.patientId;
-              await postData(
-                dataAntecedentesFamiliares,
-                postAntecedentesFamiliares
-              );
-            } else {
-              await putData(
-                dataAntecedentesFamiliares,
-                putAntecedentesFamiliares,
-                antFamiliaresId
-              );
-            }
+            const antFamiliaresUpdate = antFamiliaresId
+              ? putData(
+                  dataAntecedentesFamiliares,
+                  putAntecedentesFamiliares,
+                  antFamiliaresId
+                )
+              : postData(
+                  { ...dataAntecedentesFamiliares, pacienteId },
+                  postAntecedentesFamiliares
+                );
 
             // 6. Actualizar Antecedentes Obstétricos
             const antObstetricosId = dataEditIds.antObstetricosId;
-            if (!antObstetricosId) {
-              dataAntecedentesObstetricos.pacienteId = dataEditIds.patientId;
-              await postData(
-                dataAntecedentesObstetricos,
-                postAntecedentesObstetricos
-              );
-            } else {
-              await putData(
-                dataAntecedentesObstetricos,
-                putAntecedentesObstetricos,
-                antObstetricosId
-              );
-            }
+            const antObstetricosUpdate = antObstetricosId
+              ? putData(
+                  dataAntecedentesObstetricos,
+                  putAntecedentesObstetricos,
+                  antObstetricosId
+                )
+              : postData(
+                  { ...dataAntecedentesObstetricos, pacienteId },
+                  postAntecedentesObstetricos
+                );
 
             // 7. Actualizar Embarazo Actual
             const embActualId = dataEditIds.embActualId;
-            if (!embActualId) {
-              dataEmbarazoActual.pacienteId = dataEditIds.patientId;
-              await postData(dataEmbarazoActual, postEmbarazoActual);
-            } else {
-              await putData(dataEmbarazoActual, putEmbarazoActual, embActualId);
-            }
+            const embarazoUpdate = embActualId
+              ? putData(dataEmbarazoActual, putEmbarazoActual, embActualId)
+              : postData(
+                  { ...dataEmbarazoActual, pacienteId },
+                  postEmbarazoActual
+                );
+
+            // Ejecutamos las actualizaciones en paralelo
+            await Promise.all([
+              diabetesUpdate,
+              antPersonalesUpdate,
+              antFamiliaresUpdate,
+              antObstetricosUpdate,
+              embarazoUpdate,
+            ]);
 
             stopLoading();
 
