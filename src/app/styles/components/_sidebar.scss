@@ -19,6 +19,11 @@
       }
     }
 
+    .disabled-menu-item {
+      &:hover {
+        background: transparent !important;
+      }
+    }
     .ant-menu-item-selected {
       background-color: $color-rosa-oscuro;
       .ant-menu-title-content {

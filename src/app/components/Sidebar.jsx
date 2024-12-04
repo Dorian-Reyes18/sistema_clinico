@@ -82,11 +82,13 @@ const Sidebar = () => {
       ),
     },
     {
-      key: "/configuracion",
-      icon: <UserOutlined />,
-      label: "Configuración",
+      key: "",
+      icon: "", //<UserOutlined />,
+      label: "",
+      className: "disabled-menu-item",
       onClick: () => router.push("/configuracion"),
       style: { marginTop: "auto" },
+      disabled: true, // Deshabilitar la opción
     },
     {
       key: "logout",
@@ -145,6 +147,7 @@ const Sidebar = () => {
           height: collapsed ? "calc(100% - 90px)" : "calc(100% - 240px)",
           padding: "0 20px",
         }}
+        inlineCollapsed={collapsed}
       />
     </Sider>
   );
