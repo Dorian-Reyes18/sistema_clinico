@@ -81,16 +81,16 @@ const HeaderUser = ({ currentPath }) => {
             style={{
               fontSize: 12,
               color:
-                user.rol.nombreRol.toLowerCase() === "administrador"
+                user?.rol?.nombreRol.toLowerCase() === "administrador"
                   ? "#1074bc"
                   : "#bd3548",
             }}
           >
-            <strong>{user.rol.nombreRol}</strong>
+            <strong>{user?.rol?.nombreRol}</strong>
           </span>
         </div>
 
-        {user.rol.nombreRol.toLowerCase() === "administrador" ? (
+        {user?.rol?.nombreRol.toLowerCase() === "administrador" ? (
           <LogoDoctor />
         ) : (
           <LogoUser />

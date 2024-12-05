@@ -46,8 +46,8 @@ const Sidebar = () => {
   };
 
   const handleMenuClick = (e) => {
-    setIsLoading(true); // Activar el spinner de carga al hacer clic en un enlace del menú
-    router.push(e.key); // Navegar a la ruta seleccionada
+    setIsLoading(true); 
+    router.push(e.key);
   };
 
   const menuItems = [
