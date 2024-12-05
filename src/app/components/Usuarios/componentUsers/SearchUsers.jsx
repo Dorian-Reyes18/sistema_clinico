@@ -1,8 +1,14 @@
 import { Input } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const SearchUser = ({ data, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [originalData, setOriginalData] = useState(data);
+
+  // Efecto que actualiza la lista original cuando los datos cambian
+  useEffect(() => {
+    setOriginalData(data);
+  }, [data]);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -10,11 +16,12 @@ const SearchUser = ({ data, onSearch }) => {
 
     const lowerCaseValue = value.toLowerCase();
 
+    // Si el campo de búsqueda está vacío, se restablecen los datos
     if (!value) {
-      onSearch(data); 
+      onSearch(originalData); // Aquí se asegura que se muestren todos los usuarios
     } else {
-      // Si hay texto, aplicamos el filtro
-      const filteredData = data.filter((usuario) => {
+      // Aplica el filtro solo si hay texto
+      const filteredData = originalData.filter((usuario) => {
         const nombre = usuario.nombreYApellido
           ? usuario.nombreYApellido.toLowerCase()
           : "";
