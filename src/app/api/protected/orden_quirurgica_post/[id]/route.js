@@ -99,8 +99,8 @@ export async function PUT(req, { params }) {
         include: {
           paciente: true,
           doctor: true,
-          cirugiaNeonatal: true, 
-          cirugiaNerviosoCentral: true, 
+          cirugiaNeonatal: true,
+          cirugiaNerviosoCentral: true,
         },
       });
 
@@ -119,6 +119,7 @@ export async function PUT(req, { params }) {
 }
 
 // DELETE - Eliminar un registro de Orden Quirúrgica Postoperatoria por ID
+// DELETE - Eliminar un registro de Orden Quirúrgica Postoperatoria por ID
 export async function DELETE(req, { params }) {
   return handleRequest(req, async () => {
     const validId = validateId(params.id);
@@ -130,6 +131,10 @@ export async function DELETE(req, { params }) {
       const registroExistente =
         await prisma.ordenQuirurgicaPostoperacion.findUnique({
           where: { id: validId },
+          include: {
+            cirugiaNeonatal: true, // Incluir las cirugías neonatales asociadas
+            cirugiaNerviosoCentral: true, // Incluir las cirugías de nervioso central asociadas
+          },
         });
 
       if (!registroExistente) {
@@ -139,6 +144,20 @@ export async function DELETE(req, { params }) {
         );
       }
 
+      // Eliminar los registros asociados de CirugiaNeonatal y CirugiaNerviosoCentral
+      await prisma.cirugiaNeonatal.deleteMany({
+        where: {
+          cirugiaId: validId,
+        },
+      });
+
+      await prisma.cirugiaNerviosoCentral.deleteMany({
+        where: {
+          cirugiaId: validId,
+        },
+      });
+
+      // Ahora eliminar la orden quirúrgica
       await prisma.ordenQuirurgicaPostoperacion.delete({
         where: { id: validId },
       });
@@ -146,7 +165,7 @@ export async function DELETE(req, { params }) {
       return NextResponse.json(
         {
           message:
-            "Registro de Orden Quirúrgica Postoperatoria eliminado exitosamente",
+            "Registro de Orden Quirúrgica Postoperatoria y sus registros asociados eliminados exitosamente",
         },
         { status: 200 }
       );

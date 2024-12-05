@@ -196,6 +196,7 @@
       display: revert-layer;
       place-items: center;
       place-content: center;
+      gap: 10px;
     }
     .btn-edit {
       display: flex;
@@ -206,6 +207,25 @@
       background-size: 25px;
       height: 25px;
       width: 25px;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.5);
+        -webkit-transform: scale(1.5);
+        -moz-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+        -o-transform: scale(1.5);
+      }
+    }
+    .btn-delete {
+      padding: 0 6px;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" fill="white"/><path d="M5.16667 20C4.58611 20 4.0893 19.7935 3.67622 19.3804C3.26315 18.9673 3.05626 18.4701 3.05556 17.8889V4.16667H2V2.05556H7.27778V1H13.6111V2.05556H18.8889V4.16667H17.8333V17.8889C17.8333 18.4694 17.6268 18.9666 17.2137 19.3804C16.8006 19.7942 16.3035 20.0007 15.7222 20H5.16667ZM7.27778 15.7778H9.38889V6.27778H7.27778V15.7778ZM11.5 15.7778H13.6111V6.27778H11.5V15.7778Z" fill="%234B4B4B"/></svg>');
+      background-size: 20px;
+      height: 20px;
+      width: 20px;
       transition: transform 0.3s ease;
       &:hover {
         transform: scale(1.5);

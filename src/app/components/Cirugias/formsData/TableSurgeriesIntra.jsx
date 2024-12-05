@@ -1,14 +1,16 @@
 import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
-import { Spin } from "antd";
+import { Modal, notification, Spin } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "@/app/hooks/authContext";
+import CreateIntraButton from "../CreateIntraButton";
+import SearchIntra from "../SearchIntra";
+import Pagination from "antd/es/pagination";
 import {
   fetchRecentSurgeries,
   fetchOrdenPrenatalCompleta,
 } from "@/services/fetchAllData";
-import CreateIntraButton from "../CreateIntraButton";
-import SearchIntra from "../SearchIntra";
-import Pagination from "antd/es/pagination";
+import { deleteSurgeryIntraCompleta } from "@/services/Delete/Cirugias/deleteIntra";
 
 const TableSurgeriesIntra = () => {
   const {
@@ -24,6 +26,9 @@ const TableSurgeriesIntra = () => {
   const [loading, setLoading] = useState(false);
   const [filteredSurgeries, setFilteredSurgeries] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
 
   useMemo(() => {
     const fetchSurgeries = async () => {
@@ -58,7 +63,56 @@ const TableSurgeriesIntra = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const renderPatientrowIntra = (cirugia) => (
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "¿Está seguro de eliminar esta cirugía?",
+      content:
+        "La cirugía y todos sus datos relacionados serán eliminados permanentemente. ¿Desea continuar?",
+      okText: "Sí",
+      cancelText: "No",
+      centered: true,
+      onOk() {
+        deleteSurgery(id);
+      },
+      onCancel() {
+        console.log("Eliminación cancelada.");
+      },
+    });
+  };
+
+  const deleteSurgery = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await deleteSurgeryIntraCompleta(id, token);
+      if (response.message) {
+        setIsLoading(false);
+        Modal.confirm({
+          title: "Cirugía eliminada exitosamente",
+          content:
+            "La cirugía y todos sus datos relacionados se han eliminado correctamente.",
+          icon: (
+            <CheckCircleOutlined
+              style={{ color: "#52c41a", fontSize: "32px" }}
+            />
+          ),
+          okText: "Aceptar",
+          centered: true,
+          cancelButtonProps: { style: { display: "none" } },
+          onOk() {
+            setFilteredSurgeries(
+              filteredSurgeries.filter((surgery) => surgery.id !== id)
+            );
+            router.push("/cirugias");
+          },
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error al eliminar cirugía:", error);
+    }
+  };
+
+  const renderSurgeryRowIntra = (cirugia) => (
     <tr key={cirugia.id}>
       <td className="center">
         <strong>{cirugia?.paciente?.numeroExpediente}</strong>
@@ -83,15 +137,21 @@ const TableSurgeriesIntra = () => {
         <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
       </td>
       <td className="place">
-        <div
-          className="btn-edit"
-          onClick={() => {
-            setIsLoading(true);
-            router.push(
-              `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
-            );
-          }}
-        ></div>
+        <div style={{ display: "flex", padding: "0 12px", gap: 12 }}>
+          <div
+            className="btn-edit"
+            onClick={() => {
+              setIsLoading(true);
+              router.push(
+                `/cirugias/gestionarCirugias?mode=isEditMode&id=${cirugia.id}`
+              );
+            }}
+          ></div>
+          <div
+            className="btn-delete"
+            onClick={() => handleDelete(cirugia.id)}
+          ></div>
+        </div>
       </td>
     </tr>
   );
@@ -103,7 +163,19 @@ const TableSurgeriesIntra = () => {
         <SearchIntra data={recentSurgeries} onSearch={setFilteredSurgeries} />
       </div>
 
-      {loading || isLoading ? (
+      {/* Spin de eliminación aparece solo cuando se está eliminando */}
+      <Modal
+        className="modal-confirm"
+        open={isLoading} // Mostrar solo cuando se está eliminando
+        footer={null}
+        closable={false}
+        centered
+      >
+        <Spin size="large" />
+      </Modal>
+
+      {/* Spin de carga solo aparece cuando no hay un spin de eliminación activo */}
+      {loading && !isLoading ? (
         <div
           style={{
             background: "rgba(0, 0, 0, 0.3)",
@@ -150,7 +222,7 @@ const TableSurgeriesIntra = () => {
                     <th className="co">Acción</th>
                   </tr>
                 </thead>
-                <tbody>{paginatedSurgeries.map(renderPatientrowIntra)}</tbody>
+                <tbody>{paginatedSurgeries.map(renderSurgeryRowIntra)}</tbody>
               </table>
             </div>
           </div>

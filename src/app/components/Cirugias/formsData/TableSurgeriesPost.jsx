@@ -1,10 +1,13 @@
 import { useAuth } from "@/app/hooks/authContext";
-import { Pagination, Spin, Button, Input } from "antd";
+import { Pagination, Spin, Button, Input, Modal } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SearchPost from "../SearchPost";
 import { fetchSurgeriesPost } from "@/services/fetchAllData";
 import CreatePosnatalButtons from "../CreatePosnatlButtons";
+import { CheckCircleOutlined } from "@ant-design/icons";
+
+import { deleteSurgeryPostCompleta } from "@/services/Delete/Cirugias/deletePost";
 
 const TableSurgeriesPost = () => {
   const { token, surgeriesPost, setSurgeriesPost } = useAuth();
@@ -16,14 +19,17 @@ const TableSurgeriesPost = () => {
   const [filteredSurgeries, setFilteredSurgeries] = useState([]);
   const [neonatalSurgeries, setNeonatalSurgeries] = useState([]);
   const [nerviosoCentralSurgeries, setNerviosoCentralSurgeries] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Estados para manejar la visibilidad de las secciones
   const [showNeonatal, setShowNeonatal] = useState(true);
   const [showNerviosoCentral, setShowNerviosoCentral] = useState(true);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  // Estado para el spinner de carga al hacer clic en el botón de edición
   const [isEditing, setIsEditing] = useState(false);
+
+  const startLoading = () => setLoading(true);
+  const stopLoading = () => setLoading(false);
 
   useEffect(() => {
     const fetchSurgeries = async () => {
@@ -60,6 +66,68 @@ const TableSurgeriesPost = () => {
     if (searchResults.length === 0) {
       setShowNeonatal(true);
       setShowNerviosoCentral(true);
+    }
+  };
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "¿Está seguro de eliminar esta cirugía?",
+      content:
+        "La cirugía y todos sus datos relacionados serán eliminados permanentemente. ¿Desea continuar?",
+      okText: "Sí",
+      cancelText: "No",
+      centered: true,
+      onOk() {
+        deleteSurgery(id);
+      },
+      onCancel() {
+        console.log("Eliminación cancelada.");
+      },
+    });
+  };
+
+  const deleteSurgery = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await deleteSurgeryPostCompleta(id, token);
+      if (response.message) {
+        // Después de la eliminación, recargamos las cirugías
+        const data = await fetchSurgeriesPost(token);
+        setSurgeriesPost(data);
+        setFilteredSurgeries(data.registros);
+
+        const neonatal = data.registros.filter(
+          (cirugia) => cirugia.tipoCirugia === "Neonatal"
+        );
+        const nerviosoCentral = data.registros.filter(
+          (cirugia) => cirugia.tipoCirugia === "Nervioso central"
+        );
+
+        setNeonatalSurgeries(neonatal);
+        setNerviosoCentralSurgeries(nerviosoCentral);
+
+        setIsLoading(false);
+
+        Modal.confirm({
+          title: "Cirugía eliminada exitosamente",
+          content:
+            "La cirugía y todos sus datos relacionados se han eliminado correctamente.",
+          icon: (
+            <CheckCircleOutlined
+              style={{ color: "#52c41a", fontSize: "32px" }}
+            />
+          ),
+          okText: "Aceptar",
+          centered: true,
+          cancelButtonProps: { style: { display: "none" } },
+          onOk() {
+            router.push("/cirugias"); 
+          },
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error al eliminar cirugía:", error);
     }
   };
 
@@ -107,17 +175,23 @@ const TableSurgeriesPost = () => {
           <strong>{cirugia.estado ? "Activa" : "Finalizada"}</strong>
         </td>
         <td className="place">
-          <div
-            className="btn-edit"
-            onClick={() => {
-              setLoading(true);
-              setTimeout(() => {
-                router.push(
-                  `/cirugias/gestionarCirugiaPostnatal?mode=isEditMode&id=${cirugia.id}`
-                );
-              }, 300);
-            }}
-          ></div>
+          <div style={{ display: "flex", padding: "0 12px", gap: 12 }}>
+            <div
+              className="btn-edit"
+              onClick={() => {
+                setLoading(true);
+                setTimeout(() => {
+                  router.push(
+                    `/cirugias/gestionarCirugiaPostnatal?mode=isEditMode&id=${cirugia.id}`
+                  );
+                }, 300);
+              }}
+            ></div>
+            <div
+              className="btn-delete"
+              onClick={() => handleDelete(cirugia.id)}
+            ></div>
+          </div>
         </td>
       </tr>
     );
@@ -166,13 +240,22 @@ const TableSurgeriesPost = () => {
           setShowNerviosoCentral={setShowNerviosoCentral}
         />
       </div>
+      {/* Spin de eliminación aparece solo cuando se está eliminando */}
+      <Modal
+        className="modal-confirm"
+        open={isLoading}
+        footer={null}
+        closable={false}
+        centered
+      >
+        <Spin size="large" />
+      </Modal>
 
       {loading || isEditing ? (
         <div className="loading-message">
           {/* <Spin /> <span>Consultando datos...</span> */}
         </div>
       ) : isSearchActive ? (
-        // Mostrar resultados de búsqueda como una única tabla
         <div className="month-container">
           <div className="section">
             <div className="text-head">
