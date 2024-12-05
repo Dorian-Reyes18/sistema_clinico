@@ -10,28 +10,32 @@ const SearchUser = ({ data, onSearch }) => {
 
     const lowerCaseValue = value.toLowerCase();
 
-    const filteredData = data.filter((usuario) => {
-      // Propiedades del usuario a buscar
-      const nombre = usuario.nombreYApellido
-        ? usuario.nombreYApellido.toLowerCase()
-        : "";
-      const email = usuario.correo ? usuario.correo.toLowerCase() : "";
-      const rol = usuario.rol?.nombreRol
-        ? usuario.rol.nombreRol.toLowerCase()
-        : "";
-      const estado = usuario.activo ? "sí" : "no";
-      const telefono = usuario.telefono ? usuario.telefono.toLowerCase() : "";
+    if (!value) {
+      onSearch(data); 
+    } else {
+      // Si hay texto, aplicamos el filtro
+      const filteredData = data.filter((usuario) => {
+        const nombre = usuario.nombreYApellido
+          ? usuario.nombreYApellido.toLowerCase()
+          : "";
+        const email = usuario.correo ? usuario.correo.toLowerCase() : "";
+        const rol = usuario.rol?.nombreRol
+          ? usuario.rol.nombreRol.toLowerCase()
+          : "";
+        const estado = usuario.activo ? "sí" : "no";
+        const telefono = usuario.telefono ? usuario.telefono.toLowerCase() : "";
 
-      return (
-        nombre.includes(lowerCaseValue) ||
-        email.includes(lowerCaseValue) ||
-        rol.includes(lowerCaseValue) ||
-        estado.includes(lowerCaseValue) ||
-        telefono.includes(lowerCaseValue)
-      );
-    });
+        return (
+          nombre.includes(lowerCaseValue) ||
+          email.includes(lowerCaseValue) ||
+          rol.includes(lowerCaseValue) ||
+          estado.includes(lowerCaseValue) ||
+          telefono.includes(lowerCaseValue)
+        );
+      });
 
-    onSearch(filteredData);
+      onSearch(filteredData);
+    }
   };
 
   return (

@@ -9,12 +9,13 @@ import { fetchAllUsers } from "@/services/fetchAllData";
 import { deleteUsers } from "@/services/Delete/Users/deleteUsers";
 
 const TableUsers = () => {
-  const { user, token } = useAuth(); // No se usa setUser aquí
+  const { user, token } = useAuth();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(20);
   const [loading, setLoading] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]); // Nuevo estado para los usuarios completos
   const [isLoading, setIsLoading] = useState(false);
 
   const startLoading = () => setLoading(true);
@@ -26,7 +27,8 @@ const TableUsers = () => {
       try {
         const response = await fetchAllUsers(token);
         const data = response.usuarios;
-        setFilteredUsers(data); // Actualiza solo la lista de usuarios
+        setAllUsers(data); // Guardamos la lista completa
+        setFilteredUsers(data); // Inicializamos filteredUsers con la lista completa
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -35,7 +37,7 @@ const TableUsers = () => {
     };
 
     fetchUsers();
-  }, [token]); // Eliminamos setUser de la dependencia
+  }, [token]);
 
   const paginatedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;
@@ -151,7 +153,7 @@ const TableUsers = () => {
           )}
         </div>
 
-        <SearchUser data={user} onSearch={setFilteredUsers} />
+        <SearchUser data={allUsers} onSearch={setFilteredUsers} />
       </div>
 
       <Modal
