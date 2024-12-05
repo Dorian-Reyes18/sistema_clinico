@@ -61,6 +61,9 @@ const CirugiaNerviosoCentralForm = ({
     onSubmit: (values) => {
       const formData = {
         ...values,
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         cirugiaId:
           mode === "isEditMode" && formik.values.cirugiaId
             ? formik.values.cirugiaId

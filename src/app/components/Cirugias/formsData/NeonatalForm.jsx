@@ -49,6 +49,9 @@ const CirugiaNeonatalForm = ({
     onSubmit: (values) => {
       const formData = {
         ...values,
+        ...(mode === "isEditMode" && initialValues?.id != null
+          ? { id: initialValues.id }
+          : {}),
         cirugiaId:
           mode === "isEditMode" && formik.values.cirugiaId
             ? formik.values.cirugiaId
@@ -65,6 +68,7 @@ const CirugiaNeonatalForm = ({
       console.log(initialValues);
       if (mode === "isEditMode") {
         formik.setValues({
+          id: initialValues?.id,
           cirugiaId: initialValues?.cirugiaId,
           minimaInvasion: initialValues?.minimaInvasion,
           cirugiaConvencional: initialValues?.cirugiaConvencional,

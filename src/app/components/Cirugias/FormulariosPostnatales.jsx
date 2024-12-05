@@ -15,6 +15,11 @@ import {
   postNeonatal,
   postNerviosoCentral,
 } from "@/services/Post/cirugias/dataPostPostNatal";
+import {
+  putOrdenPosnatal,
+  putNeonatal,
+  putNerviosoCentral,
+} from "@/services/Put/cirugias/dataPutCirugiasPost";
 
 const FormulariosPostNatales = ({ mode, id }) => {
   const router = useRouter();
@@ -64,19 +69,11 @@ const FormulariosPostNatales = ({ mode, id }) => {
       const cirugiaNCentral = sendData?.cirugiaNerviosoCentralForm;
       const cirugiaNeonatal = sendData?.cirugiaNeonatalForm;
 
-      // Imprimir los datos que se van a enviar
-      console.log("Orden Quirúrgica:", ordenData);
-      console.log("Cirugía Nervioso Central:", cirugiaNCentral);
-      console.log("Cirugía Neonatal:", cirugiaNeonatal);
-
       if (mode === "isCreateMode") {
         startLoading();
         const createCompleteSurgery = async () => {
           try {
             // crear primero la orden quirúrgica
-            console.log(
-              "Enviando datos a la API para crear la orden quirúrgica"
-            );
             const responseOrder = await postOrdenQuirugica(ordenData, token);
             console.log("Respuesta de la orden quirúrgica:", responseOrder);
 
@@ -132,6 +129,93 @@ const FormulariosPostNatales = ({ mode, id }) => {
           }
         };
         createCompleteSurgery();
+      } else {
+        startLoading();
+        const editCompleteSurgery = async () => {
+          // Editar primero la orden
+          const ordenId = ordenData?.id;
+          const responseOrden = await putOrdenPosnatal(
+            ordenId,
+            ordenData,
+            token
+          );
+          console.log(responseOrden);
+
+          if (showCirugiaForm.neonatal) {
+            // Editar la cirugía neonatal
+            const sId = cirugiaNeonatal?.id;
+            const responseCirugia = await putNeonatal(
+              sId,
+              cirugiaNeonatal,
+              token
+            );
+
+            console.log("Respuesta de la cirugía neonatal:", responseCirugia);
+
+            // Verificar si la cirugía no fue encontrada y crearla si es necesario
+            if (responseCirugia?.error === "Registro no encontrado.") {
+              console.log(
+                "Cirugía neonatal no encontrada, creando una nueva..."
+              );
+              cirugiaNeonatal.cirugiaId = ordenId;
+              const responseCreateNeonatal = await postNeonatal(
+                cirugiaNeonatal,
+                token
+              );
+              console.log(
+                "Creación de cirugía neonatal:",
+                responseCreateNeonatal
+              );
+            }
+          } else {
+            const sId = cirugiaNCentral?.id;
+            const responseCirugia = await putNerviosoCentral(
+              sId,
+              cirugiaNCentral,
+              token
+            );
+            console.log(
+              "Respuesta de la cirugía Nervioso Central:",
+              responseCirugia
+            );
+
+            // Verificar si la cirugía no fue encontrada y crearla si es necesario
+            if (responseCirugia?.error === "Registro no encontrado.") {
+              console.log(
+                "Cirugía Nervioso Central no encontrada, creando una nueva..."
+              );
+              cirugiaNCentral.cirugiaId = ordenId;
+              const responseCreateNerviosoCentral = await postNerviosoCentral(
+                cirugiaNCentral,
+                token
+              );
+              console.log(
+                "Creación de cirugía Nervioso Central:",
+                responseCreateNerviosoCentral
+              );
+            }
+          }
+
+          stopLoading();
+
+          Modal.confirm({
+            title: "Cirugía actualizada exitosamente",
+            content:
+              "La cirugía y todos sus datos relacionados se han actualizado correctamente.",
+            icon: (
+              <CheckCircleOutlined
+                style={{ color: "#52c41a", fontSize: "32px" }}
+              />
+            ),
+            okText: "Aceptar",
+            centered: true,
+            cancelButtonProps: { style: { display: "none" } },
+            onOk() {
+              router.push("/cirugias");
+            },
+          });
+        };
+        editCompleteSurgery();
       }
     }
   }, [sendData]);
