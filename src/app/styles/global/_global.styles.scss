@@ -215,4 +215,41 @@ html {
     -ms-border-radius: 12px;
     -o-border-radius: 12px;
   }
+  .btn-edit {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    content: "";
+    background-image: url('data:image/svg+xml,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.52939 9.70598H7.35293C6.72889 9.70598 6.13042 9.95388 5.68916 10.3951C5.2479 10.8364 5 11.4349 5 12.0589V22.6471C5 23.2711 5.2479 23.8696 5.68916 24.3108C6.13042 24.7521 6.72889 25 7.35293 25H17.9411C18.5651 25 19.1636 24.7521 19.6049 24.3108C20.0461 23.8696 20.294 23.2711 20.294 22.6471V21.4706M19.1176 7.35305L22.6469 10.8824M24.2764 9.21775C24.7397 8.7544 25 8.12597 25 7.4707C25 6.81543 24.7397 6.187 24.2764 5.72365C23.813 5.2603 23.1846 5 22.5293 5C21.874 5 21.2456 5.2603 20.7823 5.72365L10.8823 15.5883V19.1177H14.4117L24.2764 9.21775Z" stroke="%234B4B4B" stroke-width="2.35293" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-size: 25px;
+    height: 25px;
+    width: 25px;
+    transition: transform 0.3s ease;
+    &:hover {
+      transform: scale(1.5);
+      -webkit-transform: scale(1.5);
+      -moz-transform: scale(1.5);
+      -ms-transform: scale(1.5);
+      -o-transform: scale(1.5);
+    }
+  }
+  .btn-delete {
+    padding: 0 6px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    content: "";
+    background-image: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" fill="white"/><path d="M5.16667 20C4.58611 20 4.0893 19.7935 3.67622 19.3804C3.26315 18.9673 3.05626 18.4701 3.05556 17.8889V4.16667H2V2.05556H7.27778V1H13.6111V2.05556H18.8889V4.16667H17.8333V17.8889C17.8333 18.4694 17.6268 18.9666 17.2137 19.3804C16.8006 19.7942 16.3035 20.0007 15.7222 20H5.16667ZM7.27778 15.7778H9.38889V6.27778H7.27778V15.7778ZM11.5 15.7778H13.6111V6.27778H11.5V15.7778Z" fill="%234B4B4B"/></svg>');
+    background-size: 20px;
+    height: 20px;
+    width: 20px;
+    transition: transform 0.3s ease;
+    &:hover {
+      transform: scale(1.5);
+      -webkit-transform: scale(1.5);
+      -moz-transform: scale(1.5);
+      -ms-transform: scale(1.5);
+      -o-transform: scale(1.5);
+    }
+  }
 }

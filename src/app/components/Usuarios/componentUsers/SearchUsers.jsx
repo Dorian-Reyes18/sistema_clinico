@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 const SearchUser = ({ data, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [originalData, setOriginalData] = useState(data);
-
-  // Efecto que actualiza la lista original cuando los datos cambian
+  
   useEffect(() => {
     setOriginalData(data);
   }, [data]);
@@ -16,11 +15,9 @@ const SearchUser = ({ data, onSearch }) => {
 
     const lowerCaseValue = value.toLowerCase();
 
-    // Si el campo de búsqueda está vacío, se restablecen los datos
     if (!value) {
-      onSearch(originalData); // Aquí se asegura que se muestren todos los usuarios
+      onSearch(originalData); 
     } else {
-      // Aplica el filtro solo si hay texto
       const filteredData = originalData.filter((usuario) => {
         const nombre = usuario.nombreYApellido
           ? usuario.nombreYApellido.toLowerCase()
@@ -49,7 +46,7 @@ const SearchUser = ({ data, onSearch }) => {
     <div className="wrapper">
       <div className="input-wrapper">
         <Input
-          placeholder="Buscar por nombre, correo, rol, teléfono o estado..."
+          placeholder="Buscar por Nombre, correo, rol, tel."
           value={searchTerm}
           onChange={handleChange}
           className="form-control mb-3"

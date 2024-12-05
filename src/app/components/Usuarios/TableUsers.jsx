@@ -15,8 +15,9 @@ const TableUsers = () => {
   const [usersPerPage] = useState(20);
   const [loading, setLoading] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]); // Nuevo estado para los usuarios completos
-  const [isLoading, setIsLoading] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // General loading
+  const [isDeleting, setIsDeleting] = useState(false); // Deletion loading
 
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
@@ -27,8 +28,8 @@ const TableUsers = () => {
       try {
         const response = await fetchAllUsers(token);
         const data = response.usuarios;
-        setAllUsers(data); // Guardamos la lista completa
-        setFilteredUsers(data); // Inicializamos filteredUsers con la lista completa
+        setAllUsers(data);
+        setFilteredUsers(data);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -62,11 +63,11 @@ const TableUsers = () => {
   };
 
   const deleteUsersAction = async (id) => {
-    setIsLoading(true);
+    setIsDeleting(true); // Start deleting process
     try {
       const response = await deleteUsers(id, token);
       if (response.message) {
-        setIsLoading(false);
+        setIsDeleting(false); // End deleting process
         Modal.confirm({
           title: "Usuario eliminado exitosamente",
           content:
@@ -86,16 +87,14 @@ const TableUsers = () => {
         });
       }
     } catch (error) {
-      setIsLoading(false);
+      setIsDeleting(false); // End deleting process
       console.error("Error al eliminar usuario:", error);
     }
   };
 
   const renderUserRow = (usuario) => (
     <tr key={usuario.id}>
-      <td className="center">
-        <strong>{usuario.rol?.nombreRol || "No especificado"}</strong>
-      </td>
+      <td className="center">{usuario.rol?.nombreRol || "No especificado"}</td>
       <td className="center">{usuario.nombreYApellido || "Sin nombre"}</td>
       <td className="center">{usuario.telefono || "Sin Telefono"}</td>
       <td className="center">{usuario.correo || "Sin correo"}</td>
@@ -127,12 +126,13 @@ const TableUsers = () => {
   return (
     <div className="base">
       <div className="actions-inputs">
-        {/* Botón de Crear Usuario */}
         <div>
           <button className="btn btn-azul" onClick={handleCreateUser}>
             Nuevo Usuario
           </button>
-          {isLoading && (
+
+          {/* Este es el loading de carga */}
+          {isLoading && !isDeleting && (
             <div
               style={{
                 background: "rgba(0, 0, 0, 0.3)",
@@ -156,9 +156,10 @@ const TableUsers = () => {
         <SearchUser data={allUsers} onSearch={setFilteredUsers} />
       </div>
 
+      {/* Este modal ese el loading de eliminacion */}
       <Modal
         className="modal-confirm"
-        open={isLoading}
+        open={isDeleting}
         footer={null}
         closable={false}
         centered
@@ -166,7 +167,7 @@ const TableUsers = () => {
         <Spin size="large" />
       </Modal>
 
-      {loading && !isLoading ? (
+      {loading && !isLoading && !isDeleting ? (
         <div
           style={{
             background: "rgba(0, 0, 0, 0.3)",
@@ -190,8 +191,10 @@ const TableUsers = () => {
             <div className="text-head">
               <h3>Usuarios</h3>
               <span className="record">
-                {`${user.length} ${
-                  user.length === 1 ? "registro en total" : "registros totales"
+                {`${filteredUsers.length} ${
+                  filteredUsers.length === 1
+                    ? "registro en total"
+                    : "registros totales"
                 }`}
               </span>
             </div>
