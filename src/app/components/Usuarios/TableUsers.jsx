@@ -9,7 +9,7 @@ import { fetchAllUsers } from "@/services/fetchAllData";
 import { deleteUsers } from "@/services/Delete/Users/deleteUsers";
 
 const TableUsers = () => {
-  const { user, setUser, token } = useAuth();
+  const { user, token } = useAuth(); // No se usa setUser aquí
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(20);
@@ -26,8 +26,7 @@ const TableUsers = () => {
       try {
         const response = await fetchAllUsers(token);
         const data = response.usuarios;
-        setUser(data);
-        setFilteredUsers(data);
+        setFilteredUsers(data); // Actualiza solo la lista de usuarios
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -36,7 +35,7 @@ const TableUsers = () => {
     };
 
     fetchUsers();
-  }, [setUser, token]);
+  }, [token]); // Eliminamos setUser de la dependencia
 
   const paginatedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;

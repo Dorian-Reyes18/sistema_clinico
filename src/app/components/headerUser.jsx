@@ -10,6 +10,20 @@ import VolverBtn from "./VolverBtn";
 const HeaderUser = ({ currentPath }) => {
   const { user, loading, error } = useAuth();
 
+  // Si no hay un user disponible, muestra un texto de carga o vacío
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  // Manejo de error (opcional, si necesitas mostrar algo en caso de error)
+  if (error) {
+    return <div>Error al cargar los datos del usuario.</div>;
+  }
+
+  // Asegúrate de que los datos de `user` y `user.rol` estén disponibles
+  const nombreYApellido = user?.nombreYApellido || "Usuario no disponible";
+  const rol = user?.rol?.nombreRol || "Rol no disponible";
+
   const getPathData = (path) => {
     if (path === "/home") {
       return {
@@ -75,26 +89,20 @@ const HeaderUser = ({ currentPath }) => {
       <div style={{ display: "flex", flexDirection: "row", gap: 14 }}>
         <div className="name-rol">
           <p>
-            <strong>{user.nombreYApellido}</strong>
+            <strong>{nombreYApellido}</strong>
           </p>
           <span
             style={{
               fontSize: 12,
               color:
-                user?.rol?.nombreRol.toLowerCase() === "administrador"
-                  ? "#1074bc"
-                  : "#bd3548",
+                rol.toLowerCase() === "administrador" ? "#1074bc" : "#bd3548",
             }}
           >
-            <strong>{user?.rol?.nombreRol}</strong>
+            <strong>{rol}</strong>
           </span>
         </div>
 
-        {user?.rol?.nombreRol.toLowerCase() === "administrador" ? (
-          <LogoDoctor />
-        ) : (
-          <LogoUser />
-        )}
+        {rol.toLowerCase() === "administrador" ? <LogoDoctor /> : <LogoUser />}
       </div>
     </div>
   );
