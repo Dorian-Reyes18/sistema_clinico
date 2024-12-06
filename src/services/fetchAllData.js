@@ -18,6 +18,10 @@ export const fetchAllUsers = async (token) => {
   return fetchData(`/protected/usuarios`, token);
 };
 
+export const fetchUsers = async (token) => {
+  return fetchData(`/protected/usuarios`, token);
+};
+
 export const fetchPatients = async (token) => {
   return fetchData("/protected/pacientes", token);
 };

@@ -16,8 +16,8 @@ const TableUsers = () => {
   const [loading, setLoading] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // General loading
-  const [isDeleting, setIsDeleting] = useState(false); // Deletion loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
@@ -63,11 +63,11 @@ const TableUsers = () => {
   };
 
   const deleteUsersAction = async (id) => {
-    setIsDeleting(true); // Start deleting process
+    setIsDeleting(true); 
     try {
       const response = await deleteUsers(id, token);
       if (response.message) {
-        setIsDeleting(false); // End deleting process
+        setIsDeleting(false); 
         Modal.confirm({
           title: "Usuario eliminado exitosamente",
           content:
@@ -87,7 +87,7 @@ const TableUsers = () => {
         });
       }
     } catch (error) {
-      setIsDeleting(false); // End deleting process
+      setIsDeleting(false); 
       console.error("Error al eliminar usuario:", error);
     }
   };
@@ -131,7 +131,6 @@ const TableUsers = () => {
             Nuevo Usuario
           </button>
 
-          {/* Este es el loading de carga */}
           {isLoading && !isDeleting && (
             <div
               style={{

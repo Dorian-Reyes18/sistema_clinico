@@ -60,6 +60,11 @@ const HeaderUser = ({ currentPath }) => {
         label: "Usuarios",
         imageSrc: "/images/home/UsuariosIcon.png",
       };
+    } else if (path === "/usuarios/gestionarUsuarios") {
+      return {
+        label: "Gestionar usuarios",
+        imageSrc: "/images/home/UsuariosIcon.png",
+      };
     } else {
       return {
         label: "Ruta no especificada",

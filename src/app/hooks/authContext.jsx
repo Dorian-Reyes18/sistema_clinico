@@ -7,16 +7,19 @@ import {
   fetchPatients,
   fetchMetadata,
   fetchOrdenPrenatalCompleta,
+  fetchUsers, // Nuevo fetch para obtener users
 } from "@/services/fetchAllData";
 
 const AuthContext = createContext();
 
 let isFetchingData = false;
+
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [users, setUsers] = useState([]); // Nuevo estado
   const [recentSurgeries, setRecentSurgeries] = useState([]);
   const [surgeriesPost, setSurgeriesPost] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -66,6 +69,7 @@ export const AuthProvider = ({ children }) => {
 
     // Intentamos cargar los datos de la caché
     const cachedUserData = sessionStorage.getItem("userData");
+    const cachedUsersData = sessionStorage.getItem("usersData"); // Nueva caché
     const cachedRecentSurgeriesData = sessionStorage.getItem(
       "recentSurgeriesData"
     );
@@ -75,6 +79,7 @@ export const AuthProvider = ({ children }) => {
 
     // Si hay datos en caché, los mostramos primero
     if (cachedUserData) setUser(JSON.parse(cachedUserData));
+    if (cachedUsersData) setUsers(JSON.parse(cachedUsersData)); // Establecemos users
     if (cachedRecentSurgeriesData)
       setRecentSurgeries(JSON.parse(cachedRecentSurgeriesData));
     if (cachedSurgeriesPostData)
@@ -86,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const [
         newUserData,
+        newUsers, // Nuevo fetch
         newRecentSurgeries,
         newSurgeriesPost,
         newPatients,
@@ -93,6 +99,7 @@ export const AuthProvider = ({ children }) => {
         newPrenatalSurgeries,
       ] = await Promise.all([
         fetchUserData(userId, token),
+        fetchUsers(token), // Llamada a fetchUsers
         fetchRecentSurgeries(token),
         fetchSurgeriesPost(token),
         fetchPatients(token),
@@ -102,6 +109,7 @@ export const AuthProvider = ({ children }) => {
 
       // Actualizamos los estados y la caché
       setUser(newUserData);
+      setUsers(newUsers); // Establecemos el nuevo estado
       setRecentSurgeries(newRecentSurgeries);
       setSurgeriesPost(newSurgeriesPost);
       setPatients(newPatients);
@@ -109,6 +117,7 @@ export const AuthProvider = ({ children }) => {
       setPrenatalSurgeries(newPrenatalSurgeries);
 
       sessionStorage.setItem("userData", JSON.stringify(newUserData));
+      sessionStorage.setItem("usersData", JSON.stringify(newUsers)); // Guardamos en caché
       sessionStorage.setItem(
         "recentSurgeriesData",
         JSON.stringify(newRecentSurgeries)
@@ -136,10 +145,12 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        users, 
         loading,
         error,
         token,
         setUser,
+        setUsers, 
         setToken,
         recentSurgeries,
         surgeriesPost,
