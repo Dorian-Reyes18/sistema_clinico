@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Modal, notification, Spin } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "@/app/hooks/authContext";
@@ -9,7 +9,7 @@ import { fetchAllUsers } from "@/services/fetchAllData";
 import { deleteUsers } from "@/services/Delete/Users/deleteUsers";
 
 const TableUsers = () => {
-  const { user, token } = useAuth();
+  const { users, setUsers, token } = useAuth();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(20);
@@ -22,11 +22,14 @@ const TableUsers = () => {
   const startLoading = () => setLoading(true);
   const stopLoading = () => setLoading(false);
 
-  useMemo(() => {
+  // Fetch users when token changes or component mounts
+  useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
         const response = await fetchAllUsers(token);
+        setUsers(response);
+
         const data = response.usuarios;
         setAllUsers(data);
         setFilteredUsers(data);
@@ -37,13 +40,15 @@ const TableUsers = () => {
       }
     };
 
-    fetchUsers();
-  }, [token]);
+    if (token) {
+      fetchUsers();
+    }
+  }, [token]); // Effect runs whenever the token changes or the component mounts
 
-  const paginatedUsers = useMemo(() => {
-    const startIndex = (currentPage - 1) * usersPerPage;
-    return filteredUsers.slice(startIndex, startIndex + usersPerPage);
-  }, [currentPage, filteredUsers, usersPerPage]);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * usersPerPage,
+    currentPage * usersPerPage
+  );
 
   const handleDelete = (id) => {
     Modal.confirm({

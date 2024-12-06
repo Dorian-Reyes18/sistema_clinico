@@ -21,12 +21,11 @@ const UsuarioForm = ({
   const { metadata } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Formik setup
   const formik = useFormik({
     initialValues: {
-      rolId: initialValues?.rol?.id || null,
-      nombreYApellido: initialValues?.nombreYApellido || "",
-      telefono: initialValues?.telefono || "",
+      rolId: null,
+      nombreYApellido: "",
+      telefono: null,
       contrasena: "",
     },
     onSubmit: (values) => {
@@ -44,14 +43,15 @@ const UsuarioForm = ({
     },
   });
 
+  // Sincronizar valores cuando initialValues cambian
   useEffect(() => {
     if (initialValues !== null) {
       if (mode === "isEditMode") {
         formik.setValues({
           id: initialValues?.id || null,
-          rolId: initialValues?.rol?.id === 1 ? null : initialValues?.rol?.id,
+          rolId: initialValues?.rol?.id,
           nombreYApellido: initialValues.nombreYApellido,
-          telefono: initialValues?.telefono || "",
+          telefono: initialValues?.telefono,
         });
       }
     }
@@ -102,7 +102,6 @@ const UsuarioForm = ({
           </Select>
         )}
       </div>
-
       <div className="item">
         <label htmlFor="nombreYApellido">
           Nombre y Apellido: <span className="señal-req"> *</span>
@@ -128,12 +127,7 @@ const UsuarioForm = ({
           id="telefono"
           name="telefono"
           type="text"
-          onChange={(e) => {
-            // Solo actualiza el teléfono si el valor ha cambiado
-            if (e.target.value !== initialValues.telefono) {
-              formik.setFieldValue("telefono", e.target.value);
-            }
-          }}
+          onChange={formik.handleChange}
           value={formik.values.telefono}
           onBlur={formik.handleBlur}
           disabled={formik.values.rolId === 1}
