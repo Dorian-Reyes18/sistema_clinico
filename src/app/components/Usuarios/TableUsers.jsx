@@ -43,7 +43,7 @@ const TableUsers = () => {
     if (token) {
       fetchUsers();
     }
-  }, [token]); // Effect runs whenever the token changes or the component mounts
+  }, [token]);
 
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * usersPerPage,
