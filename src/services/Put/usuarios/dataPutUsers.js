@@ -9,7 +9,7 @@ const putUsers = async (id, data, token) => {
   try {
     const headers = createAuthHeaders(token);
     const response = await axios.put(
-      `${apiUrl}/protected/orden_intra_completa/${id}`,
+      `${apiUrl}/protected/usuarios/${id}`,
       dataJson,
       { headers }
     );

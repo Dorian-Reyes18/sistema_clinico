@@ -23,7 +23,7 @@ model Roles {
 model Usuarios {
   id                           Int                            @id @default(autoincrement())
   rolId                        Int
-  usuario                      String
+  usuario                      String?
   nombreYApellido              String
   telefono                     String                         @unique
   contrasena                   String

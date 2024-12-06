@@ -22,4 +22,4 @@ const postDataUsers = async (endpoint, data, token) => {
 
 // Función para crear antecedentes familiares
 export const postUsuario = (data, token) =>
-  postDataUsers("orden_intra_completa", data, token);
+  postDataUsers("usuarios", data, token);

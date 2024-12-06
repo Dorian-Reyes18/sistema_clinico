@@ -38,7 +38,6 @@ export async function GET(req) {
     }
   });
 }
-
 // Crear un nuevo usuario
 export async function POST(req) {
   const authResult = await authenticateRequest(req);
@@ -51,7 +50,8 @@ export async function POST(req) {
     return NextResponse.json(
       {
         error:
-          "Cuerpo de la solicitud inválido. Asegúrese de que el formato sea JSON.",
+          "Cuerpo de la solicitud inválido. Asegúrese de que el formato sea JSON. Detalles del error: " +
+          error.message,
       },
       { status: 400 }
     );
@@ -59,26 +59,50 @@ export async function POST(req) {
 
   if (!Object.keys(body).length) {
     return NextResponse.json(
-      { error: "No se proporcionaron datos para crear el usuario." },
+      {
+        error:
+          "No se proporcionaron datos para crear el usuario. Asegúrese de enviar todos los campos necesarios.",
+      },
       { status: 400 }
     );
   }
 
   try {
+    // Verificar si el número de teléfono ya existe
+    const existingUser = await prisma.usuarios.findUnique({
+      where: { telefono: body.telefono },
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        {
+          error:
+            "El número de teléfono ya está registrado. Por favor, ingrese un número diferente.",
+        },
+        { status: 400 }
+      );
+    }
+
     // Hash de la contraseña
     if (body.contrasena) {
       body.contrasena = await bcrypt.hash(body.contrasena, 10);
     }
 
+    // Crear el nuevo usuario
     const nuevoUsuario = await prisma.usuarios.create({
       data: body,
     });
 
     return NextResponse.json({
-      message: "Usuario creado exitosamente",
+      message: "Usuario creado exitosamente.",
       usuario: nuevoUsuario,
     });
   } catch (error) {
-    return handleError(error, "Error al crear el usuario", 500);
+    return NextResponse.json(
+      {
+        error: `Error al crear el usuario. Detalles del error: ${error.message}`,
+      },
+      { status: 500 }
+    );
   }
 }

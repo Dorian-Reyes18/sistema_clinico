@@ -63,11 +63,11 @@ const TableUsers = () => {
   };
 
   const deleteUsersAction = async (id) => {
-    setIsDeleting(true); 
+    setIsDeleting(true);
     try {
       const response = await deleteUsers(id, token);
       if (response.message) {
-        setIsDeleting(false); 
+        setIsDeleting(false);
         Modal.confirm({
           title: "Usuario eliminado exitosamente",
           content:
@@ -87,7 +87,7 @@ const TableUsers = () => {
         });
       }
     } catch (error) {
-      setIsDeleting(false); 
+      setIsDeleting(false);
       console.error("Error al eliminar usuario:", error);
     }
   };
@@ -97,7 +97,7 @@ const TableUsers = () => {
       <td className="center">{usuario.rol?.nombreRol || "No especificado"}</td>
       <td className="center">{usuario.nombreYApellido || "Sin nombre"}</td>
       <td className="center">{usuario.telefono || "Sin Telefono"}</td>
-      <td className="center">{usuario.correo || "Sin correo"}</td>
+
       <td className="place">
         <div style={{ display: "flex", padding: "0 12px", gap: 12 }}>
           <div
@@ -200,10 +200,9 @@ const TableUsers = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th className="co">Rol</th>
-                  <th className="co">Nombre</th>
+                  <th className="co">Rol de usuario</th>
+                  <th className="co">Nombre y Apellido</th>
                   <th className="co">Teléfono</th>
-                  <th className="co">Correo</th>
                   <th className="co">Acción</th>
                 </tr>
               </thead>

@@ -36,82 +36,84 @@ const FormulariosUsuarios = ({ mode, id }) => {
   }, [id, users?.usuarios]);
 
   const handleFormSubmit = (formName) => (data) => {
-    setSendData((prevSendData) => {
-      const updatedSendData = { ...prevSendData };
-
-      if (formName === "UsuarioForm") {
-        updatedSendData.usuarioForm = data;
-      } else {
-        ñ;
-      }
-      return updatedSendData;
-    });
+    if (formName === "UsuarioForm") {
+      setSendData(data);
+    }
   };
 
   useEffect(() => {
     if (sendData && Object.keys(sendData).length > 0) {
       console.log("valores de sendData", sendData);
 
-      const usuarioData = sendData?.usuarioForm;
+      const usuarioData = sendData;
 
-      //   if (mode === "isCreateMode") {
-      //     startLoading();
-      //     const createUsuario = async () => {
-      //       try {
-      //         const response = await postUsuario(usuarioData, token);
-      //         console.log("Respuesta del usuario creado:", response);
+      if (mode === "isCreateMode") {
+        startLoading();
+        const createUsuario = async () => {
+          try {
+            const response = await postUsuario(usuarioData, token);
+            console.log("Respuesta del usuario creado:", response);
 
-      //         stopLoading();
+            stopLoading();
 
-      //         Modal.confirm({
-      //           title: "Usuario creado exitosamente",
-      //           content:
-      //             "El usuario y todos sus datos relacionados se han registrado correctamente.",
-      //           icon: (
-      //             <CheckCircleOutlined
-      //               style={{ color: "#52c41a", fontSize: "32px" }}
-      //             />
-      //           ),
-      //           okText: "Aceptar",
-      //           centered: true,
-      //           cancelButtonProps: { style: { display: "none" } },
-      //           onOk() {
-      //             router.push("/usuarios");
-      //           },
-      //         });
-      //       } catch (error) {
-      //         console.error("Error al crear el usuario:", error);
-      //       }
-      //     };
-      //     createUsuario();
-      //   } else {
-      //     startLoading();
-      //     const editUsuario = async () => {
-      //       const userId = usuarioData?.id;
-      //       const response = await putUsuarios(userId, usuarioData, token);
-      //       console.log(response);
+            Modal.confirm({
+              title: "Usuario creado exitosamente",
+              content:
+                "El usuario y todos sus datos relacionados se han registrado correctamente.",
+              icon: (
+                <CheckCircleOutlined
+                  style={{ color: "#52c41a", fontSize: "32px" }}
+                />
+              ),
+              okText: "Aceptar",
+              centered: true,
+              cancelButtonProps: { style: { display: "none" } },
+              onOk() {
+                router.push("/usuarios");
+              },
+            });
+          } catch (error) {
+            Modal.error({
+              title: "Error al crear usuario",
+              content:
+                "El número de teléfono ya está registrado. Por favor vuelva a intentarlo e ingrese uno diferente.",
+              centered: true,
+              okText: "Aceptar",
+              onOk() {
+                router.push("/usuarios");
+              },
+            });
+          }
+        };
+        createUsuario();
+      } else {
+        startLoading();
+        const editUsuario = async () => {
+          const userId = usuarioData?.id;
+          const response = await putUsuarios(userId, usuarioData, token);
+          console.log(response);
 
-      //       stopLoading();
+          stopLoading();
 
-      //       Modal.confirm({
-      //         title: "Usuario actualizado exitosamente",
-      //         content:
-      //           "El usuario y todos sus datos relacionados se han actualizado correctamente.",
-      //         icon: (
-      //           <CheckCircleOutlined
-      //             style={{ color: "#52c41a", fontSize: "32px" }}
-      //           />
-      //         ),
-      //         okText: "Aceptar",
-      //         centered: true,
-      //         cancelButtonProps: { style: { display: "none" } },
-      //         onOk() {
-      //           router.push("/usuarios");
-      //         },
-      //       });
-      //     };
-      //     editUsuario();
-      //   }
+          Modal.confirm({
+            title: "Usuario actualizado exitosamente",
+            content:
+              "El usuario y todos sus datos relacionados se han actualizado correctamente.",
+            icon: (
+              <CheckCircleOutlined
+                style={{ color: "#52c41a", fontSize: "32px" }}
+              />
+            ),
+            okText: "Aceptar",
+            centered: true,
+            cancelButtonProps: { style: { display: "none" } },
+            onOk() {
+              router.push("/usuarios");
+            },
+          });
+        };
+        editUsuario();
+      }
     }
   }, [sendData]);
 
