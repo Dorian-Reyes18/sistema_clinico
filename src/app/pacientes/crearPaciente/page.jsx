@@ -1,20 +1,19 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useAuth } from "../../hooks/authContext";
 import Layout from "../../components/layout";
 import { Spin } from "antd";
-import { usePathname, useSearchParams } from "next/navigation";
 import HeaderUser from "../../components/headerUser";
 import AllDataForms from "@/app/components/Pacientes/AllDataForms";
+import { Suspense } from "react";
+import { useParams } from "next/navigation"; // Importa useParams
 
 const CrearPaciente = () => {
-  const currentPath = usePathname();
-  const searchParams = useSearchParams();
   const { user, loading, error } = useAuth();
 
-  // Extrae los parámetros de búsqueda
-  const mode = searchParams.get("mode");
-  const id = searchParams.get("id");
+  const { mode, id } = useParams(); // Obtén los parámetros de la URL
 
   if (loading) {
     return (
@@ -52,10 +51,12 @@ const CrearPaciente = () => {
   }
 
   return (
-    <Layout>
-      <HeaderUser currentPath={currentPath} />
-      <AllDataForms mode={mode} id={id} />
-    </Layout>
+    <Suspense fallback={<Spin size="large" className="custom-spinner" />}>
+      <Layout>
+        <HeaderUser currentPath="/pacientes/crearPaciente" />
+        <AllDataForms mode={mode} id={id} />
+      </Layout>
+    </Suspense>
   );
 };
 

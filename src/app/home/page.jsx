@@ -8,8 +8,6 @@ import { usePathname } from "next/navigation";
 import RecentSurgeries from "../components/home/welcomeMessage";
 import TotalCardSurgeries from "../components/home/totalCardSurgeries";
 import SectionCalendar from "../components/home/sectionCalendar";
-import { useEffect, useState } from "react";
-import { fetchOrdenPrenatalCompleta } from "@/services/fetchAllData";
 
 const HomePage = () => {
   const currentPath = usePathname();
